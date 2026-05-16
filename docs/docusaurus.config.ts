@@ -106,7 +106,7 @@ const config: Config = {
             },
             {
               label: 'Meetings of Mind',
-              to: '/mom/overview',
+              to: '/mom',
             },
           ],
         },
