@@ -1,4 +1,4 @@
-import { Asset, Conflict, DiscoveredFile } from '../core/types.js';
+import { DiscoveredFile } from '../core/types.js';
 import { RegistryManager } from '../core/registry.js';
 import { Scanner } from '../core/scanner.js';
 import { getAdapter } from '../adapters/factory.js';
@@ -39,7 +39,7 @@ export class Syncer {
 
     const discovered = await this.scanner.scanAllTools();
     const grouped = this.groupByNameAndType(discovered);
-    
+
     let stubsWritten = 0;
     const assetsDiscovered = Object.keys(grouped).length;
 
@@ -86,7 +86,10 @@ export class Syncer {
       for (const tool of tools) {
         const adapter = getAdapter(tool, this.scope);
         const ext = type === 'agent' ? '.md' : '.json';
-        const targetPath = join(adapter.paths[type === 'agent' ? 'agents' : 'mcp'], `${name}${ext}`);
+        const targetPath = join(
+          adapter.paths[type === 'agent' ? 'agents' : 'mcp'],
+          `${name}${ext}`
+        );
 
         // Don't overwrite the latest source if it's already there
         if (tool === latest.tool && latest.path === targetPath) {

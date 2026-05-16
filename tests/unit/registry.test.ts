@@ -12,7 +12,7 @@ describe('RegistryManager', () => {
   it('should add and retrieve assets', async () => {
     const registry = new RegistryManager();
     await registry.load(); // Initialize this.registry
-    
+
     const asset: Asset = {
       id: 'test-id',
       name: 'researcher',
@@ -30,7 +30,7 @@ describe('RegistryManager', () => {
   it('should update assets', async () => {
     const registry = new RegistryManager();
     await registry.load();
-    
+
     const asset: Asset = {
       id: 'test-id',
       name: 'researcher',

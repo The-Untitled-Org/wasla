@@ -27,8 +27,6 @@ export class ClaudeAdapter extends BaseAdapter {
     mcp: 'json' as const,
   };
 
-  
-
   async isInstalled(): Promise<boolean> {
     const markers = getToolMarkers(this.scope);
     return fileExists(markers.claude);
