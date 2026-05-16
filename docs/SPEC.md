@@ -112,34 +112,45 @@ You are a researcher agent. Your job is to...
 
 ### 3.3 Source of Truth
 
-- **The tool that created the asset first owns it forever**
-- WaslGenie never promotes a stub to an original
-- If the original is deleted, WaslGenie renames all pointing stubs to `.bak` and marks them orphaned in the registry
-- WaslGenie may append content to originals (e.g. updating `CLAUDE.md` or `GEMINI.md`) but never replaces or removes existing content
+- **Latest edit wins** — whichever version was modified most recently becomes the source
+- No permanent ownership — assets can be authored in any tool
+- On sync, all other locations get the latest version
+- WaslGenie never deletes assets, only mirrors them
+- Original files in any tool location are never deleted by WaslGenie
 
 ---
 
-### 3.4 Conflict Resolution
+### 3.4 "Latest is Greatest" Sync Strategy
 
-A conflict occurs when two tools both have a non-stub asset with the same name.
+No explicit conflict resolution needed. Instead, WaslGenie uses **modification time (mtime)** to determine source of truth:
 
-**WaslGenie behavior:**
-1. Detect the conflict during scan
-2. Halt sync for that asset only — do not skip silently
-3. Surface the conflict clearly to the user in the CLI
-4. Ask the user to designate one as the origin
-5. Convert the other to a stub pointing at the designated origin
-6. Record the resolution in the registry
+1. Scanner finds agent "researcher" in multiple locations (e.g., Claude, Gemini, WaslGenie)
+2. Compare modification times of all versions
+3. **Whichever was edited most recently is the source**
+4. Prompt user: "Agent 'researcher' was last edited in Gemini CLI (May 15, 2:30 PM). Use as source across all tools? (Y/n)"
+5. User confirms → mirror that version to all other locations
+6. Registry updated with new hashes/mtimes
 
+**Advantages:**
+- ✅ No permanent ownership — anyone can edit an agent in any tool
+- ✅ Intuitive: latest edit wins
+- ✅ No conflict state tracking needed
+- ✅ Flexible: agents are not "born" in one tool, they can originate anywhere
+
+**Example flow:**
 ```
-⚠  Conflict detected: researcher
+🔍  Scanning...
 
-   ~/.claude/agents/researcher.md   (created: 2026-01-10)
-   ~/.gemini/agents/researcher.md   (created: 2026-01-12)
+Agent "researcher" found in 3 locations:
+  ~/.claude/agents/researcher.md        (edited May 15, 10:00 AM)
+  ~/.gemini/agents/researcher.md        (edited May 15, 2:30 PM) ← Latest
+  ~/.waslgenie/agents/researcher.md     (edited May 15, 12:00 PM)
 
-   Which should be the origin (source of truth)?
-   › claude
-     gemini
+📋  Latest version detected in Gemini CLI (2:30 PM today)
+    Sync this version across all tools?
+
+  › Yes
+    No (skip this asset)
 ```
 
 ---
@@ -212,6 +223,8 @@ The registry is WaslGenie's single source of truth about everything it has disco
 
 ### 5.3 Registry Entry Schema
 
+**Simplified registry — change detection only:**
+
 ```json
 {
   "assets": [
@@ -219,24 +232,23 @@ The registry is WaslGenie's single source of truth about everything it has disco
       "id": "uuid-v4",
       "name": "researcher",
       "type": "agent",
-      "origin_tool": "claude",
-      "origin_path": "~/.claude/agents/researcher.md",
-      "discovered_at": "2026-01-15T14:32:01Z",
-      "last_synced_at": "2026-01-15T14:32:01Z",
-      "status": "active",
-      "stubs": [
-        {
-          "tool": "openclaw",
-          "path": "~/.openclaw/agents/researcher.md",
-          "method": "content_mirror",
+      "locations": {
+        "~/.claude/agents/researcher.md": {
           "content_hash": "abc123def456",
-          "written_at": "2026-01-15T14:32:01Z",
-          "status": "active"
+          "mtime": 1631234567
+        },
+        "~/.gemini/agents/researcher.md": {
+          "content_hash": "xyz789def456",
+          "mtime": 1631245678
+        },
+        "~/.waslgenie/agents/researcher.md": {
+          "content_hash": "abc123def456",
+          "mtime": 1631234567
         }
-      ]
+      },
+      "last_synced_at": "2026-01-15T14:32:01Z"
     }
   ],
-  "conflicts": [],
   "config": {
     "scope": "user",
     "version": "0.1.0"
@@ -244,8 +256,12 @@ The registry is WaslGenie's single source of truth about everything it has disco
 }
 ```
 
-**Asset status values:** `active` | `orphaned` | `conflict`  
-**Stub status values:** `active` | `bak` | `broken`
+**Registry purpose:** Track which files have changed since last sync, enabling "Latest is Greatest" detection.
+
+**Key fields:**
+- `locations` — all known locations of this asset and their current hash/mtime
+- `last_synced_at` — when this asset was last synced
+- No `origin_tool`, `origin_path`, or conflict tracking — all dynamic
 
 ---
 
@@ -275,13 +291,16 @@ interface WaslGenieAdapter {
   isInstalled(): Promise<boolean>
 
   // How to write a content-mirror stub for this tool
-  writeStub(asset: Asset): Promise<void>
+  writeStub(asset: Asset, targetPath: string, content: string): Promise<void>
 
   // How to register WaslGenie as a native skill in this tool
   installSkill(): Promise<void>
 
   // What to append to the tool's root config file (e.g. CLAUDE.md)
   getRootConfigAppend(): string | null
+
+  // Calculate hash of file content for change detection
+  hashFile(path: string): Promise<string>
 }
 ```
 
@@ -321,41 +340,48 @@ Runs once on first setup.
 Manual invocation:
 ```bash
 waslgenie sync              # Full scan and sync
-waslgenie sync --quick      # Fast check (mtime-based, called by tool-open trigger)
+waslgenie sync --quick      # Fast check (hash/mtime-based, called by tool-open trigger)
 ```
 
 Example output:
 ```
-🔍  Scanning...
+🔍  Scanning all tool directories...
 
-  ~/.claude/agents/     →  2 originals found
-  ~/.claude/mcp/        →  1 original found
-  ~/.openclaw/agents/   →  1 original found
-  ~/.openclaw/mcp/      →  0 originals found
-  ~/.gemini/agents/     →  1 original found
-  ~/.gemini/settings.json → 1 MCP config found
+  ~/.claude/agents/       → 2 agents found
+  ~/.claude/mcp/          → 1 MCP found
+  ~/.gemini/agents/       → 2 agents found
+  ~/.gemini/settings.json → 1 MCP found
+  ~/.openclaw/agents/     → 1 agent found
 
-⚠️  Conflict: agent "researcher" exists in both claude and openclaw
-    Resolve before continuing? (y/n) › y
+📋  Change detection (comparing hashes/mtimes to registry)...
 
-    Which is the origin?
-    › claude (created 2026-01-10)
-      openclaw (created 2026-01-12)
+  researcher    → CHANGED (last edited in gemini, May 15 2:30 PM)
+  planner       → CHANGED (last edited in claude, May 15 10:00 AM)
+  notion-mcp    → CHANGED (last edited in claude, May 15 1:15 PM)
+  data-helper   → UNCHANGED (no changes since last sync)
 
-✔  Conflict resolved — openclaw/researcher will become a stub
+🔄  Latest is Greatest — syncing changed assets...
 
-✍️  Writing stubs...
+  researcher (source: ~/.gemini/agents/researcher.md)
+    Sync to ~/.claude/agents/researcher.md        ✔
+    Sync to ~/.openclaw/agents/researcher.md      ✔
+    Sync to ~/.waslgenie/agents/researcher.md     ✔
 
-  ~/.openclaw/agents/researcher.md    ✔  (content mirror)
-  ~/.openclaw/agents/planner.md       ✔  (content mirror)
-  ~/.claude/agents/gemini-research.md ✔  (content mirror, from gemini original)
-  ~/.gemini/agents/claude-planner.md  ✔  (content mirror, from claude original)
+  planner (source: ~/.claude/agents/planner.md)
+    Sync to ~/.gemini/agents/planner.md           ✔
+    Sync to ~/.openclaw/agents/planner.md         ✔
+    Sync to ~/.waslgenie/agents/planner.md        ✔
+
+  notion-mcp (source: ~/.claude/mcp/)
+    Sync to ~/.gemini/settings.json               ✔
+    Sync to ~/.openclaw/mcp/                      ✔
+    Sync to ~/.waslgenie/mcp/                     ✔
 
 ✨  Sync complete
-    4 stubs written · 0 files duplicated · 1 conflict resolved
+    3 assets synced · 1 unchanged · 0 errors
 ```
 
-**Note:** This command is called automatically whenever a tool launches (via WaslGenie skill), and can also be called manually anytime.
+**Note:** This command is called automatically whenever a tool launches (via WaslGenie skill), and can also be called manually anytime. No explicit conflict resolution needed — latest edits are automatically detected and synced with user confirmation.
 
 ---
 
@@ -411,10 +437,11 @@ WaslGenie will only ever touch content between its own markers. Everything outsi
 
 - ✅ Claude Code agent format — Markdown + YAML frontmatter confirmed
 - ✅ Claude Code MCP format — `~/.claude/mcp/` or `~/.claude/claude.json` 
-- ✅ Claude native ref support — **NO** (research revealed `@import` only works in `CLAUDE.md`, not agent files)
+- ✅ Claude native ref support — Not needed (MVP uses content mirror + "Latest is Greatest")
 - ✅ Gemini CLI agent format — Markdown + YAML frontmatter confirmed
 - ✅ Gemini CLI MCP format — **NOT a directory.** Embedded in `~/.gemini/settings.json` under `mcpServers: {}`
-- ✅ Gemini native ref support — **NO** (same finding as Claude)
+- ✅ Gemini native ref support — Not needed (MVP uses content mirror)
+- ✅ Conflict resolution — Solved via "Latest is Greatest" mtime comparison
 
 ### Blocking 🔴
 
@@ -540,8 +567,8 @@ wasl-genie/
 - ❌ Persistent daemon / file watching (tool-open trigger is sufficient)
 - ❌ Skills, commands, cron sync (agents + MCPs only)
 - ❌ Codex, Hermes support (Claude Code, Gemini CLI, OpenClaw only)
-- ❌ Conflict auto-resolution (always interactive)
 - ❌ GUI or web dashboard
 - ❌ Team collaboration features (leave it to users to manage ~/.waslgenie/ with git)
 - ❌ Multi-profile support (single default profile only)
 - ❌ Remote or cross-machine sync (handled by export/import)
+- ❌ Permanent asset ownership (dynamic "latest is greatest")
