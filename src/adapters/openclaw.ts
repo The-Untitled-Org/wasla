@@ -1,6 +1,6 @@
 import { BaseAdapter } from './base.js';
 import { Asset } from '../core/types.js';
-import { fileExists, writeText, readText, ensureDir } from '../utils/fs.js';
+import { fileExists, writeText, ensureDir } from '../utils/fs.js';
 import { join } from 'path';
 import { getToolMarkers } from '../utils/paths.js';
 
