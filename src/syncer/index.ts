@@ -85,7 +85,7 @@ export class Syncer {
       const tools = await this.scanner.detectInstalledTools();
       for (const tool of tools) {
         const adapter = getAdapter(tool, this.scope);
-        const ext = type === 'agent' ? '.md' : '.json';
+        const ext = '.' + adapter.formats[type === 'agent' ? 'agents' : 'mcp'];
         const targetPath = join(
           adapter.paths[type === 'agent' ? 'agents' : 'mcp'],
           `${name}${ext}`
@@ -118,7 +118,7 @@ export class Syncer {
 
       // Also save to canonical registry location
       const typeDir = type === 'agent' ? 'agents' : 'mcp';
-      const ext = type === 'agent' ? '.md' : '.json';
+      const ext = type === 'agent' ? '.md' : '.json'; // Canonical format
       const canonicalPath = join(registryDir, typeDir, `${name}${ext}`);
       await writeText(canonicalPath, content);
     }
