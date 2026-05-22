@@ -1,16 +1,16 @@
 {
   "assets": [
     {
-      "id": "648a0b01-081d-48f7-a4dd-377dae92ba3d",
+      "id": "b8f35cf6-1c78-4253-aa0e-031174a3f81f",
       "name": "researcher",
       "type": "agent",
       "last_modified_at": 5000,
-      "last_synced_at": "2026-05-16T22:56:14.605Z",
+      "last_synced_at": "2026-05-22T01:23:28.820Z",
       "stubs": [
         {
           "tool": "claude",
           "path": "/claude/agents/researcher.md",
-          "written_at": "2026-05-16T22:56:14.605Z",
+          "written_at": "2026-05-22T01:23:28.821Z",
           "hash": "f933c0f040fb4de6e176e45deadf165b12e90e418df1a7a3a7f29ec964bc42cc"
         }
       ]
