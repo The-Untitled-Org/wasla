@@ -9,6 +9,9 @@ export function expandTilde(path: string): string {
 }
 
 export function getRegistryPath(scope: 'user' | 'workspace'): string {
+  if (process.env.NODE_ENV === 'test') {
+    return resolve(`output/tests/${scope}-registry.json`);
+  }
   if (scope === 'user') {
     return expandTilde('~/.waslagenie/registry.json');
   }
@@ -16,6 +19,9 @@ export function getRegistryPath(scope: 'user' | 'workspace'): string {
 }
 
 export function getRegistryDir(scope: 'user' | 'workspace'): string {
+  if (process.env.NODE_ENV === 'test') {
+    return resolve('output/tests');
+  }
   if (scope === 'user') {
     return expandTilde('~/.waslagenie');
   }
