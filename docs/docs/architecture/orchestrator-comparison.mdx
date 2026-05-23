@@ -25,22 +25,17 @@ import Admonition from '@theme/Admonition';
 
 ## Quick-Reference Matrix
 
-| Dimension | Claude Code | Gemini CLI | OpenClaw |
-|-----------|-------------|------------|----------|
-| **Config root (user)** | `~/.claude/` | `~/.gemini/` | `~/.openclaw/` |
-| **Config root (workspace)** | `.claude/` | `.gemini/` | `<workspace>/` |
-| **Context file** | `CLAUDE.md` | `GEMINI.md` | `AGENTS.md` / `SOUL.md` |
-| **Agent definition format** | Markdown + YAML frontmatter | No native agent files (context-file driven) | `AGENTS.md` workspace file |
-| **Agent dir (user)** | `~/.claude/agents/` | `~/.gemini/agents/` *(planned)* | `~/.openclaw/workspace/` |
-| **Agent dir (workspace)** | `.claude/agents/` | `.gemini/agents/` *(planned)* | `<workspace>/AGENTS.md` |
-| **MCP config file** | `.mcp.json` / `settings.json` | `.gemini/settings.json` | `~/.openclaw/openclaw.json` |
-| **MCP config key** | `mcpServers` | `mcpServers` | `mcp.servers` |
-| **Skills dir (user)** | `~/.claude/skills/` | `~/.gemini/skills/` | `~/.openclaw/skills/` |
-| **Skills dir (workspace)** | `.claude/skills/` | `.gemini/skills/` | `<workspace>/skills/` |
-| **Skills interop alias** | `.agents/skills/` | `.agents/skills/` | `~/.agents/skills/` |
-| **Skill file name** | `SKILL.md` | `SKILL.md` | `SKILL.md` |
-| **Skill registry** | Anthropic skills repo / MCP.Directory | skills.sh / Gemini Skills repo | ClawHub |
-| **Multi-agent support** | ✅ Sub-agents via `Agent()` tool | ⚠️ Context-file driven, no sub-agent spawning | ✅ Multi-agent routing via `AGENTS.md` |
+| Dimension | Claude | Gemini | OpenClaw | OpenCode | Cursor | VS Code | GH Copilot | GH CLI |
+|-----------|--------|--------|----------|----------|--------|---------|------------|--------|
+| **User root** | `~/.claude/` | `~/.gemini/` | `~/.openclaw/` | `~/.opencode/` | `~/.cursor/` | Settings | Settings | `~/.copilot/` |
+| **Workspace root** | `.claude/` | `.gemini/` | `<workspace>/` | `./` | `.cursor/` | `.vscode/` | `.github/` | N/A |
+| **Context file** | `CLAUDE.md` | `GEMINI.md` | `AGENTS.md` | `opencode.md` | `.cursorrules` | `copilot-instructions.md` | `copilot-instructions.md` | `copilot-instructions.md` |
+| **Agent format** | MD + YAML | Context-driven | `AGENTS.md` | `.opencode.json` | `.mdc` files | Instruct files | Instruct files | Interactive |
+| **MCP config** | `.mcp.json` | `settings.json` | `openclaw.json` | `.opencode.json` | `mcp.json` | `mcp.json` | IDE specific | `mcp-config.json` |
+| **MCP key** | `mcpServers` | `mcpServers` | `mcp.servers` | `mcpServers` | `mcpServers` | `servers` | `servers` | `mcpServers` |
+| **Skills dir** | `.claude/skills/` | `.gemini/skills/` | `skills/` | `commands/` | `.cursor/rules/` | `.github/instructions/` | `.github/instructions/` | N/A |
+| **Skill format** | `SKILL.md` | `SKILL.md` | `SKILL.md` | Context/Commands | `.mdc` globs | `.instructions.md` | `.instructions.md` | MCP / Context |
+| **Sub-agents** | ✅ Sub-agents | ⚠️ Context | ✅ Routing | ❌ Single | ❌ Single | ❌ Single | ❌ Single | ❌ Single |
 
 ---
 
@@ -370,6 +365,57 @@ Session end
 
 ---
 
+
+
+---
+
+### 1.4 OpenCode
+
+<Admonition type="info" title="Architecture">
+OpenCode is a terminal-based Go application that configures agents via `.opencode.json`. It relies heavily on reading context files from cross-tool paths rather than discrete agent files.
+</Admonition>
+
+- **Configuration:** Defined in `.opencode.json` under `agents` key.
+- **Agents:** Built-in agents (`coder`, `task`, `title`), configurable by model.
+- **Context Loading:** Scans cross-tool files (`.cursorrules`, `CLAUDE.md`, `.github/copilot-instructions.md`) and `.opencode/commands/`.
+
+---
+
+### 1.5 Cursor
+
+<Admonition type="info" title="Architecture">
+Cursor replaces discrete agents with a highly scoped **rules system**. Rule files (`.mdc`) act as dynamic agent instructions that activate based on file globs or semantic relevance.
+</Admonition>
+
+- **Format:** Markdown with YAML frontmatter in `.cursor/rules/*.mdc`.
+- **Fields:** `description` (for semantic matching), `globs` (for file-based matching), `alwaysApply` (global context).
+- **Fallback:** Still supports `.cursorrules` and `AGENTS.md`.
+
+---
+
+### 1.6 VS Code (Copilot)
+
+- **Architecture:** Uses GitHub Copilot with Agent Mode.
+- **Project Context:** `.github/copilot-instructions.md` (applied globally).
+- **Granular Rules:** `.github/instructions/*.instructions.md` with `applyTo` YAML frontmatter for specific files.
+- **Sub-agents:** None natively, operates in a single Agent Chat session.
+
+---
+
+### 1.7 GitHub Copilot
+
+- **Architecture:** Standardized instruction files shared across VS Code, JetBrains, and GitHub.com (Copilot Workspace).
+- **Core File:** `.github/copilot-instructions.md`.
+- **Granular:** `*.instructions.md` with `applyTo`.
+
+---
+
+### 1.8 GitHub CLI
+
+- **Architecture:** Interactive CLI session (`gh copilot` or `copilot`).
+- **Agents:** Autonomous agentic loop accessible in interactive mode.
+- **Context:** Reads `.github/copilot-instructions.md` for project rules.
+
 ## Dimension 2 — MCP Servers
 
 ### 2.1 Claude Code
@@ -665,6 +711,51 @@ tool discovery without a restart.
 - [ ] If `mcp-bridge` skill is detected, log it as a secondary MCP source — do not parse its internal config
 
 ---
+
+
+
+---
+
+### 2.4 OpenCode
+
+- **File:** `.opencode.json` (user home, XDG, or project root).
+- **Key:** `mcpServers`.
+- **Transports:** `stdio` (command/args) and `sse` (url/headers).
+- **Integration:** MCP tools are globally available to all agents (no per-agent scoping).
+
+---
+
+### 2.5 Cursor
+
+- **File:** `.cursor/mcp.json` (workspace) or `~/.cursor/mcp.json` (user).
+- **Key:** `mcpServers`.
+- **Integration:** Agent auto-scans tools and prompts for user approval before execution (unless auto-run is enabled).
+
+---
+
+### 2.6 VS Code
+
+- **File:** `.vscode/mcp.json` (workspace).
+- **Key:** `servers` (NOTE: not `mcpServers` like the others).
+- **Variables:** Supports `${env:VAR}` variable resolution.
+- **Integration:** Managed via Command Palette (`MCP: Add Server`). Auto-starts when chat messages are sent.
+
+---
+
+### 2.7 GitHub Copilot
+
+- **Architecture:** Deprecated App-based extensions in favor of MCP.
+- **Integration:** Integrates directly with IDE MCP configuration (e.g. `.vscode/mcp.json` in VS Code).
+- **Built-in:** Uses native `#githubRepo` and `#codebase` tools.
+
+---
+
+### 2.8 GitHub CLI
+
+- **File:** `~/.copilot/mcp-config.json`
+- **Key:** `mcpServers`
+- **Management:** Interactive CLI (`/mcp add`, `/mcp show`).
+- **Built-in:** GitHub MCP server is pre-installed.
 
 ## Dimension 3 — Skills
 
@@ -1056,6 +1147,34 @@ openclaw skills remove code-reviewer
 
 ---
 
+
+
+---
+
+### 3.5 OpenCode — Skills
+
+- **No SKILL.md:** Uses `.opencode/commands/` (markdown prompt templates) instead.
+- **Cross-Tool:** Resolves skills by reading other tools' context files (`AGENTS.md`, `.cursorrules`).
+
+---
+
+### 3.6 Cursor — Skills
+
+- **No SKILL.md:** Uses `.mdc` rules (`.cursor/rules/*.mdc`).
+- **Trigger:** Auto-attached via `globs` or agent-requested via `description`.
+
+---
+
+### 3.7 & 3.8 VS Code / Copilot — Skills
+
+- **No SKILL.md:** Uses granular `.instructions.md` files with `applyTo` globs.
+
+---
+
+### 3.9 GitHub CLI — Skills
+
+- Relies entirely on MCP servers and `.github/copilot-instructions.md`.
+
 ## Dimension 4 — Cross-Tool Interop Table
 
 This is the decision matrix for WaslaGenie's syncer module. For each
@@ -1215,6 +1334,62 @@ export const OPENCLAW_PATHS = {
 ```
 
 ---
+
+
+
+### 5.5 OpenCode adapter paths
+
+```javascript
+export const OPENCODE_PATHS = {
+  userRoot: '~/.opencode/',
+  workspaceRoot: './',
+  agentDirs: [], // Handled in .opencode.json
+  mcpFiles: ['.opencode.json', '~/.opencode.json'],
+  skillDirs: ['.opencode/commands/', '~/.opencode/commands/'],
+  contextFile: 'opencode.md',
+  mcpKey: 'mcpServers',
+};
+```
+
+### 5.6 Cursor adapter paths
+
+```javascript
+export const CURSOR_PATHS = {
+  userRoot: '~/.cursor/',
+  workspaceRoot: '.cursor/',
+  agentDirs: ['.cursor/rules/'],
+  mcpFiles: ['.cursor/mcp.json', '~/.cursor/mcp.json'],
+  skillDirs: ['.cursor/rules/'],
+  contextFile: '.cursorrules',
+  mcpKey: 'mcpServers',
+};
+```
+
+### 5.7 VS Code adapter paths
+
+```javascript
+export const VSCODE_PATHS = {
+  userRoot: '~/.config/Code/User/',
+  workspaceRoot: '.vscode/',
+  agentDirs: ['.github/instructions/'],
+  mcpFiles: ['.vscode/mcp.json'],
+  skillDirs: ['.github/instructions/'],
+  contextFile: '.github/copilot-instructions.md',
+  mcpKey: 'servers', // Note difference
+};
+```
+
+### 5.8 GitHub CLI adapter paths
+
+```javascript
+export const GH_CLI_PATHS = {
+  userRoot: '~/.copilot/',
+  workspaceRoot: '.github/',
+  mcpFiles: ['~/.copilot/mcp-config.json'],
+  contextFile: '.github/copilot-instructions.md',
+  mcpKey: 'mcpServers',
+};
+```
 
 ## Appendix — Common Gotchas for Adapter Authors
 
