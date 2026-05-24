@@ -24,8 +24,8 @@ Local subagents are Markdown files with YAML frontmatter and execute in an indep
 ```text
 .claude/agents/reviewer.md        -> .gemini/agents/reviewer.md
 .claude/skills/research/SKILL.md  -> .gemini/skills/research/SKILL.md
-.mcp.json:mcpServers.postgres     -> .gemini/settings.json:mcpServers.postgres
-CLAUDE.md                         -> GEMINI.md
+.claude/mcp.json:mcpServers.postgres -> .gemini/settings.json:mcpServers.postgres
+.claude/CLAUDE.md                    -> GEMINI.md
 ```
 
 ## MCP Example

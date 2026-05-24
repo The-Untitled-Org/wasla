@@ -51,9 +51,9 @@ You end up **copy-pasting configs, duplicating agent definitions, and maintainin
 
 ## ✨ What WaslaGenie Does
 
-WaslaGenie installs itself as a **native skill inside each orchestrator** and runs as an **external CLI daemon** alongside it.
+WaslaGenie syncs assets across orchestrators from the CLI. Helper skill registration is optional.
 
-When sync is triggered — manually or automatically — WaslaGenie:
+When sync is triggered — manually (`sync`) or continuously (`watch`) — WaslaGenie:
 
 1. **Scans** the known config directories of every supported orchestrator on your machine  
    (`~/.claude/`, `~/.gemini/`, `~/.codex/`, `~/.openclaw/`, `~/.hermes/`)

@@ -3,7 +3,11 @@ import { section, success, error, warning, highlight, spacer } from '../../utils
 import { getRegistryDir } from '../../utils/paths.js';
 import { ensureDir } from '../../utils/fs.js';
 
-export async function registerCommand(): Promise<void> {
+interface RegisterOptions {
+  to?: string;
+}
+
+export async function registerCommand(options: RegisterOptions = {}): Promise<void> {
   try {
     section('Detecting installed orchestrators...');
     spacer();
@@ -20,13 +24,35 @@ export async function registerCommand(): Promise<void> {
       success(`${adapter.displayName} found`);
     });
 
+    let targets = adapters;
+    if (options.to) {
+      const requested = options.to
+        .split(',')
+        .map((value) => value.trim().toLowerCase())
+        .filter(Boolean);
+      const installedByName = new Map(
+        adapters.map((adapter) => [adapter.name.toLowerCase(), adapter])
+      );
+      const invalid = requested.filter((name) => !installedByName.has(name));
+      if (invalid.length > 0) {
+        error(
+          `Unsupported or not installed provider(s): ${invalid.join(', ')}. Installed providers: ${adapters
+            .map((adapter) => adapter.name)
+            .join(', ')}`
+        );
+        process.exit(1);
+        return;
+      }
+      targets = requested.map((name) => installedByName.get(name)!);
+    }
+
     spacer();
     section('Registering WaslaGenie helper skills...');
     spacer();
 
     await ensureDir(getRegistryDir('user'));
 
-    for (const adapter of adapters) {
+    for (const adapter of targets) {
       try {
         await adapter.installSkill();
         success(`Registered in ${adapter.displayName}`);

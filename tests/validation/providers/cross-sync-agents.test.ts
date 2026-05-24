@@ -94,7 +94,7 @@ describe('Cross-Provider Sync: Skills', () => {
 
     await syncer.syncToTool('gemini', ['claude']);
 
-    const claudeContext = join(tmpBase, 'CLAUDE.md');
+    const claudeContext = join(tmpBase, '.claude', 'CLAUDE.md');
     expect(await readText(claudeContext)).toBe(contextContent);
   });
 

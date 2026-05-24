@@ -45,7 +45,14 @@ describe('Cross-Provider Sync: MCP Servers', () => {
     // 1. Simulate Gemini creating an MCP configuration in native settings.
     const geminiMcpPath = join(tmpBase, '.gemini', 'settings.json');
     const serverConfig = { command: 'node', args: ['postgres-mcp'] };
-    await writeText(geminiMcpPath, JSON.stringify({ mcpServers: { postgres: serverConfig } }));
+    await writeText(
+      geminiMcpPath,
+      JSON.stringify({
+        mcpServers: {
+          postgres: { ...serverConfig, cwd: '.', trust: false },
+        },
+      })
+    );
     await ensureDir(join(tmpBase, '.opencode', 'skills'));
 
     // 2. Initialize Core system
@@ -59,8 +66,8 @@ describe('Cross-Provider Sync: MCP Servers', () => {
 
     // 4. Assert that the MCP config was correctly propagated to other providers
 
-    // Claude stores workspace MCPs in .mcp.json.
-    const claudeStub = join(tmpBase, '.mcp.json');
+    // Claude stores workspace MCPs in .claude/mcp.json.
+    const claudeStub = join(tmpBase, '.claude', 'mcp.json');
     expect(await fileExists(claudeStub), 'Claude MCP mirror should exist').toBe(true);
     expect(JSON.parse(await readText(claudeStub)).mcpServers.postgres).toEqual(serverConfig);
 
@@ -88,10 +95,10 @@ describe('Cross-Provider Sync: MCP Servers', () => {
       ...serverConfig,
     });
 
-    // GitHub Copilot CLI shares the .mcp.json workspace shape with Claude.
+    // GitHub Copilot CLI shares mcpServers shape but writes to its own workspace file.
     expect(registry.findAsset('postgres', 'mcp')?.stubs).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({ tool: 'github-copilot-cli', path: claudeStub }),
+        expect.objectContaining({ tool: 'github-copilot-cli', path: join(tmpBase, '.mcp.json') }),
       ])
     );
   });
@@ -126,8 +133,8 @@ describe('Cross-Provider Sync: MCP Servers', () => {
     expect(
       JSON.parse(await readText(join(tmpBase, '.gemini', 'settings.json'))).mcpServers.filesystem
     ).toEqual(expected);
-    expect(JSON.parse(await readText(join(tmpBase, '.mcp.json'))).mcpServers.filesystem).toEqual(
-      expected
-    );
+    expect(
+      JSON.parse(await readText(join(tmpBase, '.claude', 'mcp.json'))).mcpServers.filesystem
+    ).toEqual(expected);
   });
 });

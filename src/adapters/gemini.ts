@@ -47,6 +47,17 @@ export class GeminiAdapter extends BaseAdapter {
     return fileExists(markers.gemini);
   }
 
+  mcpFromNative(server: Record<string, unknown>): Record<string, unknown> {
+    if (typeof server.command === 'string') {
+      return {
+        command: server.command,
+        ...(Array.isArray(server.args) ? { args: server.args } : {}),
+        ...(server.env && typeof server.env === 'object' ? { env: server.env } : {}),
+      };
+    }
+    return server;
+  }
+
   async writeStub(asset: Asset, content: string, targetPath: string): Promise<void> {
     if (asset.type === 'agent' || asset.type === 'skill') {
       await this.writeSkillStub(targetPath, content);

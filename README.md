@@ -48,9 +48,9 @@ You end up **copy-pasting configs, duplicating agent definitions, and maintainin
 
 ## ✨ What WaslaGenie Does
 
-WaslaGenie installs itself as a **native skill inside each orchestrator** and runs as an **external CLI daemon** alongside it.
+WaslaGenie syncs assets across orchestrators from the CLI. Helper skill registration is optional.
 
-When sync is triggered — manually or automatically — WaslaGenie:
+When sync is triggered — manually (`sync`) or continuously (`watch`) — WaslaGenie:
 
 1. **Scans** the known config directories of every supported orchestrator on your machine  
    (`~/.claude/`, `~/.gemini/`, `~/.openclaw/`)
@@ -140,6 +140,60 @@ waslagenie register
 ```
 
 `register` detects supported orchestrators and adds the WaslaGenie helper skill inside each one.
+Use `waslagenie register --to claude` (or comma-separated targets) to install only specific providers.
+
+---
+
+## 🧭 Which Command When
+
+### End users (installed package)
+
+```bash
+# Run once on demand
+waslagenie sync
+
+# Keep syncing while you work
+waslagenie watch
+
+# Optional: install helper skill in all detected providers
+waslagenie register
+
+# Optional: install helper skill in specific providers only
+waslagenie register --to claude,gemini
+```
+
+You can also run without global install:
+
+```bash
+npx wasla-genie sync
+```
+
+### You (developing this repo)
+
+```bash
+# Build + run sync (workspace scope) using your local source
+npm run sync
+
+# Build + run watch (workspace scope)
+npm run watch
+```
+
+Use `npm run ...` while developing because it runs your local code (`dist`) after build.
+
+### Do I need to reinstall after code changes?
+
+If you run through `npm run ...` in this repo: **No reinstall needed**. Just run the script again; it rebuilds.
+
+If you installed globally with `npm install -g wasla-genie`: **Yes**, reinstall (or relink) to test your latest local changes.
+
+For local development without repeated global installs:
+
+```bash
+npm link
+waslagenie sync
+```
+
+Then after code changes, run `npm run build` (or any script that builds) and use `waslagenie` again.
 
 ---
 
@@ -169,14 +223,14 @@ waslagenie sync
 
 ---
 
-### Automatic background sync — session-scoped
+### Automatic background sync — watch mode
 
-WaslaGenie is not a standalone background daemon. Instead, the WaslaGenie skill installed in each tool **launches WaslaGenie as a background co-process when the tool starts** and **stops it when the tool closes**. It watches for file changes across all tool directories for the lifetime of that session.
+`waslagenie watch` is the background sync process. It watches for file changes across all tool directories while the command is running.
 
 ```
-[Tool starts]  → WaslaGenie co-process launched by skill
+[watch starts] → WaslaGenie process launched
 [File changes] → WaslaGenie detects change and syncs immediately
-[Tool closes]  → WaslaGenie co-process exits cleanly
+[watch stops]  → WaslaGenie process exits cleanly
 ```
 
 ```
@@ -190,8 +244,7 @@ WaslaGenie is not a standalone background daemon. Instead, the WaslaGenie skill 
 [15:10:44]  Syncing stubs     → .gemini ✔  .codex ✔  .openclaw ✔
 ```
 
-No restart. No manual trigger. The moment something changes — it's everywhere.  
-No persistent system process. WaslaGenie only runs while you're using a tool.
+No restart. No manual trigger. The moment something changes — it's everywhere.
 
 ---
 

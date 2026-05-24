@@ -24,6 +24,7 @@ export async function syncCommand(options: SyncOptions): Promise<void> {
 
     spacer();
     highlight('Sync complete!');
+    console.log('  Note: sync only mirrors assets. It does not install helper skills.');
     console.log(`  ${result.assetsDiscovered} assets discovered`);
     console.log(`  ${result.stubsWritten} stubs written`);
     console.log(`  ${result.stubsDeleted} stubs deleted`);

@@ -22,8 +22,9 @@ program.addCommand(
 
 program.addCommand(
   new Command('register')
+    .option('--to <targets>', 'Target provider(s), comma-separated. Example: claude,gemini')
     .description('Register WaslaGenie helper skills inside installed AI tools')
-    .action(registerCommand)
+    .action((options) => registerCommand(options))
 );
 
 program.addCommand(
