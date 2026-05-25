@@ -39,7 +39,7 @@ export class GeminiAdapter extends BaseAdapter {
   };
 
   get skillDirs() {
-    return [this.paths.skill!!];
+    return [this.paths.skill!];
   }
 
   async isInstalled(): Promise<boolean> {
@@ -80,7 +80,7 @@ export class GeminiAdapter extends BaseAdapter {
     // Create the skills/ directory (Gemini CLI's native skill location) and
     // write a WaslaGenie skill file so Gemini knows how to run sync commands.
     // We do NOT touch GEMINI.md — that file belongs to the user.
-    const skillDir = join(this.paths.skill!!, 'waslagenie');
+    const skillDir = join(this.paths.skill!, 'waslagenie');
     await ensureDir(skillDir);
 
     const skillPath = join(skillDir, 'SKILL.md');
