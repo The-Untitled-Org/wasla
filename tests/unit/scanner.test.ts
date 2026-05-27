@@ -213,6 +213,30 @@ describe('Scanner.detectConflicts — multiple originals (Latest-is-Greatest)', 
   });
 });
 
+// ─── extractAssetName ────────────────────────────────────────────────────────
+
+describe('Scanner — extractAssetName', () => {
+  it('extracts correctly from flat files', () => {
+    const scanner = new Scanner('workspace');
+    expect((scanner as any).extractAssetName('researcher.md')).toBe('researcher');
+  });
+
+  it('extracts correctly from nested paths', () => {
+    const scanner = new Scanner('workspace');
+    expect((scanner as any).extractAssetName('waslagenie/SKILL.md')).toBe('waslagenie');
+  });
+
+  it('handles filenames with multiple dots', () => {
+    const scanner = new Scanner('workspace');
+    expect((scanner as any).extractAssetName('my.complex.agent.md')).toBe('my.complex.agent');
+  });
+
+  it('handles Windows nested paths', () => {
+    const scanner = new Scanner('workspace');
+    expect((scanner as any).extractAssetName('waslagenie\\SKILL.md')).toBe('waslagenie');
+  });
+});
+
 // ─── groupByNameAndType (via detectConflicts) ────────────────────────────────
 
 describe('Scanner — grouping by name+type', () => {

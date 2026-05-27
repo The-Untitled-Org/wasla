@@ -189,6 +189,10 @@ describe('fs helpers — path string functions', () => {
     it('returns empty string for trailing slash', () => {
       expect(getFileName('/home/user/')).toBe('');
     });
+
+    it('extracts the filename from a Windows absolute path', () => {
+      expect(getFileName('C:\\Users\\user\\.claude\\agents\\researcher.md')).toBe('researcher.md');
+    });
   });
 
   describe('getFileNameWithoutExt', () => {
@@ -203,6 +207,22 @@ describe('fs helpers — path string functions', () => {
     it('handles file with no extension', () => {
       expect(getFileNameWithoutExt('/path/to/noext')).toBe('noext');
     });
+
+    it('handles filenames with multiple dots', () => {
+      expect(getFileNameWithoutExt('/path/to/my.complex.file.name.md')).toBe(
+        'my.complex.file.name'
+      );
+    });
+
+    it('handles hidden files properly (e.g. .gitignore)', () => {
+      expect(getFileNameWithoutExt('/path/to/.gitignore')).toBe('.gitignore');
+    });
+
+    it('handles Windows paths with multiple dots', () => {
+      expect(getFileNameWithoutExt('C:\\path\\to\\my.complex.file.name.md')).toBe(
+        'my.complex.file.name'
+      );
+    });
   });
 
   describe('getFileExtension', () => {
@@ -216,6 +236,14 @@ describe('fs helpers — path string functions', () => {
 
     it('getFileExtension returns empty string for files without extension', () => {
       expect(getFileExtension('path/to/README')).toBe('');
+    });
+
+    it('returns the last extension for filenames with multiple dots', () => {
+      expect(getFileExtension('my.complex.file.name.md')).toBe('md');
+    });
+
+    it('handles hidden files properly (e.g. .gitignore)', () => {
+      expect(getFileExtension('.gitignore')).toBe('');
     });
   });
 });

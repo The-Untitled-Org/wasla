@@ -266,13 +266,16 @@ export class Scanner {
   private extractAssetName(relativePathOrFileName: string): string {
     // For nested paths: waslagenie/SKILL.md -> waslagenie
     // For flat files: researcher.md -> researcher
-    const parts = relativePathOrFileName.split('/');
+    const parts = relativePathOrFileName.split(/[/\\]/);
     if (parts.length > 1) {
       // Nested: return first directory
       return parts[0];
     }
     // Flat: remove extension
-    return parts[0].split('.')[0];
+    const fileName = parts[0];
+    const lastDotIndex = fileName.lastIndexOf('.');
+    if (lastDotIndex === -1 || lastDotIndex === 0) return fileName;
+    return fileName.substring(0, lastDotIndex);
   }
 
   private readNestedRecord(
