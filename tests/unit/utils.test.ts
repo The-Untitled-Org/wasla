@@ -186,6 +186,10 @@ describe('fs helpers — path string functions', () => {
       expect(getFileName('/home/user/.claude/agents/researcher.md')).toBe('researcher.md');
     });
 
+    it('extracts the filename from a windows path', () => {
+      expect(getFileName('C:\\home\\user\\.claude\\agents\\researcher.md')).toBe('researcher.md');
+    });
+
     it('returns empty string for trailing slash', () => {
       expect(getFileName('/home/user/')).toBe('');
     });
@@ -203,6 +207,10 @@ describe('fs helpers — path string functions', () => {
     it('handles file with no extension', () => {
       expect(getFileNameWithoutExt('/path/to/noext')).toBe('noext');
     });
+
+    it('handles file with multiple dots', () => {
+      expect(getFileNameWithoutExt('/path/to/my.special.file.txt')).toBe('my.special.file');
+    });
   });
 
   describe('getFileExtension', () => {
@@ -216,6 +224,18 @@ describe('fs helpers — path string functions', () => {
 
     it('getFileExtension returns empty string for files without extension', () => {
       expect(getFileExtension('path/to/README')).toBe('');
+    });
+
+    it('getFileExtension returns the last extension for files with multiple dots', () => {
+      expect(getFileExtension('path/to/my.special.file.txt')).toBe('txt');
+    });
+
+    it('getFileExtension returns empty string for files with no extension but dots in directory path', () => {
+      expect(getFileExtension('/path/to.a/directory/README')).toBe('');
+    });
+
+    it('getFileExtension returns the extension for files in directory path with dots', () => {
+      expect(getFileExtension('/path/to.a/directory/README.md')).toBe('md');
     });
   });
 });
