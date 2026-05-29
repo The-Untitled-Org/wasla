@@ -186,6 +186,10 @@ describe('fs helpers — path string functions', () => {
       expect(getFileName('/home/user/.claude/agents/researcher.md')).toBe('researcher.md');
     });
 
+    it('extracts the filename from a Windows absolute path', () => {
+      expect(getFileName('C:\\home\\user\\.claude\\agents\\researcher.md')).toBe('researcher.md');
+    });
+
     it('returns empty string for trailing slash', () => {
       expect(getFileName('/home/user/')).toBe('');
     });
@@ -203,6 +207,14 @@ describe('fs helpers — path string functions', () => {
     it('handles file with no extension', () => {
       expect(getFileNameWithoutExt('/path/to/noext')).toBe('noext');
     });
+
+    it('handles file with multiple dots (e.g., .tar.gz)', () => {
+      expect(getFileNameWithoutExt('/path/to/archive.tar.gz')).toBe('archive.tar');
+    });
+
+    it('handles filename starting with a dot (e.g., .gitignore)', () => {
+      expect(getFileNameWithoutExt('/path/to/.gitignore')).toBe('.gitignore');
+    });
   });
 
   describe('getFileExtension', () => {
@@ -216,6 +228,14 @@ describe('fs helpers — path string functions', () => {
 
     it('getFileExtension returns empty string for files without extension', () => {
       expect(getFileExtension('path/to/README')).toBe('');
+    });
+
+    it('returns correctly for files with multiple dots', () => {
+      expect(getFileExtension('archive.tar.gz')).toBe('gz');
+    });
+
+    it('returns empty string for filename starting with a dot', () => {
+      expect(getFileExtension('.gitignore')).toBe('');
     });
   });
 });
