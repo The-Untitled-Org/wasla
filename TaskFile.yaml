@@ -1,0 +1,7 @@
+# Create simple taskfile.yaml for hello world
+version: '3'
+tasks:
+  afk:
+    desc: "Runs the SandCastle No sandbox environment on the currently ready-for-agent tasks found in .scratch/**/issues"
+    cmds:
+      - npx tsx .sandcastle/run.ts
