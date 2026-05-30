@@ -1,5 +1,5 @@
 {
-  "name": "wasla-genie",
+  "name": "@untitled-devs/wasla",
   "version": "0.1.0",
   "description": "Universal synchronization layer for AI agent orchestrators",
   "type": "module",
@@ -7,7 +7,12 @@
   "bin": {
     "waslagenie": "dist/cli/index.js"
   },
+  "files": [
+    "dist",
+    "src/visualizer/dist"
+  ],
   "scripts": {
+    "prepublishOnly": "npm run visualizer:build && npm run build",
     "build": "npm run check && node -e \"require('fs').rmSync('dist', { recursive: true, force: true })\" && tsc",
     "dev": "tsc --watch",
     "start": "node dist/cli/index.js",
@@ -56,6 +61,7 @@
     "sync:github-copilot-cli:cursor": "npm run build && node dist/cli/index.js sync-to --from github-copilot-cli --to cursor --scope workspace",
     "sync:github-copilot-cli:github-copilot": "npm run build && node dist/cli/index.js sync-to --from github-copilot-cli --to github-copilot --scope workspace",
     "test": "vitest",
+    "test:run": "vitest run",
     "test:watch": "vitest --watch",
     "test:unit": "vitest run tests/unit",
     "test:integration": "vitest run tests/integration",
@@ -63,9 +69,11 @@
     "test:coverage": "vitest run --coverage",
     "coverage:open": "open output/index.html",
     "docs": "cd docs && npm run start",
+    "docs:install": "npm --prefix docs install",
     "docs:build": "cd docs && npm run build",
-    "visualizer": "npm run visualizer:build && npm run build && node dist/cli/index.js visualizer --scope workspace",
+    "visualizer": "npm run visualizer:install && npm run visualizer:build && npm run build && node dist/cli/index.js visualizer --scope workspace",
     "ui": "npm run visualizer",
+    "visualizer:install": "npm --prefix src/visualizer install",
     "visualizer:dev": "npm --prefix src/visualizer run dev",
     "visualizer:build": "npm --prefix src/visualizer run build",
     "visualizer:preview": "npm --prefix src/visualizer run preview",
@@ -99,8 +107,9 @@
     "ws": "^8.21.0"
   },
   "devDependencies": {
-    "@types/ws": "^8.18.1",
+    "@ai-hero/sandcastle": "^0.6.6",
     "@types/node": "^20.10.6",
+    "@types/ws": "^8.18.1",
     "@vitest/coverage-v8": "^1.6.1",
     "@vitest/ui": "^1.0.0",
     "prettier": "^3.1.0",

@@ -1,5 +1,6 @@
 import { createServer, IncomingMessage, ServerResponse } from 'http';
-import { extname, join, resolve } from 'path';
+import { dirname, extname, join, resolve } from 'path';
+import { fileURLToPath } from 'url';
 import { readFile } from 'fs/promises';
 import { existsSync } from 'fs';
 import { exec } from 'child_process';
@@ -14,6 +15,10 @@ import type {
   VisualizerEntity,
   VisualizerEntityType,
 } from '../../core/visualizer-types.js';
+
+export function resolveVisualizerDist(moduleUrl: string): string {
+  return resolve(dirname(fileURLToPath(moduleUrl)), '../../../src/visualizer/dist');
+}
 
 interface VisualizerOptions {
   scope?: string;
@@ -77,29 +82,30 @@ function openBrowser(url: string): void {
   exec(`xdg-open "${url}"`);
 }
 
+export const PROVIDER_ICONS: Record<string, string> = {
+  waslagenie: '/logo.png',
+  claude: 'https://cdn.simpleicons.org/claude',
+  gemini: 'https://cdn.simpleicons.org/googlegemini',
+  cursor: 'https://cdn.simpleicons.org/cursor',
+  opencode: 'https://cdn.simpleicons.org/openai',
+  openclaw: 'https://cdn.simpleicons.org/anthropic',
+  'github-copilot': 'https://cdn.simpleicons.org/githubcopilot',
+  'github-copilot-cli': 'https://cdn.simpleicons.org/github',
+};
+
 async function buildConfig(scope: 'user' | 'workspace'): Promise<VisualizerConfiguration> {
   const scanner = new Scanner(scope);
   await scanner.initialize();
   const discovered = await scanner.scanAllTools();
 
   const installed = await getInstalledAdapters(scope);
-  const iconByProvider: Record<string, string> = {
-    waslagenie: '/api/branding/waslagenie-logo',
-    claude: 'https://cdn.simpleicons.org/claude',
-    gemini: 'https://cdn.simpleicons.org/googlegemini',
-    cursor: 'https://cdn.simpleicons.org/cursor',
-    opencode: 'https://cdn.simpleicons.org/openai',
-    openclaw: 'https://cdn.simpleicons.org/anthropic',
-    'github-copilot': 'https://cdn.simpleicons.org/githubcopilot',
-    'github-copilot-cli': 'https://cdn.simpleicons.org/github',
-  };
 
   const providers = [
-    { id: 'waslagenie', title: 'WaslaGenie', iconUrl: iconByProvider.waslagenie, isHub: true },
+    { id: 'waslagenie', title: 'WaslaGenie', iconUrl: PROVIDER_ICONS.waslagenie, isHub: true },
     ...installed.map((adapter) => ({
       id: adapter.name,
       title: adapter.displayName,
-      iconUrl: iconByProvider[adapter.name],
+      iconUrl: PROVIDER_ICONS[adapter.name],
     })),
   ];
 
@@ -165,7 +171,7 @@ export async function visualizerCommand(options: VisualizerOptions): Promise<voi
     section('Starting visualizer...');
     spacer();
 
-    const visualizerDist = resolve(process.cwd(), 'src/visualizer/dist');
+    const visualizerDist = resolveVisualizerDist(import.meta.url);
     if (!existsSync(visualizerDist)) {
       error('Visualizer assets not found. Build first with: npm run visualizer:build');
       process.exit(1);
@@ -201,13 +207,6 @@ export async function visualizerCommand(options: VisualizerOptions): Promise<voi
         }
         const content = await getEntityContent(scope, type, name);
         sendJson(res, 200, { content: content ?? '' });
-        return;
-      }
-
-      if (req.method === 'GET' && url === '/api/branding/waslagenie-logo') {
-        const logo = await readFile(resolve(process.cwd(), 'docs/static/img/logo.png'));
-        res.writeHead(200, { 'Content-Type': 'image/png' });
-        res.end(logo);
         return;
       }
 
