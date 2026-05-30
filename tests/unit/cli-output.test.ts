@@ -6,6 +6,7 @@ import {
   warning,
   highlight,
   metric,
+  assetList,
   step,
   section,
   table,
@@ -63,6 +64,51 @@ describe('cli-output utilities', () => {
     expect(consoleLogSpy).toHaveBeenCalledWith(
       '  \u001b[34mAssets              \u001b[0m \u001b[1m3\u001b[0m'
     );
+  });
+
+  it('assetList groups assets and hides inactive providers', () => {
+    assetList(
+      [
+        {
+          id: 'skill-1',
+          name: 'reviewer',
+          type: 'skill',
+          last_modified_at: 0,
+          last_synced_at: '2026-05-31T00:00:00.000Z',
+          stubs: [
+            { tool: 'claude', path: '/claude/reviewer', written_at: '', hash: '' },
+            { tool: 'openclaw', path: '/openclaw/reviewer', written_at: '', hash: '' },
+          ],
+        },
+      ],
+      false,
+      ['claude']
+    );
+
+    expect(consoleLogSpy).toHaveBeenCalledWith('\u001b[36m\u001b[1m  SKILLS (1)\u001b[0m');
+    expect(consoleLogSpy).toHaveBeenCalledWith('    \u001b[34mMirrors:\u001b[0m claude');
+    expect(consoleLogSpy).not.toHaveBeenCalledWith(expect.stringContaining('openclaw'));
+  });
+
+  it('assetList prints timestamps and none when no active mirror remains', () => {
+    assetList(
+      [
+        {
+          id: 'mcp-1',
+          name: 'workspace-files',
+          type: 'mcp',
+          last_modified_at: 0,
+          last_synced_at: '2026-05-31T00:00:00.000Z',
+          stubs: [{ tool: 'openclaw', path: '/openclaw/mcp.json', written_at: '', hash: '' }],
+        },
+      ],
+      true,
+      ['claude']
+    );
+
+    expect(consoleLogSpy).toHaveBeenCalledWith('\u001b[36m\u001b[1m  MCP SERVERS (1)\u001b[0m');
+    expect(consoleLogSpy).toHaveBeenCalledWith('    \u001b[34mMirrors:\u001b[0m none');
+    expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Updated:'));
   });
 
   it('step prints with newline', () => {
