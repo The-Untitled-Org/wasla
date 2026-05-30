@@ -5,9 +5,10 @@ import { describe, expect, it } from 'vitest';
 function fakePkgUrl(suffix: string): string {
   // Build a platform-safe file URL for a fake global install location.
   // pathToFileURL handles the Windows drive-letter requirement.
-  const base = process.platform === 'win32'
-    ? 'C:/npm/lib/node_modules/wasla-genie'
-    : '/usr/lib/node_modules/wasla-genie';
+  const base =
+    process.platform === 'win32'
+      ? 'C:/npm/lib/node_modules/wasla-genie'
+      : '/usr/lib/node_modules/wasla-genie';
   return pathToFileURL(`${base}/${suffix}`).href;
 }
 
