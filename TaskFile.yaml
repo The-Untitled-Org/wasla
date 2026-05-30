@@ -5,3 +5,7 @@ tasks:
     desc: "Runs the SandCastle No sandbox environment on the currently ready-for-agent tasks found in .scratch/**/issues"
     cmds:
       - npx tsx .sandcastle/run.ts
+  build:
+    desc: "Builds the project using npm build"
+    cmds:
+      - npm run build
