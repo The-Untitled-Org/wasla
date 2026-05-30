@@ -139,7 +139,9 @@ describe('getToolMarkers — platform specific adjustments', () => {
     vi.stubEnv('APPDATA', 'C:\\Users\\Test\\AppData\\Roaming');
 
     const markers = getToolMarkers('user');
-    expect(markers['github-copilot']).toBe(resolve('C:\\Users\\Test\\AppData\\Roaming\\Code\\User'));
+    expect(markers['github-copilot']).toBe(
+      resolve('C:\\Users\\Test\\AppData\\Roaming\\Code\\User')
+    );
     expect(markers['opencode']).toBe(resolve('C:\\Users\\Test\\AppData\\Roaming\\opencode'));
   });
 

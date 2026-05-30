@@ -210,7 +210,9 @@ describe.each([
 
 describe('Copilot host MCP locations', () => {
   it('uses VS Code MCP config for GitHub Copilot and .mcp.json for Copilot CLI', () => {
-    expect(new GithubCopilotAdapter('workspace').paths.mcp).toMatch(/[\/\\]\.vscode[\/\\]mcp\.json$/);
+    expect(new GithubCopilotAdapter('workspace').paths.mcp).toMatch(
+      /[\/\\]\.vscode[\/\\]mcp\.json$/
+    );
     expect(new GithubCopilotCliAdapter('workspace').paths.mcp).toMatch(/[\/\\]\.mcp\.json$/);
   });
 });
