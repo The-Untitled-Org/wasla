@@ -13,6 +13,8 @@ tasks:
     desc: "Run all checks before submitting a PR"
     cmds:
       - npm run format
+      - npm run visualizer:install
+      - npm run docs:install
       - npm run build
       - npm run docs:build
       - npm test
