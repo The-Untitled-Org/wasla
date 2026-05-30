@@ -489,7 +489,7 @@ export class Syncer {
     if (format === 'agent.md') return join(typeDir, `${name}.agent.md`);
     if (format === 'mdc') return join(typeDir, `${name}.mdc`);
     if (format === 'instructions.md') return join(typeDir, `${name}.instructions.md`);
-    if (type === 'skill' && relativePath.includes('/')) return join(typeDir, relativePath);
+    if (type === 'skill' && dirname(relativePath) !== '.') return join(typeDir, relativePath);
     return join(typeDir, `${name}.${format}`);
   }
 

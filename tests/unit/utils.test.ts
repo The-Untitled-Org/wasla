@@ -128,6 +128,41 @@ describe('getToolMarkers', () => {
   });
 });
 
+describe('getToolMarkers — platform specific adjustments', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.unstubAllEnvs();
+  });
+
+  it('adjusts github-copilot and opencode paths on win32 when APPDATA is present', () => {
+    vi.stubGlobal('process', { ...process, platform: 'win32' });
+    vi.stubEnv('APPDATA', 'C:\\Users\\Test\\AppData\\Roaming');
+
+    const markers = getToolMarkers('user');
+    expect(markers['github-copilot']).toBe(resolve('C:\\Users\\Test\\AppData\\Roaming\\Code\\User'));
+    expect(markers['opencode']).toBe(resolve('C:\\Users\\Test\\AppData\\Roaming\\opencode'));
+  });
+
+  it('does NOT adjust paths on win32 when APPDATA is missing', () => {
+    vi.stubGlobal('process', { ...process, platform: 'win32' });
+    vi.stubEnv('APPDATA', ''); // Empty string counts as falsy in paths.ts
+
+    const markers = getToolMarkers('user');
+    // Should remain as default paths (expanded tilde)
+    expect(markers['github-copilot']).toBe(expandTilde('~/.config/Code/User'));
+    expect(markers['opencode']).toBe(expandTilde('~/.config/opencode'));
+  });
+
+  it('does NOT adjust paths on non-win32 platforms (e.g., darwin)', () => {
+    vi.stubGlobal('process', { ...process, platform: 'darwin' });
+    vi.stubEnv('APPDATA', '/should/be/ignored');
+
+    const markers = getToolMarkers('user');
+    expect(markers['github-copilot']).toBe(expandTilde('~/.config/Code/User'));
+    expect(markers['opencode']).toBe(expandTilde('~/.config/opencode'));
+  });
+});
+
 // ─── getToolName ─────────────────────────────────────────────────────────────
 
 describe('getToolName', () => {
