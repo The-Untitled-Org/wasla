@@ -19,15 +19,13 @@ The `.vscode/sessions.json` file defines preset terminal sessions that you can q
 
 ### Available Sessions
 
-1. **dev:build** — Compile TypeScript and show status
-2. **dev:watch** — Watch mode for auto-compilation
-3. **test:watch** — Watch tests and re-run on changes
-4. **test:all** — Run complete test suite
-5. **lint:check** — Check for linting issues
-6. **format:check** — Check code formatting
-7. **format:fix** — Auto-fix formatting
-8. **lint:fix** — Fix linting issues
-9. **docs:dev** — Start Docusaurus dev server
+1. **navigation** — Open a terminal at the repository root
+2. **tasks** — Run the AFK workflow, build the project, or execute the PR checklist
+3. **dev** — Start app or documentation watch mode
+4. **build** — Build the app or documentation site
+5. **type** — Run the TypeScript check
+6. **lint** — Check or fix linting and formatting
+7. **test** — Run test suites, watch mode, coverage, or open the coverage report
 
 ### How to Use
 

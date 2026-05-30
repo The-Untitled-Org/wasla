@@ -10,7 +10,8 @@ dist/
 *.tsbuildinfo
 
 # Editor
-.vscode/
+.vscode/*
+!.vscode/sessions.json
 .idea/
 *.swp
 *.swo

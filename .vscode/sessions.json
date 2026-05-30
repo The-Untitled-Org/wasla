@@ -1,0 +1,209 @@
+{
+  "$schema": "https://cdn.statically.io/gh/nguyenngoclongdev/cdn/main/schema/v11/terminal-keeper.json",
+  "theme": "tribe",
+  "active": "lint",
+  "activateOnStartup": true,
+  "keepExistingTerminals": false,
+  "sessions": {
+    "navigation": [
+      {
+        "name": "root",
+        "autoExecuteCommands": true,
+        "icon": "folder",
+        "color": "terminal.ansiWhite",
+        "commands": [
+          "ls -F"
+        ]
+      }
+    ],
+    "tasks": [
+      {
+        "name": "afk",
+        "autoExecuteCommands": true,
+        "icon": "robot",
+        "color": "terminal.ansiMagenta",
+        "commands": [
+          "npx tsx .sandcastle/run.ts"
+        ]
+      },
+      {
+        "name": "build",
+        "autoExecuteCommands": true,
+        "icon": "tools",
+        "color": "terminal.ansiBlue",
+        "commands": [
+          "npm run build"
+        ]
+      },
+      {
+        "name": "pr-checklist",
+        "autoExecuteCommands": true,
+        "icon": "checklist",
+        "color": "terminal.ansiGreen",
+        "commands": [
+          "npm run format",
+          "npm run visualizer:install",
+          "npm run visualizer:build",
+          "npm run docs:install",
+          "npm run build",
+          "npm run docs:build",
+          "npm run test:run"
+        ]
+      }
+    ],
+    "dev": [
+      {
+        "name": "app:watch",
+        "autoExecuteCommands": true,
+        "icon": "eye",
+        "color": "terminal.ansiCyan",
+        "commands": [
+          "npm run dev"
+        ]
+      },
+      {
+        "name": "docs:watch",
+        "autoExecuteCommands": true,
+        "icon": "book",
+        "color": "terminal.ansiCyan",
+        "commands": [
+          "npm run docs"
+        ]
+      }
+    ],
+    "build": [
+      {
+        "name": "app:build",
+        "autoExecuteCommands": true,
+        "icon": "tools",
+        "color": "terminal.ansiBlue",
+        "commands": [
+          "npm run build"
+        ]
+      },
+      {
+        "name": "docs:build",
+        "autoExecuteCommands": true,
+        "icon": "cloud-upload",
+        "color": "terminal.ansiBlue",
+        "commands": [
+          "npm run docs:build"
+        ]
+      }
+    ],
+    "type": [
+      {
+        "name": "type:check",
+        "autoExecuteCommands": true,
+        "icon": "checklist",
+        "color": "terminal.ansiYellow",
+        "commands": [
+          "npm run type:check"
+        ]
+      }
+    ],
+    "lint": [
+      {
+        "name": "lint:check",
+        "autoExecuteCommands": true,
+        "icon": "error",
+        "color": "terminal.ansiRed",
+        "commands": [
+          "npm run lint:check"
+        ]
+      },
+      {
+        "name": "lint:fix",
+        "autoExecuteCommands": true,
+        "icon": "wrench",
+        "color": "terminal.ansiBlue",
+        "commands": [
+          "npm run lint:fix"
+        ]
+      },
+      {
+        "name": "format:check",
+        "autoExecuteCommands": true,
+        "icon": "layout",
+        "color": "terminal.ansiGreen",
+        "commands": [
+          "npm run format:check"
+        ]
+      },
+      {
+        "name": "format:fix",
+        "autoExecuteCommands": true,
+        "icon": "zap",
+        "color": "terminal.ansiGreen",
+        "commands": [
+          "npm run format"
+        ]
+      }
+    ],
+    "test": [
+      {
+        "name": "test:watch",
+        "autoExecuteCommands": true,
+        "icon": "test-view-icon",
+        "color": "terminal.ansiMagenta",
+        "commands": [
+          "npm run test:watch"
+        ]
+      },
+      {
+        "name": "test:all",
+        "autoExecuteCommands": true,
+        "icon": "beaker",
+        "color": "terminal.ansiYellow",
+        "commands": [
+          "npm test"
+        ]
+      },
+      {
+        "name": "test:unit",
+        "autoExecuteCommands": true,
+        "icon": "pulse",
+        "color": "terminal.ansiCyan",
+        "commands": [
+          "npm run test:unit"
+        ]
+      },
+      {
+        "name": "test:integration",
+        "autoExecuteCommands": true,
+        "icon": "git-compare",
+        "color": "terminal.ansiBlue",
+        "commands": [
+          "npm run test:integration"
+        ]
+      },
+      {
+        "name": "test:validation",
+        "autoExecuteCommands": true,
+        "icon": "pass",
+        "color": "terminal.ansiGreen",
+        "commands": [
+          "npm run test:validation"
+        ]
+      },
+      {
+        "name": "test:coverage",
+        "autoExecuteCommands": true,
+        "icon": "shield",
+        "color": "terminal.ansiMagenta",
+        "commands": [
+          "npm run test:coverage"
+        ]
+      },
+      {
+        "name": "coverage:open",
+        "autoExecuteCommands": true,
+        "icon": "browser",
+        "color": "terminal.ansiCyan",
+        "commands": [
+          "npm run coverage:open"
+        ]
+      }
+    ]
+  }
+}
