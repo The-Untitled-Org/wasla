@@ -5,12 +5,14 @@ import {
   info,
   warning,
   highlight,
+  metric,
   step,
   section,
   table,
   spacer,
   bulletPoint,
   code,
+  banner,
 } from '@utils/cli-output';
 
 describe('cli-output utilities', () => {
@@ -28,27 +30,39 @@ describe('cli-output utilities', () => {
 
   it('success prints with ✔ marker', () => {
     success('Done');
-    expect(consoleLogSpy).toHaveBeenCalledWith('✔  Done');
+    expect(consoleLogSpy).toHaveBeenCalledWith('\u001b[32m✔  Done\u001b[0m');
+  });
+
+  it('banner prints the WaslaGenie wordmark', () => {
+    banner();
+    expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('____'));
   });
 
   it('error prints with ✗ marker to console.error', () => {
     error('Failed');
-    expect(consoleErrorSpy).toHaveBeenCalledWith('✗  Failed');
+    expect(consoleErrorSpy).toHaveBeenCalledWith('\u001b[31m✗  Failed\u001b[0m');
   });
 
   it('info prints with ℹ marker', () => {
     info('Info');
-    expect(consoleLogSpy).toHaveBeenCalledWith('ℹ  Info');
+    expect(consoleLogSpy).toHaveBeenCalledWith('\u001b[34mℹ  Info\u001b[0m');
   });
 
   it('warning prints with ⚠ marker', () => {
     warning('Warning');
-    expect(consoleLogSpy).toHaveBeenCalledWith('⚠  Warning');
+    expect(consoleLogSpy).toHaveBeenCalledWith('\u001b[33m⚠  Warning\u001b[0m');
   });
 
   it('highlight prints with ✨ marker', () => {
     highlight('Shiny');
-    expect(consoleLogSpy).toHaveBeenCalledWith('✨ Shiny');
+    expect(consoleLogSpy).toHaveBeenCalledWith('\u001b[35m\u001b[1m✨ Shiny\u001b[0m');
+  });
+
+  it('metric prints a padded colored label and bold value', () => {
+    metric('Assets', 3);
+    expect(consoleLogSpy).toHaveBeenCalledWith(
+      '  \u001b[34mAssets              \u001b[0m \u001b[1m3\u001b[0m'
+    );
   });
 
   it('step prints with newline', () => {
@@ -58,7 +72,7 @@ describe('cli-output utilities', () => {
 
   it('section prints with newline and 🔍 marker', () => {
     section('Scan');
-    expect(consoleLogSpy).toHaveBeenCalledWith('\n🔍 Scan');
+    expect(consoleLogSpy).toHaveBeenCalledWith('\u001b[34m\u001b[1m\n🔍 Scan\u001b[0m');
   });
 
   it('spacer prints an empty line', () => {

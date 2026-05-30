@@ -27,10 +27,10 @@ WaslaGenie scans each tool, discovers what you've built, and mirrors the content
 ## Quick Start
 
 ```bash
-npx wasla-genie sync         # Run directly without global install
-npm install -g wasla-genie   # Optional: install the CLI executable
-waslagenie sync              # Scan, discover, and mirror assets
-waslagenie register          # Optional: add helper skills to AI tools
+npm install -g -devs/wasla       # Install the CLI executable
+waslagenie config --scope workspace        # Required once: choose workspace or user
+waslagenie sync                            # Scan, discover, and mirror assets
+waslagenie register                        # Optional: add helper skills to AI tools
 ```
 
 ## Key Features
