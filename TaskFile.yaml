@@ -9,3 +9,9 @@ tasks:
     desc: "Builds the project using npm build"
     cmds:
       - npm run build
+  pr-checklist:
+    desc: "Run all checks before submitting a PR"
+    cmds:
+      - npm run format
+      - npm run build
+      - npm test
