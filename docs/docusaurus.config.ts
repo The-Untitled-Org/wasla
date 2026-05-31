@@ -64,8 +64,6 @@ const config: Config = {
       logo: {
         alt: 'Wasla Logo',
         src: 'img/logo.png',
-        width: 40,
-        height: 40,
       },
       items: [
         {
