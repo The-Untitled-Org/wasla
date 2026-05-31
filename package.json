@@ -87,6 +87,8 @@
     "type:fix": "tsc --noEmit && prettier --write \"src/**/*.ts\" \"tests/**/*.ts\"",
     "check": "npm run type:check && npm run format:check",
     "fix": "npm run format && npm run lint:fix",
+    "changelog": "node scripts/release.mjs changelog",
+    "release": "node scripts/release.mjs release",
     "clean": "node -e \"['dist', '.nyc_output', 'output', 'coverage'].forEach(p => require('fs').rmSync(p, { recursive: true, force: true }))\"",
     "all": "npm run clean && npm run build && npm run check && npm test"
   },

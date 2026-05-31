@@ -9,18 +9,45 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      
+      - uses: actions/checkout@v6
+
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: '20'
+          node-version: '24'
           registry-url: 'https://registry.npmjs.org'
+
+      - name: Validate release metadata
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+
+          const tag = process.env.RELEASE_TAG;
+          const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+          const lock = JSON.parse(fs.readFileSync('package-lock.json', 'utf8'));
+          const changelog = fs.readFileSync('CHANGELOG.md', 'utf8');
+          const expectedTag = `v${pkg.version}`;
+          const expectedHeading = `## [${pkg.version}]`;
+
+          if (tag !== expectedTag) {
+            throw new Error(`Release tag ${tag} does not match package.json version ${pkg.version}. Expected ${expectedTag}.`);
+          }
+
+          if (lock.version !== pkg.version || lock.packages?.['']?.version !== pkg.version) {
+            throw new Error(`package-lock.json version does not match package.json version ${pkg.version}. Run npm version <patch|minor|major> --no-git-tag-version.`);
+          }
+
+          if (!changelog.includes(expectedHeading)) {
+            throw new Error(`CHANGELOG.md is missing a ${expectedHeading} release heading.`);
+          }
+          NODE
 
       - name: Install dependencies
         run: |
-          npm install
-          npm run visualizer:install
+          npm ci
+          npm --prefix src/visualizer ci
 
       - name: Publish to NPM
         run: npm publish --access public

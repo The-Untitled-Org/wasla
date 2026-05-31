@@ -423,6 +423,7 @@ npm run dev
 
 - [Contributing Guide](CONTRIBUTING.md)
 - [Architecture Docs](docs/docs/architecture/index.md)
+- [Release Guide](RELEASING.md)
 
 ---
 
