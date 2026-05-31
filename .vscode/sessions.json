@@ -1,7 +1,7 @@
 {
   "$schema": "https://cdn.statically.io/gh/nguyenngoclongdev/cdn/main/schema/v11/terminal-keeper.json",
   "theme": "tribe",
-  "active": "lint",
+  "active": "navigation",
   "activateOnStartup": true,
   "keepExistingTerminals": false,
   "sessions": {
@@ -13,7 +13,8 @@
         "color": "terminal.ansiWhite",
         "commands": [
           "ls -F"
-        ]
+        ],
+        "joinOperator": ";"
       }
     ],
     "tasks": [
@@ -26,7 +27,8 @@
           "npm ci",
           "npm --prefix apps/visualizer ci",
           "npm --prefix docs ci"
-        ]
+        ],
+        "joinOperator": ";"
       },
       {
         "name": "build",
@@ -35,7 +37,8 @@
         "color": "terminal.ansiBlue",
         "commands": [
           "npm run build"
-        ]
+        ],
+        "joinOperator": ";"
       },
       {
         "name": "pr-checklist",
@@ -49,7 +52,8 @@
           "npm run build",
           "npm run docs:build",
           "npm run test:run"
-        ]
+        ],
+        "joinOperator": ";"
       }
     ],
     "dev": [
@@ -60,7 +64,8 @@
         "color": "terminal.ansiCyan",
         "commands": [
           "npm run dev"
-        ]
+        ],
+        "joinOperator": ";"
       },
       {
         "name": "docs:watch",
@@ -69,7 +74,8 @@
         "color": "terminal.ansiCyan",
         "commands": [
           "npm run docs"
-        ]
+        ],
+        "joinOperator": ";"
       },
       {
         "name": "visualizer:watch",
@@ -78,7 +84,8 @@
         "color": "terminal.ansiCyan",
         "commands": [
           "npm run visualizer:dev"
-        ]
+        ],
+        "joinOperator": ";"
       }
     ],
     "build": [
@@ -89,7 +96,8 @@
         "color": "terminal.ansiBlue",
         "commands": [
           "npm run build"
-        ]
+        ],
+        "joinOperator": ";"
       },
       {
         "name": "docs:build",
@@ -98,7 +106,8 @@
         "color": "terminal.ansiBlue",
         "commands": [
           "npm run docs:build"
-        ]
+        ],
+        "joinOperator": ";"
       },
       {
         "name": "visualizer:build",
@@ -107,7 +116,8 @@
         "color": "terminal.ansiBlue",
         "commands": [
           "npm run visualizer:build"
-        ]
+        ],
+        "joinOperator": ";"
       }
     ],
     "type": [
@@ -118,7 +128,8 @@
         "color": "terminal.ansiYellow",
         "commands": [
           "npm run type:check"
-        ]
+        ],
+        "joinOperator": ";"
       }
     ],
     "lint": [
@@ -129,7 +140,8 @@
         "color": "terminal.ansiRed",
         "commands": [
           "npm run lint:check"
-        ]
+        ],
+        "joinOperator": ";"
       },
       {
         "name": "lint:fix",
@@ -138,7 +150,8 @@
         "color": "terminal.ansiBlue",
         "commands": [
           "npm run lint:fix"
-        ]
+        ],
+        "joinOperator": ";"
       },
       {
         "name": "format:check",
@@ -147,7 +160,8 @@
         "color": "terminal.ansiGreen",
         "commands": [
           "npm run format:check"
-        ]
+        ],
+        "joinOperator": ";"
       },
       {
         "name": "format:fix",
@@ -156,7 +170,8 @@
         "color": "terminal.ansiGreen",
         "commands": [
           "npm run format"
-        ]
+        ],
+        "joinOperator": ";"
       }
     ],
     "test": [
@@ -167,7 +182,8 @@
         "color": "terminal.ansiMagenta",
         "commands": [
           "npm run test:watch"
-        ]
+        ],
+        "joinOperator": ";"
       },
       {
         "name": "test:all",
@@ -176,7 +192,8 @@
         "color": "terminal.ansiYellow",
         "commands": [
           "npm test"
-        ]
+        ],
+        "joinOperator": ";"
       },
       {
         "name": "test:unit",
@@ -185,7 +202,8 @@
         "color": "terminal.ansiCyan",
         "commands": [
           "npm run test:unit"
-        ]
+        ],
+        "joinOperator": ";"
       },
       {
         "name": "test:integration",
@@ -194,7 +212,8 @@
         "color": "terminal.ansiBlue",
         "commands": [
           "npm run test:integration"
-        ]
+        ],
+        "joinOperator": ";"
       },
       {
         "name": "test:validation",
@@ -203,7 +222,8 @@
         "color": "terminal.ansiGreen",
         "commands": [
           "npm run test:validation"
-        ]
+        ],
+        "joinOperator": ";"
       },
       {
         "name": "test:coverage",
@@ -212,7 +232,8 @@
         "color": "terminal.ansiMagenta",
         "commands": [
           "npm run test:coverage"
-        ]
+        ],
+        "joinOperator": ";"
       },
       {
         "name": "coverage:open",
@@ -221,7 +242,8 @@
         "color": "terminal.ansiCyan",
         "commands": [
           "npm run coverage:open"
-        ]
+        ],
+        "joinOperator": ";"
       }
     ],
     "release": [
@@ -232,7 +254,8 @@
         "color": "terminal.ansiCyan",
         "commands": [
           "npm run changelog"
-        ]
+        ],
+        "joinOperator": ";"
       },
       {
         "name": "release:notes:latest",
@@ -241,7 +264,8 @@
         "color": "terminal.ansiCyan",
         "commands": [
           "node scripts/release.mjs release-notes \"$(git tag --sort=version:refname | tail -n 1)\""
-        ]
+        ],
+        "joinOperator": ";"
       },
       {
         "name": "release:list",
@@ -250,7 +274,8 @@
         "color": "terminal.ansiCyan",
         "commands": [
           "gh release list"
-        ]
+        ],
+        "joinOperator": ";"
       },
       {
         "name": "release:patch",
@@ -259,7 +284,8 @@
         "color": "terminal.ansiGreen",
         "commands": [
           "npm run release -- patch"
-        ]
+        ],
+        "joinOperator": ";"
       },
       {
         "name": "release:minor",
@@ -268,7 +294,8 @@
         "color": "terminal.ansiYellow",
         "commands": [
           "npm run release -- minor"
-        ]
+        ],
+        "joinOperator": ";"
       },
       {
         "name": "release:major",
@@ -277,7 +304,8 @@
         "color": "terminal.ansiRed",
         "commands": [
           "npm run release -- major"
-        ]
+        ],
+        "joinOperator": ";"
       },
       {
         "name": "release:push",
@@ -286,7 +314,8 @@
         "color": "terminal.ansiRed",
         "commands": [
           "git push origin main --follow-tags"
-        ]
+        ],
+        "joinOperator": ";"
       }
     ]
   }
