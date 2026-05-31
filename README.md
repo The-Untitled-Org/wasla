@@ -3,7 +3,7 @@
 
 <img src="docs/static/img/logo-wordmark.png" alt="Wasla" width="640" />
 
-**وصل جيني** — *One skill layer. Every AI orchestrator. Zero duplication.*
+**وصلة** — *One skill layer. Every AI orchestrator. Zero duplication.*
 
 [![MIT License](https://img.shields.io/badge/license-MIT-00C896?style=flat-square)](LICENSE)
 [![GitHub](https://img.shields.io/badge/github-The--Untitled--Org-00C896?style=flat-square&logo=github)](https://github.com/The-Untitled-Org/wasla)
