@@ -1,0 +1,47 @@
+{
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit"
+    }
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "prettier.semi": true,
+  "prettier.trailingComma": "es5",
+  "prettier.singleQuote": true,
+  "prettier.printWidth": 100,
+  "prettier.tabWidth": 2,
+  "prettier.useTabs": false,
+  "prettier.bracketSpacing": true,
+  "prettier.arrowParens": "always",
+  "files.exclude": {
+    "node_modules": true,
+    "dist": false
+  },
+  "search.exclude": {
+    "node_modules": true,
+    "dist": false,
+    ".waslgenie": true
+  },
+
+  // ── Vitest Test Explorer ───────────────────────────────────────────────────
+  "vitest.enable": true,
+  "vitest.configSearchPatternExclude": "**/node_modules/**,**/dist/**",
+  "vitest.rootConfig": "./vitest.config.ts",
+  "vitest.packagePath": "./package.json",
+  "vitest.coverageProvider": "v8",
+  "testing.coverageBarThresholds": {
+    "red": 50,
+    "yellow": 75
+  }
+}

@@ -11,7 +11,9 @@ dist/
 
 # Editor
 .vscode/*
+!.vscode/extensions.json
 !.vscode/sessions.json
+!.vscode/settings.json
 .idea/
 *.swp
 *.swo
