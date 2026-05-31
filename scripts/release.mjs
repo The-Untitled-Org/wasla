@@ -142,6 +142,20 @@ function generateChangelog(pendingVersion) {
   writeFileSync(CHANGELOG_PATH, content);
 }
 
+function getReleaseNotes(versionOrTag) {
+  const version = versionOrTag.replace(/^v/, '');
+  const changelog = readFileSync(CHANGELOG_PATH, 'utf8');
+  const heading = `## [${version}]`;
+  const start = changelog.indexOf(heading);
+
+  if (start === -1) {
+    throw new Error(`${CHANGELOG_PATH} is missing a ${heading} release heading.`);
+  }
+
+  const nextHeading = changelog.indexOf('\n## [', start + heading.length);
+  return changelog.slice(start, nextHeading === -1 ? undefined : nextHeading).trim();
+}
+
 function ensureReleaseReady() {
   const branch = capture('git', ['branch', '--show-current']);
   const status = capture('git', ['status', '--porcelain']);
@@ -199,11 +213,19 @@ const [command = 'changelog', ...args] = process.argv.slice(2);
 if (command === 'changelog') {
   generateChangelog();
   console.log(`Regenerated ${CHANGELOG_PATH}.`);
+} else if (command === 'release-notes') {
+  const [versionOrTag] = args;
+
+  if (!versionOrTag) {
+    throw new Error('Usage: node scripts/release.mjs release-notes <version|tag>');
+  }
+
+  console.log(getReleaseNotes(versionOrTag));
 } else if (command === 'release') {
   release(
     args.find((arg) => !arg.startsWith('--')),
     args.includes('--push'),
   );
 } else {
-  throw new Error('Usage: node scripts/release.mjs <changelog|release> [patch|minor|major] [--push]');
+  throw new Error('Usage: node scripts/release.mjs <changelog|release|release-notes> [arguments]');
 }

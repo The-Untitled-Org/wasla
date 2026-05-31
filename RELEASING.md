@@ -1,6 +1,7 @@
 # Releasing
 
-Publishing is triggered when a `v*` Git tag is pushed. The publish workflow rejects a release unless:
+Publishing is triggered when a `v*` Git tag is pushed. The publish workflow publishes to npm and creates
+a GitHub Release containing that version's `CHANGELOG.md` section. It rejects a release unless:
 
 - The Git tag matches the version in `package.json`.
 - `package.json` and `package-lock.json` contain the same version.
@@ -45,7 +46,8 @@ To push immediately after the release is prepared, use:
 npm run release -- patch --push
 ```
 
-Confirm that the `Publish to NPM` GitHub Actions workflow succeeds before creating the GitHub release.
+Confirm that the `Publish to NPM` GitHub Actions workflow succeeds. The workflow is retriable: it skips
+the npm publish or GitHub Release creation step if that part already completed during an earlier run.
 
 ## Regenerating The Changelog
 
@@ -53,6 +55,20 @@ To rebuild `CHANGELOG.md` from the current tags and commits without creating a r
 
 ```bash
 npm run changelog
+```
+
+To preview the GitHub Release notes for an existing version:
+
+```bash
+node scripts/release.mjs release-notes v0.1.3
+```
+
+To create a missing GitHub Release for an existing tag:
+
+```bash
+node scripts/release.mjs release-notes v0.1.3 > release-notes.md
+gh release create v0.1.3 --verify-tag --title v0.1.3 --notes-file release-notes.md
+rm release-notes.md
 ```
 
 ## Fixing A Tag Created Too Early
