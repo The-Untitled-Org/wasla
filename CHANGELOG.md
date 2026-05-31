@@ -9,6 +9,24 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 
 
+## [1.0.1] - 2026-05-31
+
+### Added
+
+- `4fb8b70` feat(vscode): add recommended extensions and settings for improved development experience
+- `5d87a50` feat: add Terminal Keeper session configuration for project tasks and workflows
+- `95607e6` feat: replace 'open' with 'open-cli' for opening coverage report
+- `e14f068` feat(sync): implement handling for missing files and add tests for GitHub Copilot MCP configuration
+- `0c11574` feat(sync): update context file references and enhance sync logic for Claude and Gemini providers
+
+### Documentation
+
+- `285189d` docs: update README documentation and add comprehensive project specifications and launch details
+
+### Chores
+
+- `99eca62` chore: add homepage URL to package.json
+
 ## [1.0.0] - 2026-05-31
 
 ### Added
@@ -18,6 +36,10 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - `9eca871` feat: add Code of Conduct and Security Policy documents
 - `3383355` feat: update terminal sessions for tasks and add release workflows in sessions.json
 - `415292e` feat(scanner): implement a new Scanner class for detecting installed tools and scanning assets
+
+### Chores
+
+- `0af305e` chore(release): v1.0.0
 
 ## [0.1.3] - 2026-05-31
 
