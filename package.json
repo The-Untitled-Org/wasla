@@ -79,7 +79,7 @@
     "test:integration": "vitest run tests/integration",
     "test:validation": "vitest run tests/validation",
     "test:coverage": "vitest run --coverage",
-    "coverage:open": "open output/index.html",
+    "coverage:open": "open-cli output/index.html",
     "docs": "cd docs && npm run start",
     "docs:install": "npm --prefix docs install",
     "docs:build": "cd docs && npm run build",
@@ -127,6 +127,7 @@
     "@types/ws": "^8.18.1",
     "@vitest/coverage-v8": "^1.6.1",
     "@vitest/ui": "^1.0.0",
+    "open-cli": "^9.0.0",
     "prettier": "^3.1.0",
     "typescript": "^5.3.3",
     "vitest": "^1.6.1"
