@@ -127,22 +127,21 @@ The same pattern applies across every asset type:
 
 ## 🚀 Installation
 
-WaslaGenie is cross-platform via `npx` — no global install required:
+**Install globally:**
+
+```bash
+npm i -g @untitled-devs/wasla
+waslagenie config --scope workspace
+waslagenie sync
+```
+
+Choose `workspace` or `user` once before running operational commands.
+
+**Or run via `npx` (no global installation required):**
 
 ```bash
 npx @untitled-devs/wasla config --scope workspace
 npx @untitled-devs/wasla sync
-```
-
-Choose `workspace` or `user` once before running operational commands. This runs the CLI directly.
-It does not register helper skills inside Claude, Gemini, or other tools.
-
-**Or install globally:**
-
-```bash
-npm install -g @untitled-devs/wasla
-waslagenie config --scope workspace
-waslagenie sync
 ```
 
 Optional helper registration:

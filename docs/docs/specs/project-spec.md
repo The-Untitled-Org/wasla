@@ -60,8 +60,8 @@ The original file never moves. The tool that created it owns it forever.
 ### 2.3 MVP Commands
 
 ```bash
-npx wasla-genie sync        # run without global install
-npm install -g wasla-genie  # optional: install the CLI executable
+npx @untitled-devs/wasla sync        # run without global install
+npm i -g @untitled-devs/wasla        # optional: install the CLI executable
 waslagenie register         # optional: register WaslaGenie helper skill in each tool
 waslagenie sync             # manual: scan, discover, write stubs (also called automatically on tool open)
 waslagenie status           # show all discovered assets and stub state
