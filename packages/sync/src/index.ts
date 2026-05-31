@@ -149,19 +149,7 @@ export class Syncer {
         }
 
         // Update stub info in registry
-        const existingStub = asset.stubs.find((s) => s.tool === tool);
-        if (existingStub) {
-          existingStub.path = primaryTargetPath;
-          existingStub.written_at = new Date().toISOString();
-          existingStub.hash = contentHash;
-        } else {
-          asset.stubs.push({
-            tool,
-            path: primaryTargetPath,
-            written_at: new Date().toISOString(),
-            hash: contentHash,
-          });
-        }
+        await this.upsertStub(asset, tool, primaryTargetPath, contentHash);
       }
 
       // Also save to canonical registry location
@@ -284,7 +272,7 @@ export class Syncer {
           last_synced_at: new Date().toISOString(),
         });
       }
-      this.upsertStub(asset, sourceTool, source.path, contentHash);
+      await this.upsertStub(asset, sourceTool, source.path, contentHash);
 
       // Write only to target tools
       for (const tool of targetTools) {
@@ -324,19 +312,7 @@ export class Syncer {
         }
 
         // Update stub info in registry
-        const existingStub = asset.stubs.find((s) => s.tool === tool);
-        if (existingStub) {
-          existingStub.path = primaryTargetPath;
-          existingStub.written_at = new Date().toISOString();
-          existingStub.hash = contentHash;
-        } else {
-          asset.stubs.push({
-            tool,
-            path: primaryTargetPath,
-            written_at: new Date().toISOString(),
-            hash: contentHash,
-          });
-        }
+        await this.upsertStub(asset, tool, primaryTargetPath, contentHash);
       }
 
       // Also save to canonical registry location
@@ -411,7 +387,7 @@ export class Syncer {
       };
       this.registry.addAsset(asset);
     }
-    this.upsertStub(asset, source.tool, source.path, contentHash);
+    await this.upsertStub(asset, source.tool, source.path, contentHash);
 
     const adapter = getAdapter(targetTool, this.scope);
     const formatsRecord = adapter.formats as Record<AssetType, string | undefined>;
@@ -600,9 +576,17 @@ export class Syncer {
     return true;
   }
 
-  private upsertStub(asset: Asset, tool: string, path: string, hash: string): void {
+  private async upsertStub(asset: Asset, tool: string, path: string, hash: string): Promise<void> {
     const existingStub = asset.stubs.find((stub) => stub.tool === tool);
     if (existingStub) {
+      if (
+        asset.type === 'context' &&
+        existingStub.path !== path &&
+        (await fileExists(existingStub.path)) &&
+        this.calculateHash(await readText(existingStub.path)) === existingStub.hash
+      ) {
+        await removePath(existingStub.path);
+      }
       existingStub.path = path;
       existingStub.written_at = new Date().toISOString();
       existingStub.hash = hash;
