@@ -20,7 +20,7 @@ sidebar_label: GitHub Copilot
 
 ## MCP Translation
 
-VS Code uses `servers` and represents the transport explicitly. WaslaGenie converts a portable stdio server into this native form:
+VS Code uses `servers` and represents the transport explicitly. Wasla converts a portable stdio server into this native form:
 
 ```json
 {
@@ -45,7 +45,7 @@ Remote portable MCP entries with a `url` are written using `type: "http"`.
 GEMINI.md                         -> .github/copilot-instructions.md
 ```
 
-Custom-agent files and instruction files remain distinct assets. WaslaGenie does not create `.github/instructions` when synchronizing an agent.
+Custom-agent files and instruction files remain distinct assets. Wasla does not create `.github/instructions` when synchronizing an agent.
 
 ## Official References
 

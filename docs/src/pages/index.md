@@ -16,13 +16,13 @@
 
 **وصل جيني** — *One skill layer. Every AI orchestrator. Zero duplication.*
 
-[![MIT License](https://img.shields.io/badge/license-MIT-00C896?style=flat-square)](https://github.com/The-Untitled-Org/wasla-genie/blob/main/LICENSE)
-[![GitHub](https://img.shields.io/badge/github-The--Untitled--Org-00C896?style=flat-square&logo=github)](https://github.com/The-Untitled-Org/wasla-genie)
+[![MIT License](https://img.shields.io/badge/license-MIT-00C896?style=flat-square)](https://github.com/The-Untitled-Org/wasla/blob/main/LICENSE)
+[![GitHub](https://img.shields.io/badge/github-The--Untitled--Org-00C896?style=flat-square&logo=github)](https://github.com/The-Untitled-Org/wasla)
 [![npm version](https://img.shields.io/npm/v/@untitled-devs/wasla?style=flat-square&logo=npm)](https://www.npmjs.com/package/@untitled-devs/wasla)
 [![npm downloads](https://img.shields.io/npm/dm/@untitled-devs/wasla?style=flat-square&logo=npm)](https://www.npmjs.com/package/@untitled-devs/wasla)
-[![GitHub Release](https://img.shields.io/github/v/release/The-Untitled-Org/wasla-genie?style=flat-square)](https://github.com/The-Untitled-Org/wasla-genie/releases)
-[![Status](https://img.shields.io/badge/status-alpha-orange?style=flat-square)](https://github.com/The-Untitled-Org/wasla-genie)
-[![Contributors](https://img.shields.io/github/contributors/The-Untitled-Org/wasla-genie?style=flat-square&color=00C896)](https://github.com/The-Untitled-Org/wasla-genie/graphs/contributors)
+[![GitHub Release](https://img.shields.io/github/v/release/The-Untitled-Org/wasla?style=flat-square)](https://github.com/The-Untitled-Org/wasla/releases)
+[![Status](https://img.shields.io/badge/status-alpha-orange?style=flat-square)](https://github.com/The-Untitled-Org/wasla)
+[![Contributors](https://img.shields.io/github/contributors/The-Untitled-Org/wasla?style=flat-square&color=00C896)](https://github.com/The-Untitled-Org/wasla/graphs/contributors)
 
 </div>
 
@@ -52,11 +52,11 @@ You end up **copy-pasting configs, duplicating agent definitions, and maintainin
 
 ---
 
-## ✨ What WaslaGenie Does
+## ✨ What Wasla Does
 
-WaslaGenie syncs assets across orchestrators from the CLI. Helper skill registration is optional.
+Wasla syncs assets across orchestrators from the CLI. Helper skill registration is optional.
 
-When sync is triggered — manually (`sync`) or continuously (`watch`) — WaslaGenie:
+When sync is triggered — manually (`sync`) or continuously (`watch`) — Wasla:
 
 1. **Scans** the known config directories of every supported orchestrator on your machine  
    (`~/.claude/`, `~/.gemini/`, `~/.codex/`, `~/.openclaw/`, `~/.hermes/`)
@@ -77,12 +77,12 @@ Say you create an agent inside Gemini CLI:
 ~/.gemini/agents/researcher.md   ← original, owned by Gemini
 ```
 
-After `waslagenie sync`, WaslaGenie writes a minimal stub into every other tool:
+After `wasla sync`, Wasla writes a minimal stub into every other tool:
 
 ```
-~/.claude/agents/researcher.md   ← stub, written by WaslaGenie
-~/.codex/agents/researcher.md    ← stub, written by WaslaGenie
-~/.openclaw/agents/researcher.md ← stub, written by WaslaGenie
+~/.claude/agents/researcher.md   ← stub, written by Wasla
+~/.codex/agents/researcher.md    ← stub, written by Wasla
+~/.openclaw/agents/researcher.md ← stub, written by Wasla
 ```
 
 Each stub contains only the minimum that native tool needs to load the original:
@@ -90,7 +90,7 @@ Each stub contains only the minimum that native tool needs to load the original:
 ```markdown
 ---
 # researcher
-waslagenie_ref: ~/.gemini/agents/researcher.md
+wasla_ref: ~/.gemini/agents/researcher.md
 origin: gemini
 ---
 Refer to source definition at ~/.gemini/agents/researcher.md
@@ -131,8 +131,8 @@ The same pattern applies across every asset type:
 
 ```bash
 npm i -g @untitled-devs/wasla
-waslagenie config --scope workspace
-waslagenie sync
+wasla config --scope workspace
+wasla sync
 ```
 
 Choose `workspace` or `user` once before running operational commands.
@@ -147,7 +147,7 @@ npx @untitled-devs/wasla sync
 Optional helper registration:
 
 ```bash
-waslagenie register
+wasla register
 ```
 
 ---
@@ -157,7 +157,7 @@ waslagenie register
 ### One-time sync
 
 ```bash
-waslagenie sync
+wasla sync
 ```
 
 ```
@@ -181,11 +181,11 @@ waslagenie sync
 ### Daemon mode — continuous background sync
 
 ```bash
-waslagenie watch
+wasla watch
 ```
 
 ```
-👁  WaslaGenie watching for changes...
+👁  Wasla watching for changes...
     Monitoring: ~/.claude  ~/.gemini  ~/.codex  ~/.openclaw  ~/.hermes
 
 [14:32:01]  New agent detected → ~/.gemini/agents/planner.md
@@ -205,10 +205,10 @@ Choose the active scope before running sync, watch, status, or the visualizer:
 
 ```bash
 # Use the current project workspace registry
-waslagenie config --scope workspace
+wasla config --scope workspace
 
 # Use the user-level registry across projects
-waslagenie config --scope user
+wasla config --scope user
 ```
 
 All other commands use the saved scope automatically. They do not accept `--scope`.
@@ -218,7 +218,7 @@ All other commands use the saved scope automatically. They do not accept `--scop
 ### Status — see everything and where it lives
 
 ```bash
-waslagenie status
+wasla status
 ```
 
 ```
@@ -250,25 +250,25 @@ review-pr          command    openclaw    claude ✔  gemini ✔  codex ✔  her
 
 ## 🗃️ Registry Storage
 
-WaslaGenie keeps its own state separately from all orchestrators. You choose the active scope explicitly before the first sync:
+Wasla keeps its own state separately from all orchestrators. You choose the active scope explicitly before the first sync:
 
 **User-level** (available across all your projects):
 ```
-~/.waslagenie/
+~/.wasla/
 ├── registry.json     ← user-scope assets and stub locations
 └── config.json       ← active scope preference
 ```
 
 **Workspace-level** (scoped to current project only):
 ```
-.waslagenie/
+.wasla/
 └── registry.json     ← workspace-scope assets and stub locations
 ```
 
 Switch anytime:
 ```bash
-waslagenie config --scope workspace
-waslagenie config --scope user
+wasla config --scope workspace
+wasla config --scope user
 ```
 
 ---
@@ -276,7 +276,7 @@ waslagenie config --scope user
 ## 🏗️ Project Structure
 
 ```
-wasla-genie/
+wasla/
 ├── src/
 │   ├── cli/              # CLI entry point and commands
 │   ├── scanner/          # Scans known tool config directories
@@ -299,11 +299,9 @@ wasla-genie/
 
 ---
 
-## 🌍 Why "WaslaGenie"?
+## 🌍 Why "Wasla"?
 
 **Wasla (وصلة)** is Arabic for *connection* — the act of joining what was always separate.
-
-**Genie** — it appears when summoned, connects what you need, and watches quietly in the background until called again.
 
 Your agents live where they were born.  
 Your tools see everything.  
@@ -314,8 +312,8 @@ Nothing is ever duplicated.
 ## 🤝 Contributing
 
 ```bash
-git clone https://github.com/The-Untitled-Org/wasla-genie
-cd wasla-genie
+git clone https://github.com/The-Untitled-Org/wasla
+cd wasla
 npm install
 npm run dev
 ```
@@ -336,7 +334,7 @@ MIT © [Mosaeed Hammad](https://github.com/mosaeedhammad)
 <div align="center">
 
 **Your agents live where they were born.**  
-**WaslaGenie makes sure every tool can find them.**
+**Wasla makes sure every tool can find them.**
 
 ⭐ Star this repo if you are tired of copy-pasting the same config into five different tools.
 

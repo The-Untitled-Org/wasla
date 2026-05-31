@@ -156,9 +156,9 @@ export class Scanner {
           );
         }
 
-        if (name.toLowerCase() === 'waslagenie') {
+        if (name.toLowerCase() === 'wasla') {
           if (process.env.DEBUG_SCANNER) {
-            console.log(`[Scanner] Skipping waslagenie asset`);
+            console.log(`[Scanner] Skipping wasla asset`);
           }
           continue;
         }
@@ -264,7 +264,7 @@ export class Scanner {
   }
 
   private extractAssetName(relativePathOrFileName: string): string {
-    // For nested paths: waslagenie/SKILL.md -> waslagenie
+    // For nested paths: wasla/SKILL.md -> wasla
     // For flat files: researcher.md -> researcher
     const parts = relativePathOrFileName.split(/[/\\]/);
     if (parts.length > 1) {

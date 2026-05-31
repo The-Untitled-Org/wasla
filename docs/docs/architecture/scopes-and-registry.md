@@ -4,7 +4,7 @@ sidebar_position: 3
 
 # Scopes and Registry
 
-WaslaGenie supports two independent scopes. The selected scope controls both provider discovery and registry storage.
+Wasla supports two independent scopes. The selected scope controls both provider discovery and registry storage.
 
 ## Scope Layout
 
@@ -13,9 +13,9 @@ flowchart LR
     Scope["Scope selection"]
     Workspace["Workspace scope"]
     User["User scope"]
-    WorkspaceRegistry["project/.waslagenie/<br/>registry.json<br/>agents/<br/>skills/<br/>mcp/<br/>context/"]
+    WorkspaceRegistry["project/.wasla/<br/>registry.json<br/>agents/<br/>skills/<br/>mcp/<br/>context/"]
     WorkspaceProviders["Project provider markers<br/>.claude | .gemini | .github | .vscode"]
-    UserRegistry["~/.waslagenie/<br/>config.json<br/>registry.json<br/>agents/<br/>skills/<br/>mcp/<br/>context/"]
+    UserRegistry["~/.wasla/<br/>config.json<br/>registry.json<br/>agents/<br/>skills/<br/>mcp/<br/>context/"]
     UserProviders["Home provider markers<br/>~/.claude | ~/.gemini | ~/.cursor"]
 
     Scope --> Workspace
@@ -26,7 +26,7 @@ flowchart LR
     User --> UserProviders
 ```
 
-The global preference is stored in `~/.waslagenie/config.json`. Commands resolve the selected registry from that preference. Interactive `waslagenie sync` asks for the scope before scanning.
+The global preference is stored in `~/.wasla/config.json`. Commands resolve the selected registry from that preference. Interactive `wasla sync` asks for the scope before scanning.
 
 ## Registry Responsibilities
 
@@ -52,8 +52,8 @@ flowchart LR
     User["user"]
     ProjectMarkers["Project provider markers"]
     HomeMarkers["Home provider markers"]
-    ProjectRegistry[".waslagenie/registry.json"]
-    UserRegistry["~/.waslagenie/registry.json"]
+    ProjectRegistry[".wasla/registry.json"]
+    UserRegistry["~/.wasla/registry.json"]
 
     Scope --> Workspace --> ProjectMarkers --> ProjectRegistry
     Scope --> User --> HomeMarkers --> UserRegistry

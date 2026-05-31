@@ -6,7 +6,7 @@ sidebar_label: Cursor
 
 # Cursor Provider Contract
 
-WaslaGenie writes portable assets to Cursor's native customization surfaces. Rules are not used as substitutes for agents or skills.
+Wasla writes portable assets to Cursor's native customization surfaces. Rules are not used as substitutes for agents or skills.
 
 ## Native Paths
 
@@ -18,7 +18,7 @@ WaslaGenie writes portable assets to Cursor's native customization surfaces. Rul
 | MCP servers | `.cursor/mcp.json` (`mcpServers`) | Merge servers by name |
 | Rules | `.cursor/rules/*.mdc` | Separate Cursor instruction feature; not treated as a skill or agent |
 
-`.cursorrules` is a legacy instruction surface and is not WaslaGenie's generated context target.
+`.cursorrules` is a legacy instruction surface and is not Wasla's generated context target.
 
 ## Sync Mapping
 

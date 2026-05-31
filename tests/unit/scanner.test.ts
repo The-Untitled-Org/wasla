@@ -5,7 +5,7 @@
  *  - Tool detection via TOOL_MARKERS (claude, gemini, openclaw)
  *  - Scan logic: classify originals vs stubs
  *  - Conflict detection (Latest-is-Greatest ordering)
- *  - Stub file identification via waslagenie header markers
+ *  - Stub file identification via wasla header markers
  *  - Asset name extraction from filenames
  *  - groupByNameAndType internal grouping
  */
@@ -236,8 +236,8 @@ describe('Scanner.extractAssetName (via type logic)', () => {
     const scanner = new Scanner('workspace');
     const extract = (scanner as any).extractAssetName.bind(scanner);
 
-    expect(extract('waslagenie/SKILL.md')).toBe('waslagenie');
-    expect(extract('waslagenie\\SKILL.md')).toBe('waslagenie');
+    expect(extract('wasla/SKILL.md')).toBe('wasla');
+    expect(extract('wasla\\SKILL.md')).toBe('wasla');
     expect(extract('researcher.md')).toBe('researcher');
     expect(extract('my.cool.researcher.md')).toBe('my.cool.researcher');
     expect(extract('no-extension')).toBe('no-extension');

@@ -3,7 +3,7 @@ import { readConfiguredScope } from '#shared/config.js';
 
 export async function installCommand(): Promise<void> {
   try {
-    section('Preparing WaslaGenie CLI...');
+    section('Preparing Wasla CLI...');
     spacer();
 
     const scope = await readConfiguredScope();
@@ -11,8 +11,8 @@ export async function installCommand(): Promise<void> {
       success(`Scope configured: ${scope}`);
     } else {
       console.log('Choose a scope before running sync:');
-      console.log('  waslagenie config --scope user');
-      console.log('  waslagenie config --scope workspace');
+      console.log('  wasla config --scope user');
+      console.log('  wasla config --scope workspace');
     }
 
     spacer();
@@ -21,9 +21,9 @@ export async function installCommand(): Promise<void> {
     console.log('This command does not write skills into Claude, Gemini, or other tools.');
     console.log('');
     console.log('Common commands:');
-    console.log('  waslagenie sync');
-    console.log('  waslagenie sync-to --from gemini --to claude');
-    console.log('  waslagenie register  # optional: add WaslaGenie helper skills to tools');
+    console.log('  wasla sync');
+    console.log('  wasla sync-to --from gemini --to claude');
+    console.log('  wasla register  # optional: add Wasla helper skills to tools');
     console.log('');
   } catch (err) {
     error(`CLI setup failed: ${err}`);

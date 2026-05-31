@@ -17,8 +17,8 @@ export async function syncToCommand(options: SyncToOptions): Promise<void> {
 
     if (!from || !to) {
       error('Error: --from and --to are required');
-      console.log('Usage: waslagenie sync-to --from <source> --to <target>');
-      console.log('Example: waslagenie sync-to --from gemini --to claude');
+      console.log('Usage: wasla sync-to --from <source> --to <target>');
+      console.log('Example: wasla sync-to --from gemini --to claude');
       process.exit(1);
     }
 

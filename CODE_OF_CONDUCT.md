@@ -2,7 +2,7 @@
 
 ## Our Pledge
 
-We pledge to make participation in the WaslaGenie community a harassment-free experience for everyone,
+We pledge to make participation in the Wasla community a harassment-free experience for everyone,
 regardless of age, body size, disability, ethnicity, sex characteristics, gender identity and expression,
 level of experience, education, socioeconomic status, nationality, personal appearance, race, caste, color,
 religion, or sexual identity and orientation.
@@ -43,7 +43,7 @@ project in public spaces.
 ## Reporting
 
 Report unacceptable behavior privately to the maintainers through the repository's
-[Security Advisories](https://github.com/The-Untitled-Org/wasla-genie/security/advisories/new) page.
+[Security Advisories](https://github.com/The-Untitled-Org/wasla/security/advisories/new) page.
 
 All reports will be reviewed promptly and handled with respect for the privacy and safety of the reporter.
 

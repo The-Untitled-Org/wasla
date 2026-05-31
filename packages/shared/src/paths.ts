@@ -13,9 +13,9 @@ export function getRegistryPath(scope: 'user' | 'workspace'): string {
     return resolve(`output/tests/${scope}-registry.json`);
   }
   if (scope === 'user') {
-    return expandTilde('~/.waslagenie/registry.json');
+    return expandTilde('~/.wasla/registry.json');
   }
-  return resolve('.waslagenie/registry.json');
+  return resolve('.wasla/registry.json');
 }
 
 export function getRegistryDir(scope: 'user' | 'workspace'): string {
@@ -23,9 +23,9 @@ export function getRegistryDir(scope: 'user' | 'workspace'): string {
     return resolve('output/tests');
   }
   if (scope === 'user') {
-    return expandTilde('~/.waslagenie');
+    return expandTilde('~/.wasla');
   }
-  return resolve('.waslagenie');
+  return resolve('.wasla');
 }
 
 export function getToolMarkers(scope: 'user' | 'workspace' = 'user'): Record<string, string> {

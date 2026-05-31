@@ -78,9 +78,9 @@ export class GeminiAdapter extends BaseAdapter {
 
   async installSkill(): Promise<void> {
     // Create the skills/ directory (Gemini CLI's native skill location) and
-    // write a WaslaGenie skill file so Gemini knows how to run sync commands.
+    // write a Wasla skill file so Gemini knows how to run sync commands.
     // We do NOT touch GEMINI.md — that file belongs to the user.
-    const skillDir = join(this.paths.skill!!, 'waslagenie');
+    const skillDir = join(this.paths.skill!!, 'wasla');
     await ensureDir(skillDir);
 
     const skillPath = join(skillDir, 'SKILL.md');
@@ -89,21 +89,21 @@ export class GeminiAdapter extends BaseAdapter {
     }
 
     const skillContent = `---
-name: waslagenie
+name: wasla
 description: >
-  Runs WaslaGenie CLI commands to sync, inspect, or manage agents and MCPs
+  Runs Wasla CLI commands to sync, inspect, or manage agents and MCPs
   across AI orchestrators. Use when asked to sync tools, check sync status,
-  install WaslaGenie, or troubleshoot why an agent isn't appearing in a tool.
+  install Wasla, or troubleshoot why an agent isn't appearing in a tool.
 ---
 
-# WaslaGenie Operator
+# Wasla Operator
 
-Use the \`waslagenie\` CLI to sync agents and MCPs across all installed AI tools.
+Use the \`wasla\` CLI to sync agents and MCPs across all installed AI tools.
 
 \`\`\`bash
-waslagenie sync     # Mirror agents across all tools
-waslagenie status   # Show registry state
-waslagenie watch    # Auto-sync on file changes
+wasla sync     # Mirror agents across all tools
+wasla status   # Show registry state
+wasla watch    # Auto-sync on file changes
 \`\`\`
 `;
 

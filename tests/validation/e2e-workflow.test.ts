@@ -5,13 +5,13 @@
  *
  *  ✅ Agent created in Tool A is visible after sync (stub written to Tool B, C)
  *  ✅ Latest-is-Greatest: most-recently-edited version is used as source
- *  ✅ Stub files contain waslagenie marker (agent + MCP)
+ *  ✅ Stub files contain wasla marker (agent + MCP)
  *  ✅ Stubs are NOT treated as originals (no false conflicts)
  *  ✅ Registry accurately tracks hashes/mtimes
  *  ✅ Registry scope: workspace vs user are independent
  *  ✅ Manual sync works and detects changes correctly
- *  ✅ waslagenie:start / waslagenie:end markers in skill installation
- *  ✅ File Modification Rules: WaslaGenie appends only inside its markers
+ *  ✅ wasla:start / wasla:end markers in skill installation
+ *  ✅ File Modification Rules: Wasla appends only inside its markers
  *  ✅ Non-goals: no origin_tool in registry
  */
 
@@ -37,7 +37,7 @@ import { mkdtemp, rm } from 'fs/promises';
 let isolatedWorkspace: string;
 
 beforeEach(async () => {
-  isolatedWorkspace = await mkdtemp(join(tmpdir(), 'waslagenie-e2e-'));
+  isolatedWorkspace = await mkdtemp(join(tmpdir(), 'wasla-e2e-'));
   vi.spyOn(pathUtils, 'getToolMarkers').mockImplementation((scope) =>
     scope === 'user'
       ? {
@@ -60,10 +60,10 @@ beforeEach(async () => {
         }
   );
   vi.spyOn(pathUtils, 'getRegistryPath').mockImplementation((scope) =>
-    join(isolatedWorkspace, '.waslagenie', `${scope}-registry.json`)
+    join(isolatedWorkspace, '.wasla', `${scope}-registry.json`)
   );
   vi.spyOn(pathUtils, 'getRegistryDir').mockImplementation((scope) =>
-    join(isolatedWorkspace, '.waslagenie', scope)
+    join(isolatedWorkspace, '.wasla', scope)
   );
 });
 
@@ -164,9 +164,9 @@ describe('MVP Non-goal — no origin_tool in registry schema', () => {
   });
 });
 
-// ─── File Modification Rules: waslagenie markers ───────────────────────────
+// ─── File Modification Rules: wasla markers ───────────────────────────
 
-describe('File Modification Rules — waslagenie:start / waslagenie:end markers', () => {
+describe('File Modification Rules — wasla:start / wasla:end markers', () => {
   it('ClaudeAdapter getRootConfigAppend returns null \u2014 CLAUDE.md is not modified', () => {
     const adapter = new ClaudeAdapter('workspace');
     expect(adapter.getRootConfigAppend()).toBeNull();
@@ -186,7 +186,7 @@ describe('File Modification Rules — waslagenie:start / waslagenie:end markers'
 // ─── Stubs not counted as originals ───────────────────────────────────────
 
 describe('Stub detection — stubs are not originals', () => {
-  it('file with waslagenie-stub comment is detected as stub', async () => {
+  it('file with wasla-stub comment is detected as stub', async () => {
     const scanner = new Scanner('workspace');
 
     const stubFile: DiscoveredFile = {

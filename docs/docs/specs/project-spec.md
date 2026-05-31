@@ -1,4 +1,4 @@
-# WaslaGenie — Product Specification
+# Wasla — Product Specification
 > Version: 0.1 — MVP Spec  
 > Author: Mosaeed Hammad  
 > Status: Draft  
@@ -8,9 +8,9 @@
 
 ## 1. Product Summary
 
-WaslaGenie is a universal skill layer that installs itself natively into AI agent orchestrators and synchronizes agents, MCPs, skills, commands, and cron jobs across all of them — without duplicating files.
+Wasla is a universal skill layer that installs itself natively into AI agent orchestrators and synchronizes agents, MCPs, skills, commands, and cron jobs across all of them — without duplicating files.
 
-It works by scanning each tool's known config directories, discovering assets, and writing minimal stub files into every other tool's equivalent directory. Each stub is written in the native format of the target tool so the tool loads it naturally — with no awareness of WaslaGenie.
+It works by scanning each tool's known config directories, discovering assets, and writing minimal stub files into every other tool's equivalent directory. Each stub is written in the native format of the target tool so the tool loads it naturally — with no awareness of Wasla.
 
 The original file never moves. The tool that created it owns it forever.
 
@@ -62,15 +62,15 @@ The original file never moves. The tool that created it owns it forever.
 ```bash
 npx @untitled-devs/wasla sync        # run without global install
 npm i -g @untitled-devs/wasla        # optional: install the CLI executable
-waslagenie register         # optional: register WaslaGenie helper skill in each tool
-waslagenie sync             # manual: scan, discover, write stubs (also called automatically on tool open)
-waslagenie status           # show all discovered assets and stub state
-waslagenie config           # set scope (user vs workspace)
+wasla register         # optional: register Wasla helper skill in each tool
+wasla sync             # manual: scan, discover, write stubs (also called automatically on tool open)
+wasla status           # show all discovered assets and stub state
+wasla config           # set scope (user vs workspace)
 ```
 
-**Sync trigger:** Session-scoped background sync. When a tool starts, the WaslaGenie skill installed in that tool **launches WaslaGenie as a background co-process**. WaslaGenie watches for file changes across all tool directories and syncs in real time. It exits cleanly when the tool closes. This is not a persistent system daemon — it only runs while a supported tool is active.
+**Sync trigger:** Session-scoped background sync. When a tool starts, the Wasla skill installed in that tool **launches Wasla as a background co-process**. Wasla watches for file changes across all tool directories and syncs in real time. It exits cleanly when the tool closes. This is not a persistent system daemon — it only runs while a supported tool is active.
 
-Manual `waslagenie sync` is also available anytime for a one-shot full scan.
+Manual `wasla sync` is also available anytime for a one-shot full scan.
 
 ---
 
@@ -78,12 +78,12 @@ Manual `waslagenie sync` is also available anytime for a one-shot full scan.
 
 ### 3.1 The Stub Mechanism
 
-WaslaGenie writes **stubs** — valid files in the native format of the target tool — that contain the **full mirrored content** from the original asset file, plus WaslaGenie metadata.
+Wasla writes **stubs** — valid files in the native format of the target tool — that contain the **full mirrored content** from the original asset file, plus Wasla metadata.
 
 **Note on native references:** Research revealed that none of the three MVP tools (Claude Code, Gemini CLI, OpenClaw) support native path references (`@import`, etc.) in agent/MCP definition files. Therefore, **MVP uses Option B (content mirror) exclusively**. Future versions may explore Option A or Option C (instruction-based delegation) if tool support evolves.
 
 ```
-ORIGINAL                          STUB (written by WaslaGenie)
+ORIGINAL                          STUB (written by Wasla)
 ────────────────────────────────────────────────────────────
 ~/.gemini/agents/researcher.md  → ~/.claude/agents/researcher.md   (Option A or B)
 ~/.gemini/agents/researcher.md  → ~/.openclaw/agents/researcher.md (Option A or B)
@@ -95,7 +95,7 @@ ORIGINAL                          STUB (written by WaslaGenie)
 ### 3.2 Stub File Rules
 
 1. **Always written in target tool's native format** — Claude gets a Claude-valid file, OpenClaw gets an OpenClaw-valid file
-2. **Always contains a WaslaGenie metadata header** — so WaslaGenie can identify and manage stubs it owns
+2. **Always contains a Wasla metadata header** — so Wasla can identify and manage stubs it owns
 3. **Never confused with originals** — registry tracks which files are originals and which are stubs
 4. **Never written over an existing non-stub file** — conflict resolution required first
 
@@ -103,7 +103,7 @@ ORIGINAL                          STUB (written by WaslaGenie)
 ```markdown
 ---
 # researcher
-waslagenie: true
+wasla: true
 origin_tool: gemini
 origin_path: ~/.gemini/agents/researcher.md
 synced_at: 2026-01-15T14:32:01Z
@@ -111,11 +111,11 @@ content_hash: "abc123def456"
 ---
 
 You are a researcher agent. Your job is to...
-[full content mirrored from origin and kept in sync by WaslaGenie]
+[full content mirrored from origin and kept in sync by Wasla]
 ```
 
 **Key fields:**
-- `waslagenie: true` — identifies this as a WaslaGenie-managed stub
+- `wasla: true` — identifies this as a Wasla-managed stub
 - `origin_tool` — which tool owns the original
 - `origin_path` — absolute path to the original file
 - `synced_at` — timestamp of last sync (used to detect stale stubs)
@@ -135,34 +135,34 @@ You are a researcher agent. Your job is to...
 
 ### 3.4 Gradual Centralization
 
-WaslaGenie respects the zero-friction principle: assets live where the user created them. No migration is required on day one.
+Wasla respects the zero-friction principle: assets live where the user created them. No migration is required on day one.
 
-However, WaslaGenie provides an **optional path toward centralization** over time:
+However, Wasla provides an **optional path toward centralization** over time:
 
-1. **Day 0 (MVP):** Assets live in native tool directories (`~/.claude/agents/`, `~/.gemini/agents/`, etc.). WaslaGenie syncs via stubs. `~/.waslagenie/` is used for registry and config only.
+1. **Day 0 (MVP):** Assets live in native tool directories (`~/.claude/agents/`, `~/.gemini/agents/`, etc.). Wasla syncs via stubs. `~/.wasla/` is used for registry and config only.
 
-2. **Gradual migration (optional):** Users can migrate individual assets to `~/.waslagenie/assets/` using `waslagenie migrate`. Stubs in tool directories then point to `~/.waslagenie/` as the source. No disruption to daily workflow.
+2. **Gradual migration (optional):** Users can migrate individual assets to `~/.wasla/assets/` using `wasla migrate`. Stubs in tool directories then point to `~/.wasla/` as the source. No disruption to daily workflow.
 
-3. **Full centralization (optional end state):** All assets in `~/.waslagenie/`. Backup is a single `waslagenie export`. New machine setup is `waslagenie import`. Team sharing (v1.2) becomes practical.
+3. **Full centralization (optional end state):** All assets in `~/.wasla/`. Backup is a single `wasla export`. New machine setup is `wasla import`. Team sharing (v1.2) becomes practical.
 
-**Key principle:** Centralization is never forced. Users who never run `waslagenie migrate` experience no difference. Users who do migrate gain portability without losing any tool-native workflow.
+**Key principle:** Centralization is never forced. Users who never run `wasla migrate` experience no difference. Users who do migrate gain portability without losing any tool-native workflow.
 
 **Commands (MVP + post-MVP):**
 
 ```bash
-waslagenie status                              # see where every asset currently lives
-waslagenie migrate <name> --to ~/.waslagenie/  # (post-MVP) move asset to central location
-waslagenie export                              # bundle all assets for backup/portability
-waslagenie import backup.tar                  # restore on a new machine
+wasla status                              # see where every asset currently lives
+wasla migrate <name> --to ~/.wasla/  # (post-MVP) move asset to central location
+wasla export                              # bundle all assets for backup/portability
+wasla import backup.tar                  # restore on a new machine
 ```
 
 ---
 
 ### 3.5 "Latest is Greatest" Sync Strategy
 
-No explicit conflict resolution needed. Instead, WaslaGenie uses **modification time (mtime)** to determine source of truth:
+No explicit conflict resolution needed. Instead, Wasla uses **modification time (mtime)** to determine source of truth:
 
-1. Scanner finds agent "researcher" in multiple locations (e.g., Claude, Gemini, WaslaGenie)
+1. Scanner finds agent "researcher" in multiple locations (e.g., Claude, Gemini, Wasla)
 2. Compare modification times of all versions
 3. **Whichever was edited most recently is the source**
 4. Prompt user: "Agent 'researcher' was last edited in Gemini CLI (May 15, 2:30 PM). Use as source across all tools? (Y/n)"
@@ -182,7 +182,7 @@ No explicit conflict resolution needed. Instead, WaslaGenie uses **modification 
 Agent "researcher" found in 3 locations:
   ~/.claude/agents/researcher.md        (edited May 15, 10:00 AM)
   ~/.gemini/agents/researcher.md        (edited May 15, 2:30 PM) ← Latest
-  ~/.waslagenie/agents/researcher.md     (edited May 15, 12:00 PM)
+  ~/.wasla/agents/researcher.md     (edited May 15, 12:00 PM)
 
 📋  Latest version detected in Gemini CLI (2:30 PM today)
     Sync this version across all tools?
@@ -197,7 +197,7 @@ Agent "researcher" found in 3 locations:
 
 ### 4.1 What It Scans
 
-WaslaGenie scans known config directories for each installed tool:
+Wasla scans known config directories for each installed tool:
 
 #### CLI / Terminal Agents
 
@@ -229,15 +229,15 @@ for each installed tool:
   for each asset type in scope:
     read all files in tool's asset directory
     for each file:
-      if file has waslagenie metadata header → it is a stub, skip
-      if file has no waslagenie header → it is an original, register it
+      if file has wasla metadata header → it is a stub, skip
+      if file has no wasla header → it is an original, register it
 ```
 
 ---
 
 ### 4.3 Tool Detection
 
-WaslaGenie detects installed tools by checking if their config directory exists:
+Wasla detects installed tools by checking if their config directory exists:
 
 ```typescript
 const TOOL_MARKERS = {
@@ -257,7 +257,7 @@ If the directory exists → tool is installed → include in scan and sync.
 
 ### 5.1 Purpose
 
-The registry is WaslaGenie's single source of truth about everything it has discovered and managed. It is never used by the orchestrators — it is internal to WaslaGenie only.
+The registry is Wasla's single source of truth about everything it has discovered and managed. It is never used by the orchestrators — it is internal to Wasla only.
 
 ---
 
@@ -265,8 +265,8 @@ The registry is WaslaGenie's single source of truth about everything it has disc
 
 | Scope | Path |
 |---|---|
-| User (default) | `~/.waslagenie/registry.json` |
-| Workspace | `.waslagenie/registry.json` |
+| User (default) | `~/.wasla/registry.json` |
+| Workspace | `.wasla/registry.json` |
 
 ---
 
@@ -290,7 +290,7 @@ The registry is WaslaGenie's single source of truth about everything it has disc
           "content_hash": "xyz789def456",
           "mtime": 1631245678
         },
-        "~/.waslagenie/agents/researcher.md": {
+        "~/.wasla/agents/researcher.md": {
           "content_hash": "abc123def456",
           "mtime": 1631234567
         }
@@ -319,7 +319,7 @@ The registry is WaslaGenie's single source of truth about everything it has disc
 Each tool has one adapter. The adapter is the only place that contains tool-specific knowledge.
 
 ```typescript
-interface WaslaGenieAdapter {
+interface WaslaAdapter {
   // Tool identity
   name: string                          // e.g. "claude"
   displayName: string                   // e.g. "Claude Code"
@@ -342,7 +342,7 @@ interface WaslaGenieAdapter {
   // How to write a content-mirror stub for this tool
   writeStub(asset: Asset, targetPath: string, content: string): Promise<void>
 
-  // How to register WaslaGenie as a native skill in this tool
+  // How to register Wasla as a native skill in this tool
   installSkill(): Promise<void>
 
   // What to append to the tool's root config file (e.g. CLAUDE.md)
@@ -357,9 +357,9 @@ interface WaslaGenieAdapter {
 
 ## 7. CLI Specification
 
-### `waslagenie register`
+### `wasla register`
 
-Runs only when the user explicitly wants WaslaGenie helper skills inside installed tools.
+Runs only when the user explicitly wants Wasla helper skills inside installed tools.
 
 ```
 🔍  Detecting installed orchestrators...
@@ -370,26 +370,26 @@ Runs only when the user explicitly wants WaslaGenie helper skills inside install
   ✗  Codex           not found
   ✗  Hermes          not found
 
-📦  Registering WaslaGenie helper skills...
+📦  Registering Wasla helper skills...
 
   ✔  Registered in Claude Code
   ✔  Registered in OpenClaw
   ✔  Registered in Gemini CLI
 
-⚙️  Scope: user (~/.waslagenie/)
-    Change anytime with: waslagenie config --scope workspace
+⚙️  Scope: user (~/.wasla/)
+    Change anytime with: wasla config --scope workspace
 
-✨  Registration complete. Run waslagenie sync to start.
+✨  Registration complete. Run wasla sync to start.
 ```
 
 ---
 
-### `waslagenie sync` (manual or auto-triggered)
+### `wasla sync` (manual or auto-triggered)
 
 Manual invocation:
 ```bash
-waslagenie sync              # Full scan and sync
-waslagenie sync --quick      # Fast check (hash/mtime-based, called by tool-open trigger)
+wasla sync              # Full scan and sync
+wasla sync --quick      # Fast check (hash/mtime-based, called by tool-open trigger)
 ```
 
 Example output:
@@ -414,27 +414,27 @@ Example output:
   researcher (source: ~/.gemini/agents/researcher.md)
     Sync to ~/.claude/agents/researcher.md        ✔
     Sync to ~/.openclaw/agents/researcher.md      ✔
-    Sync to ~/.waslagenie/agents/researcher.md     ✔
+    Sync to ~/.wasla/agents/researcher.md     ✔
 
   planner (source: ~/.claude/agents/planner.md)
     Sync to ~/.gemini/agents/planner.md           ✔
     Sync to ~/.openclaw/agents/planner.md         ✔
-    Sync to ~/.waslagenie/agents/planner.md        ✔
+    Sync to ~/.wasla/agents/planner.md        ✔
 
   notion-mcp (source: ~/.claude/mcp/)
     Sync to ~/.gemini/settings.json               ✔
     Sync to ~/.openclaw/mcp/                      ✔
-    Sync to ~/.waslagenie/mcp/                     ✔
+    Sync to ~/.wasla/mcp/                     ✔
 
 ✨  Sync complete
     3 assets synced · 1 unchanged · 0 errors
 ```
 
-**Note:** This command is called automatically whenever a tool launches (via WaslaGenie skill), and can also be called manually anytime. No explicit conflict resolution needed — latest edits are automatically detected and synced with user confirmation.
+**Note:** This command is called automatically whenever a tool launches (via Wasla skill), and can also be called manually anytime. No explicit conflict resolution needed — latest edits are automatically detected and synced with user confirmation.
 
 ---
 
-### `waslagenie status`
+### `wasla status`
 
 ```
 ASSET            TYPE    ORIGIN     STUBS                    STATUS
@@ -447,19 +447,19 @@ old-helper       agent   claude     openclaw ✘               orphaned (.bak)
 
 ---
 
-### `waslagenie config`
+### `wasla config`
 
 ```bash
-waslagenie config --scope user        # store registry in ~/.waslagenie/
-waslagenie config --scope workspace   # store registry in .waslagenie/
-waslagenie config --show              # print current config
+wasla config --scope user        # store registry in ~/.wasla/
+wasla config --scope workspace   # store registry in .wasla/
+wasla config --show              # print current config
 ```
 
 ---
 
 ## 8. File Modification Rules
 
-WaslaGenie mirrors synchronized assets into each provider's native file location:
+Wasla mirrors synchronized assets into each provider's native file location:
 
 | Asset | Behavior |
 |---|---|
@@ -541,7 +541,7 @@ In MVP, transformers are **basic pass-through** — content is mirrored without 
 ## 11. Project Structure
 
 ```
-wasla-genie/
+wasla/
 ├── src/
 │   ├── cli/
 │   │   ├── index.ts          # CLI entry, command registration
@@ -558,7 +558,7 @@ wasla-genie/
 │   ├── conflict/
 │   │   └── index.ts          # conflict detection and interactive resolution
 │   ├── adapters/
-│   │   ├── interface.ts      # WaslaGenieAdapter interface
+│   │   ├── interface.ts      # WaslaAdapter interface
 │   │   ├── claude.ts         # Claude Code adapter
 │   │   ├── openclaw.ts       # OpenClaw adapter
 │   │   └── gemini.ts         # Gemini CLI adapter
@@ -582,19 +582,19 @@ wasla-genie/
 - ✅ Claude Code + Gemini CLI + OpenAI Codex CLI + OpenClaw support
 - ✅ Agents + MCPs sync (content mirror strategy)
 - ✅ Session-scoped background sync (co-process launched by tool skill, exits with tool)
-- ✅ Manual sync (`waslagenie sync`) also available
+- ✅ Manual sync (`wasla sync`) also available
 - ✅ Conflict resolution (interactive, Latest-is-Greatest)
 - ✅ Orphan handling (.bak)
 - ✅ User + workspace scope
-- ✅ `npx wasla-genie sync` + optional `waslagenie register`
-- ✅ Export/import for backup (`waslagenie export`, `waslagenie import`)
-- ✅ Gradual centralization foundation (`~/.waslagenie/` as optional canonical location)
+- ✅ `npx wasla sync` + optional `wasla register`
+- ✅ Export/import for backup (`wasla export`, `wasla import`)
+- ✅ Gradual centralization foundation (`~/.wasla/` as optional canonical location)
 - 🔄 Transformers concept (format conversion + vendor updates)
 
 ### v1.1
 - Cursor + GitHub Copilot adapters (IDE-based agent support)
 - Hermes adapter
-- `waslagenie migrate` — move assets to `~/.waslagenie/` for centralization
+- `wasla migrate` — move assets to `~/.wasla/` for centralization
 - Skills + Commands + Cron sync
 - Multi-profile support
 - Skill store integration
@@ -609,12 +609,12 @@ wasla-genie/
 
 ## 13. Non-Goals (MVP)
 
-- ❌ Persistent system daemon — WaslaGenie runs as a session-scoped co-process only (launched by tool skill, exits with tool)
+- ❌ Persistent system daemon — Wasla runs as a session-scoped co-process only (launched by tool skill, exits with tool)
 - ❌ Skills, commands, cron sync (agents + MCPs only)
 - ❌ IDE-based agents (Cursor, GitHub Copilot) — different config model, deferred to v1.1
 - ❌ Hermes support — deferred to v1.1
-- ✅ Local visualizer dashboard (`waslagenie visualizer`)
-- ❌ Team collaboration features (leave it to users to manage ~/.waslagenie/ with git)
+- ✅ Local visualizer dashboard (`wasla visualizer`)
+- ❌ Team collaboration features (leave it to users to manage ~/.wasla/ with git)
 - ❌ Multi-profile support (single default profile only)
 - ❌ Remote or cross-machine sync (handled by export/import)
 - ❌ Permanent asset ownership (dynamic "latest is greatest")

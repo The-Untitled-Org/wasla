@@ -11,7 +11,7 @@ Adapters isolate provider-specific paths and formats from the synchronization en
 ```mermaid
 flowchart LR
     Core["Scanner and Syncer"]
-    Adapter["WaslaGenieAdapter"]
+    Adapter["WaslaAdapter"]
     Paths["paths<br/>Native asset locations"]
     Formats["formats<br/>Native file formats"]
     Detect["isInstalled()<br/>Scoped provider detection"]
@@ -33,7 +33,7 @@ flowchart LR
 The current interface lives in `packages/core/src/types.ts`:
 
 ```typescript
-export interface WaslaGenieAdapter {
+export interface WaslaAdapter {
   name: string;
   displayName: string;
   paths: {

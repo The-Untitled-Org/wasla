@@ -2,12 +2,12 @@ import { OpenCodeAdapter } from './opencode.js';
 import { CursorAdapter } from './cursor.js';
 import { GithubCopilotAdapter } from './github-copilot.js';
 import { GithubCopilotCliAdapter } from './github-copilot-cli.js';
-import { WaslaGenieAdapter } from '#core/types.js';
+import { WaslaAdapter } from '#core/types.js';
 import { ClaudeAdapter } from './claude.js';
 import { GeminiAdapter } from './gemini.js';
 import { OpenclawAdapter } from './openclaw.js';
 
-function createAdapters(scope: 'user' | 'workspace' = 'user'): Record<string, WaslaGenieAdapter> {
+function createAdapters(scope: 'user' | 'workspace' = 'user'): Record<string, WaslaAdapter> {
   return {
     claude: new ClaudeAdapter(scope),
     gemini: new GeminiAdapter(scope),
@@ -22,7 +22,7 @@ function createAdapters(scope: 'user' | 'workspace' = 'user'): Record<string, Wa
 export function getAdapter(
   toolName: string,
   scope: 'user' | 'workspace' = 'workspace'
-): WaslaGenieAdapter {
+): WaslaAdapter {
   const adapters = createAdapters(scope);
   const adapter = adapters[toolName.toLowerCase()];
   if (!adapter) {
@@ -33,9 +33,9 @@ export function getAdapter(
 
 export async function getInstalledAdapters(
   scope: 'user' | 'workspace' = 'workspace'
-): Promise<WaslaGenieAdapter[]> {
+): Promise<WaslaAdapter[]> {
   const adapters = Object.values(createAdapters(scope));
-  const installed: WaslaGenieAdapter[] = [];
+  const installed: WaslaAdapter[] = [];
 
   for (const adapter of adapters) {
     if (await adapter.isInstalled()) {
@@ -46,6 +46,6 @@ export async function getInstalledAdapters(
   return installed;
 }
 
-export function getAllAdapters(scope: 'user' | 'workspace' = 'workspace'): WaslaGenieAdapter[] {
+export function getAllAdapters(scope: 'user' | 'workspace' = 'workspace'): WaslaAdapter[] {
   return Object.values(createAdapters(scope));
 }

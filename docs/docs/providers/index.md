@@ -7,8 +7,8 @@ sidebar_position: 1
 
 # Supported Providers
 
-WaslaGenie supports a growing list of AI providers, orchestrators, and coding assistants.
-This section provides detailed configuration guides for integrating WaslaGenie with each supported provider.
+Wasla supports a growing list of AI providers, orchestrators, and coding assistants.
+This section provides detailed configuration guides for integrating Wasla with each supported provider.
 
 ## Available Providers
 
@@ -22,6 +22,6 @@ This section provides detailed configuration guides for integrating WaslaGenie w
 | [GitHub Copilot](./github-copilot.md) | `.github/agents/*.agent.md` | `.vscode/mcp.json` (`servers`) | `.github/skills/*/SKILL.md` | `.github/copilot-instructions.md` |
 | [GitHub Copilot CLI](./github-copilot-cli.md) | `.github/agents/*.agent.md` | `.mcp.json` / `~/.copilot/mcp-config.json` (`mcpServers`) | `.github/skills/*/SKILL.md` | `.github/copilot-instructions.md` |
 
-WaslaGenie models `agent`, `skill`, `mcp`, and project `context` as portable assets, then writes each asset to the destination provider's native location and configuration shape. Rules and scoped instruction files are not aliases for agents or skills.
+Wasla models `agent`, `skill`, `mcp`, and project `context` as portable assets, then writes each asset to the destination provider's native location and configuration shape. Rules and scoped instruction files are not aliases for agents or skills.
 
 Choose a provider from the list above or the sidebar to learn how to configure agents, MCPs, and skills for that specific tool.

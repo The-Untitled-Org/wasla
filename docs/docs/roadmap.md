@@ -4,7 +4,7 @@ sidebar_position: 4
 
 # Roadmap
 
-WaslaGenie is currently in **alpha**. Here's what's planned:
+Wasla is currently in **alpha**. Here's what's planned:
 
 ## MVP (Current)
 
@@ -42,4 +42,4 @@ WaslaGenie is currently in **alpha**. Here's what's planned:
 
 ## Contributing
 
-Want to help move this roadmap forward? Check out [Contributing Guide](/contributing) or open an issue on [GitHub](https://github.com/The-Untitled-Org/wasla-genie).
+Want to help move this roadmap forward? Check out [Contributing Guide](/contributing) or open an issue on [GitHub](https://github.com/The-Untitled-Org/wasla).

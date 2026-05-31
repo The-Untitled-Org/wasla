@@ -1,14 +1,14 @@
 # Implementation Plan
 
-**Version:** 0.1-MVP  
-**Status:** Final (Post Team Review 2026-05-15)  
-**Last Updated:** 2026-05-16  
+**Version:** 0.1-MVP<br />
+**Status:** Final (Post Team Review 2026-05-15)<br />
+**Last Updated:** 2026-05-16
 
 ---
 
 ## Executive Summary
 
-WaslaGenie MVP synchronizes agents and MCPs across four CLI-based AI orchestrators (Claude Code, Gemini CLI, OpenAI Codex CLI, OpenClaw) using a **"Latest is Greatest"** strategy with no permanent asset ownership. IDE-based agents (Cursor, GitHub Copilot) are planned for v1.1. Whichever version is edited most recently becomes the source of truth on sync, determined by file modification time (mtime).
+Wasla MVP synchronizes agents and MCPs across four CLI-based AI orchestrators (Claude Code, Gemini CLI, OpenAI Codex CLI, OpenClaw) using a **"Latest is Greatest"** strategy with no permanent asset ownership. IDE-based agents (Cursor, GitHub Copilot) are planned for v1.1. Whichever version is edited most recently becomes the source of truth on sync, determined by file modification time (mtime).
 
 **Core principle:** Simple, distributed, zero permanent state.
 
@@ -41,7 +41,7 @@ On every sync (triggered by tool-open or manual invocation):
 
 | Decision | Outcome | Why |
 |---|---|---|
-| **Sync trigger** | Session-scoped co-process | Tool skill launches WaslaGenie as a background process on tool start; it watches for changes and exits when the tool closes. Not a persistent system daemon. |
+| **Sync trigger** | Session-scoped co-process | Tool skill launches Wasla as a background process on tool start; it watches for changes and exits when the tool closes. Not a persistent system daemon. |
 | **Conflict model** | Latest-is-Greatest (mtime) | No permanent ownership. Newest version always wins automatically. |
 | **Registry** | Change detection only | Track hashes/mtimes. Source determined dynamically. No origin_tool field. |
 | **Asset authorship** | Any tool | Users create/edit agents in any supported tool. Latest becomes source. |
@@ -49,7 +49,7 @@ On every sync (triggered by tool-open or manual invocation):
 | **IDE tool coverage** | Cursor, GitHub Copilot (v1.1) | IDE tools use different config models; deferred until CLI pattern is stable. |
 | **Asset types** | Agents + MCPs | Highest-pain duplications for developers working across tools. |
 | **Stub strategy** | Content mirror | Only viable strategy. Native refs not supported by any tool. |
-| **Scope handling** | User + workspace | `~/.waslagenie/` (default) or `.waslagenie/` (project-level). |
+| **Scope handling** | User + workspace | `~/.wasla/` (default) or `.wasla/` (project-level). |
 
 ---
 
@@ -63,7 +63,7 @@ On every sync (triggered by tool-open or manual invocation):
 | Gemini CLI | `~/.gemini/agents/` | Markdown + YAML frontmatter |
 | OpenAI Codex CLI | `~/.codex/agents/` | TBD — needs research |
 | OpenClaw | `~/.openclaw/agents/` | Markdown + YAML frontmatter (TBD) |
-| WaslaGenie | `~/.waslagenie/agents/` | Same as source tool |
+| Wasla | `~/.wasla/agents/` | Same as source tool |
 
 ### MCPs
 
@@ -73,7 +73,7 @@ On every sync (triggered by tool-open or manual invocation):
 | Gemini CLI | `~/.gemini/settings.json` (key: `mcpServers`) | JSON |
 | OpenAI Codex CLI | `~/.codex/mcp/` or config TBD | TBD — needs research |
 | OpenClaw | `~/.openclaw/mcp/` or config TBD | TBD — needs research |
-| WaslaGenie | `~/.waslagenie/mcp/` | Same as source tool |
+| Wasla | `~/.wasla/mcp/` | Same as source tool |
 
 ---
 
@@ -81,33 +81,33 @@ On every sync (triggered by tool-open or manual invocation):
 
 ### Session-Scoped Background Sync (Automatic)
 
-WaslaGenie is not a persistent system daemon. It is a **session-scoped co-process**: launched by the WaslaGenie skill when a tool opens, runs in the background watching for file changes, and exits cleanly when the tool closes.
+Wasla is not a persistent system daemon. It is a **session-scoped co-process**: launched by the Wasla skill when a tool opens, runs in the background watching for file changes, and exits cleanly when the tool closes.
 
 ```
 1. User opens Claude Code
-2. Claude Code launches → WaslaGenie skill runs
-3. Skill starts WaslaGenie as a background co-process (event-based file watcher)
-4. WaslaGenie performs an initial scan on launch:
+2. Claude Code launches → Wasla skill runs
+3. Skill starts Wasla as a background co-process (event-based file watcher)
+4. Wasla performs an initial scan on launch:
    a. Discovers all assets across all tool dirs
    b. Compares hashes/mtimes against registry
    c. For each changed asset: prompts user and mirrors latest version
-5. WaslaGenie continues watching for file changes during the session
+5. Wasla continues watching for file changes during the session
 6. On any change: detects new source (Latest is Greatest), syncs to all locations
-7. User closes Claude Code → WaslaGenie co-process exits
+7. User closes Claude Code → Wasla co-process exits
 ```
 
 ### Manual Sync
 
 Users can also trigger sync manually anytime:
 ```bash
-waslagenie sync              # Full scan and interactive sync
-waslagenie sync --quiet      # Fast check (assumes Y/n from previous)
+wasla sync              # Full scan and interactive sync
+wasla sync --quiet      # Fast check (assumes Y/n from previous)
 ```
 
 ### User Experience (Example)
 
 ```
-$ waslagenie sync
+$ wasla sync
 🔍 Scanning tool directories...
 
 Agent "researcher" changed:
@@ -119,7 +119,7 @@ Agent "researcher" changed:
 🔄 Syncing to 3 locations...
    ✔ ~/.claude/agents/researcher.md
    ✔ ~/.openclaw/agents/researcher.md
-   ✔ ~/.waslagenie/agents/researcher.md
+   ✔ ~/.wasla/agents/researcher.md
 
 ✨ Sync complete
 ```
@@ -172,36 +172,36 @@ Track change detection only. Enable "Latest is Greatest" by storing hashes/mtime
 
 ## Gradual Centralization
 
-WaslaGenie follows a **zero-friction-first, gradually centralizing** philosophy. Assets start wherever the user created them. Centralization to `~/.waslagenie/` is optional and user-driven.
+Wasla follows a **zero-friction-first, gradually centralizing** philosophy. Assets start wherever the user created them. Centralization to `~/.wasla/` is optional and user-driven.
 
 ### Phase 0 (MVP): Assets live where they were born
 
 ```
 ~/.claude/agents/researcher.md     ← user created here
-~/.gemini/agents/researcher.md     ← WaslaGenie stub
-~/.codex/agents/researcher.md      ← WaslaGenie stub
-~/.waslagenie/                      ← registry + config only
+~/.gemini/agents/researcher.md     ← Wasla stub
+~/.codex/agents/researcher.md      ← Wasla stub
+~/.wasla/                      ← registry + config only
 ```
 
 ### Phase 1 (v1.1): Optional migration to central location
 
 ```bash
-waslagenie migrate researcher --to ~/.waslagenie/
-# researcher.md moves to ~/.waslagenie/agents/researcher.md
-# All tool stubs now point to ~/.waslagenie/ as source
+wasla migrate researcher --to ~/.wasla/
+# researcher.md moves to ~/.wasla/agents/researcher.md
+# All tool stubs now point to ~/.wasla/ as source
 ```
 
 ### Phase 2 (v1.2): Fully centralized — backup and team sharing
 
 ```bash
-waslagenie export                    # bundle ~/.waslagenie/ for backup or sharing
-waslagenie import backup.tar         # restore on a new machine
+wasla export                    # bundle ~/.wasla/ for backup or sharing
+wasla import backup.tar         # restore on a new machine
 ```
 
 ### Why this matters for architecture
 
-- **MVP registry** must track all known locations per asset, including `~/.waslagenie/assets/` as a valid location — this is already handled by the flat `locations` map in the registry schema.
-- **`waslagenie migrate`** is post-MVP but the registry schema must support it from day one (no breaking schema changes needed later).
+- **MVP registry** must track all known locations per asset, including `~/.wasla/assets/` as a valid location — this is already handled by the flat `locations` map in the registry schema.
+- **`wasla migrate`** is post-MVP but the registry schema must support it from day one (no breaking schema changes needed later).
 - **Export/import** is MVP scope: bundles all known assets regardless of where they live.
 
 ---
@@ -226,7 +226,7 @@ For each tool (Claude Code, Gemini CLI, OpenClaw):
 
 3. **Test skill system**
    - Can a skill detect tool launch?
-   - Can it run `waslagenie sync` successfully?
+   - Can it run `wasla sync` successfully?
    - Can it access both home and project dirs?
 
 **Status:** OpenClaw and OpenAI Codex CLI MCP paths are critical blockers.
@@ -241,7 +241,7 @@ For each tool (Claude Code, Gemini CLI, OpenClaw):
    - Return list of asset locations
 
 2. **`src/registry/index.ts`**
-   - Read/write `~/.waslagenie/registry.json` or `.waslagenie/registry.json`
+   - Read/write `~/.wasla/registry.json` or `.wasla/registry.json`
    - Load/save asset change detection data
    - Compare hashes/mtimes
 
@@ -269,7 +269,7 @@ For each tool (Claude Code, Gemini CLI, OpenClaw):
 **Files to create:**
 
 1. **`packages/adapters/src/interface.ts`**
-   - Base `WaslaGenieAdapter` interface
+   - Base `WaslaAdapter` interface
    - Methods: `isInstalled()`, `writeStub()`, `installSkill()`, `hashFile()`
 
 2. **`packages/adapters/src/claude.ts`**
@@ -298,8 +298,8 @@ For each tool (Claude Code, Gemini CLI, OpenClaw):
 **Files to create:**
 
 1. **`src/skills/sync.md`**
-   - Minimal WaslaGenie skill code
-   - Runs `waslagenie sync --quick` on tool launch
+   - Minimal Wasla skill code
+   - Runs `wasla sync --quick` on tool launch
    - Captures sync output/warnings
 
 2. **`apps/cli/src/commands/install.ts`**
@@ -336,26 +336,26 @@ MVP complete
 
 ## Success Criteria for MVP
 
-✅ User creates agent in Gemini CLI → visible and executable in Claude Code  
-✅ User creates agent in Claude Code → visible and executable in Gemini CLI  
-✅ User creates agent in Claude Code → visible and executable in OpenClaw  
-✅ User edits agent in OpenClaw → newest version syncs to Claude and Gemini  
-✅ MCP config synced across all three tools  
-✅ Tool-open trigger automatically syncs (user opens Claude → sync runs)  
-✅ `waslagenie status` shows all assets and locations  
-✅ Manual `waslagenie sync` works and detects changes correctly  
-✅ Registry accurately tracks file hashes/mtimes  
-✅ Latest version is always used as source (mtime-based)  
+✅ User creates agent in Gemini CLI → visible and executable in Claude Code<br />
+✅ User creates agent in Claude Code → visible and executable in Gemini CLI<br />
+✅ User creates agent in Claude Code → visible and executable in OpenClaw<br />
+✅ User edits agent in OpenClaw → newest version syncs to Claude and Gemini<br />
+✅ MCP config synced across all three tools<br />
+✅ Tool-open trigger automatically syncs (user opens Claude → sync runs)<br />
+✅ `wasla status` shows all assets and locations<br />
+✅ Manual `wasla sync` works and detects changes correctly<br />
+✅ Registry accurately tracks file hashes/mtimes<br />
+✅ Latest version is always used as source (mtime-based)
 
 ---
 
 ## Non-Goals (MVP)
 
-- ❌ Persistent system daemon — WaslaGenie runs as a session-scoped co-process only
+- ❌ Persistent system daemon — Wasla runs as a session-scoped co-process only
 - ❌ Skills, commands, cron sync — agents + MCPs only
 - ❌ IDE-based agents (Cursor, GitHub Copilot) — different config model, deferred to v1.1
 - ❌ Hermes support — deferred to v1.1
-- ✅ Local visualizer dashboard (`waslagenie visualizer`)
+- ✅ Local visualizer dashboard (`wasla visualizer`)
 - ❌ Team collaboration — users handle sharing via git/etc.
 - ❌ Multi-profile support — single default profile
 - ❌ Remote/cross-machine sync — handled by export/import
@@ -366,7 +366,7 @@ MVP complete
 ## Project Structure
 
 ```
-wasla-genie/
+wasla/
 ├── src/
 │   ├── cli/
 │   │   ├── index.ts          # CLI entry, command router
@@ -383,13 +383,13 @@ wasla-genie/
 │   ├── syncer/
 │   │   └── index.ts          # mirror assets to all locations
 │   ├── adapters/
-│   │   ├── interface.ts      # WaslaGenieAdapter interface
+│   │   ├── interface.ts      # WaslaAdapter interface
 │   │   ├── claude.ts         # Claude Code adapter
 │   │   ├── gemini.ts         # Gemini CLI adapter
 │   │   ├── codex.ts          # OpenAI Codex CLI adapter
 │   │   └── openclaw.ts       # OpenClaw adapter
 │   ├── skills/
-│   │   └── sync.md           # WaslaGenie skill code
+│   │   └── sync.md           # Wasla skill code
 │   └── utils/
 │       ├── paths.ts          # path resolution, ~ expansion
 │       ├── fs.ts             # safe file I/O
@@ -415,7 +415,7 @@ wasla-genie/
 1. **All three tools support Markdown + YAML frontmatter for agents** ✅ Confirmed
 2. **File modification times are reliable change indicators** ✅ Reasonable for local files
 3. **Users can see and edit files in any tool's config directory** ✅ True
-4. **WaslaGenie skill can run on tool launch** 🟡 Needs verification per tool
+4. **Wasla skill can run on tool launch** 🟡 Needs verification per tool
 5. **Content mirrors are sufficient (no need for native refs)** ✅ Confirmed
 
 ### Risks
@@ -433,7 +433,7 @@ wasla-genie/
    - Mitigation: `--quick` flag uses hash comparison (fast), full scan only when needed
 
 5. **Users accidentally edit stubs directly** 🟡 Low
-   - Mitigation: Stub header clearly marks them as WaslaGenie-managed
+   - Mitigation: Stub header clearly marks them as Wasla-managed
    - Solution: Detect divergence, warn user, ask confirmation
 
 ---

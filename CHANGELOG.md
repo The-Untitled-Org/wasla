@@ -102,7 +102,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ### Changed
 
 - `3013541` refactor: remove unused fs import and unused asset type definition
-- `750370c` refactor: rename WaslGenie → WaslaGenie across all code and docs
+- `750370c` refactor: rename Wasla → Wasla across all code and docs
 
 ### Documentation
 
@@ -115,9 +115,9 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - `ec9bd7c` docs: update project documentation in README.md
 - `ead74e3` docs: resolve conflicts — sync model, gradual centralization, grilling archive notice
 - `fc5b07d` docs(readme): fix ASCII banner placement outside center div
-- `ba2754a` docs: rename product from WaslGenie to WaslaGenie throughout
+- `ba2754a` docs: rename product from Wasla to Wasla throughout
 - `5d7ea0d` docs: update Meeting of Minds documentation links to root directory
-- `8c0c020` docs(readme): update ASCII banner to reflect WaslaGenie rename
+- `8c0c020` docs(readme): update ASCII banner to reflect Wasla rename
 - `ff907c5` docs: update provider documentation to reflect current agent and MCP configuration workflows
 - `f706bfa` docs: update README and provider documentation for clarity on sync and registration commands feat: enhance register command to support targeted provider registration fix: correct file paths in sync and MCP configurations for Claude and Gemini providers test: add unit tests for register command and validate cross-provider sync functionality
 

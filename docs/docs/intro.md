@@ -2,9 +2,9 @@
 sidebar_position: 2
 ---
 
-# WaslaGenie Documentation
+# Wasla Documentation
 
-Welcome to WaslaGenie — the universal synchronization layer for AI agent orchestrators.
+Welcome to Wasla — the universal synchronization layer for AI agent orchestrators.
 
 ## Quick Links
 
@@ -13,9 +13,9 @@ Welcome to WaslaGenie — the universal synchronization layer for AI agent orche
 - **[Design Discussion](/discussions/ai-discussions)** — Deep-dive design decisions and rationale
 - **[Meetings of Mind](/discussions/MoM)** — Meeting notes from the design process
 
-## What is WaslaGenie?
+## What is Wasla?
 
-WaslaGenie synchronizes your agents and MCPs across Claude Code, Gemini CLI, and OpenCode without duplicating files.
+Wasla synchronizes your agents and MCPs across Claude Code, Gemini CLI, and OpenCode without duplicating files.
 
 ### The Problem
 
@@ -23,15 +23,15 @@ You work across multiple AI orchestrators. Each one is its own universe. You bui
 
 ### The Solution
 
-WaslaGenie scans each tool, discovers what you've built, and mirrors the content into every other tool using the "Latest is Greatest" strategy. Whichever version was modified most recently becomes the canonical source.
+Wasla scans each tool, discovers what you've built, and mirrors the content into every other tool using the "Latest is Greatest" strategy. Whichever version was modified most recently becomes the canonical source.
 
 ## Quick Start
 
 ```bash
 npm i -g @untitled-devs/wasla  # Install the CLI executable
-waslagenie sync                       # Choose scope, scan, discover, and mirror assets
-waslagenie status                     # Inspect assets grouped by type and provider
-waslagenie register                   # Optional: add helper skills to AI tools
+wasla sync                       # Choose scope, scan, discover, and mirror assets
+wasla status                     # Inspect assets grouped by type and provider
+wasla register                   # Optional: add helper skills to AI tools
 ```
 
 ## Key Features
@@ -53,9 +53,9 @@ This documentation contains:
 
 ## GitHub
 
-- **Repository** — [github.com/The-Untitled-Org/wasla-genie](https://github.com/The-Untitled-Org/wasla-genie)
+- **Repository** — [github.com/The-Untitled-Org/wasla](https://github.com/The-Untitled-Org/wasla)
 - **Organization** — [github.com/The-Untitled-Org](https://github.com/The-Untitled-Org)
-- **Issues & Discussions** — [GitHub Issues](https://github.com/The-Untitled-Org/wasla-genie/issues)
+- **Issues & Discussions** — [GitHub Issues](https://github.com/The-Untitled-Org/wasla/issues)
 
 ---
 

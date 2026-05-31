@@ -22,7 +22,7 @@ vi.mock('#shared/fs.js', () => ({
 }));
 
 vi.mock('#shared/paths.js', () => ({
-  getRegistryDir: vi.fn(() => '/tmp/.waslagenie'),
+  getRegistryDir: vi.fn(() => '/tmp/.wasla'),
 }));
 
 vi.mock('#shared/config.js', () => ({

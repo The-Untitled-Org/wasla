@@ -31,7 +31,7 @@
   "search.exclude": {
     "node_modules": true,
     "dist": false,
-    ".waslgenie": true
+    ".wasla": true
   },
 
   // ── Vitest Test Explorer ───────────────────────────────────────────────────

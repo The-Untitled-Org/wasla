@@ -7,7 +7,7 @@
  *  - Adapter interface contract: name, displayName, paths, formats
  *  - isInstalled() returns boolean (never throws)
  *  - writeStub() writes correct markers for agent vs MCP
- *  - installSkill() is idempotent (<!-- waslagenie:start --> not duplicated)
+ *  - installSkill() is idempotent (<!-- wasla:start --> not duplicated)
  *  - getRootConfigAppend() returns expected content / null
  *  - Scope handling: user vs workspace paths
  */
@@ -30,7 +30,7 @@ import type { Asset } from '@core/types';
 // ─── helpers ────────────────────────────────────────────────────────────────
 
 async function makeTmpDir(): Promise<string> {
-  return mkdtemp(join(tmpdir(), 'waslagenie-adapter-'));
+  return mkdtemp(join(tmpdir(), 'wasla-adapter-'));
 }
 
 function makeAsset(overrides: Partial<Asset> = {}): Asset {
@@ -355,12 +355,12 @@ describe.each([
     await rm(tmpBase, { recursive: true, force: true });
   });
 
-  it('does not duplicate the waslagenie block when called twice', async () => {
+  it('does not duplicate the wasla block when called twice', async () => {
     // installSkill writes to the real fs; we just verify it doesn't throw
     // and the getRootConfigAppend helper returns the idempotency guard
     const block = adapter.getRootConfigAppend();
     if (block) {
-      const count = (block.match(/<!-- waslagenie:start -->/g) || []).length;
+      const count = (block.match(/<!-- wasla:start -->/g) || []).length;
       expect(count).toBe(1);
     }
   });
@@ -369,14 +369,14 @@ describe.each([
 // ─── getRootConfigAppend ──────────────────────────────────────────────────────
 
 describe('ClaudeAdapter.getRootConfigAppend', () => {
-  it('returns null — Claude context file is not polluted by WaslaGenie', () => {
+  it('returns null — Claude context file is not polluted by Wasla', () => {
     const adapter = new ClaudeAdapter('workspace');
     expect(adapter.getRootConfigAppend()).toBeNull();
   });
 });
 
 describe('GeminiAdapter.getRootConfigAppend', () => {
-  it('returns null — Gemini context file is not polluted by WaslaGenie', () => {
+  it('returns null — Gemini context file is not polluted by Wasla', () => {
     const adapter = new GeminiAdapter('workspace');
     expect(adapter.getRootConfigAppend()).toBeNull();
   });
@@ -421,7 +421,7 @@ describe('ClaudeAdapter.installSkill', () => {
     await rm(tmpBase, { recursive: true, force: true });
   });
 
-  it('creates skills/waslagenie/SKILL.md skill file', async () => {
+  it('creates skills/wasla/SKILL.md skill file', async () => {
     const { vi } = await import('vitest');
     const pathUtils = await import('@utils/paths');
     vi.spyOn(pathUtils, 'getToolMarkers').mockReturnValue({
@@ -434,10 +434,10 @@ describe('ClaudeAdapter.installSkill', () => {
     const adapter = new ClaudeAdapter('workspace');
     await adapter.installSkill();
 
-    const skillPath = join(tmpBase, 'skills', 'waslagenie', 'SKILL.md');
+    const skillPath = join(tmpBase, 'skills', 'wasla', 'SKILL.md');
     expect(await fileExists(skillPath)).toBe(true);
     const content = await readText(skillPath);
-    expect(content).toContain('waslagenie');
+    expect(content).toContain('wasla');
     expect(content).toContain('sync');
 
     vi.restoreAllMocks();
@@ -457,7 +457,7 @@ describe('ClaudeAdapter.installSkill', () => {
     await adapter.installSkill();
     await adapter.installSkill(); // second call must not throw or create duplicates
 
-    const skillPath = join(tmpBase, 'skills', 'waslagenie', 'SKILL.md');
+    const skillPath = join(tmpBase, 'skills', 'wasla', 'SKILL.md');
     expect(await fileExists(skillPath)).toBe(true);
 
     vi.restoreAllMocks();
@@ -497,7 +497,7 @@ describe('GeminiAdapter.installSkill', () => {
     await rm(tmpBase, { recursive: true, force: true });
   });
 
-  it('creates skills/waslagenie/SKILL.md in the Gemini skills directory', async () => {
+  it('creates skills/wasla/SKILL.md in the Gemini skills directory', async () => {
     const { vi } = await import('vitest');
     const pathUtils = await import('@utils/paths');
     vi.spyOn(pathUtils, 'getToolMarkers').mockReturnValue({
@@ -510,10 +510,10 @@ describe('GeminiAdapter.installSkill', () => {
     const adapter = new GeminiAdapter('workspace');
     await adapter.installSkill();
 
-    const skillPath = join(tmpBase, 'skills', 'waslagenie', 'SKILL.md');
+    const skillPath = join(tmpBase, 'skills', 'wasla', 'SKILL.md');
     expect(await fileExists(skillPath)).toBe(true);
     const content = await readText(skillPath);
-    expect(content).toContain('waslagenie');
+    expect(content).toContain('wasla');
     expect(content).toContain('sync');
 
     vi.restoreAllMocks();

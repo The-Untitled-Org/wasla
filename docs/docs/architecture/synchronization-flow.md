@@ -4,13 +4,13 @@ sidebar_position: 2
 
 # Synchronization Flow
 
-`waslagenie sync` performs a full multi-provider synchronization. `waslagenie sync-to` uses the same engine with an explicit source and selected targets.
+`wasla sync` performs a full multi-provider synchronization. `wasla sync-to` uses the same engine with an explicit source and selected targets.
 
 ## General Sync
 
 ```mermaid
 flowchart TD
-    Start["User runs waslagenie sync"]
+    Start["User runs wasla sync"]
     Scope["Select workspace or user scope"]
     Detect["Detect active provider adapters"]
     Scan["Scan agents, skills, MCP entries, and context files"]
@@ -39,7 +39,7 @@ This is the **Latest is Greatest** rule. It lets users edit an asset from any su
 Use targeted sync when direction matters:
 
 ```bash
-waslagenie sync-to --from gemini --to claude,github-copilot
+wasla sync-to --from gemini --to claude,github-copilot
 ```
 
 ```mermaid
@@ -57,4 +57,4 @@ flowchart LR
 
 ## Status Output
 
-`waslagenie status` reads the registry and detects currently active providers. Normal output only shows mirrors belonging to active providers, so historical entries do not confuse the current workspace view.
+`wasla status` reads the registry and detects currently active providers. Normal output only shows mirrors belonging to active providers, so historical entries do not confuse the current workspace view.

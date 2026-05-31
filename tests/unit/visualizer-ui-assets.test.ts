@@ -7,14 +7,14 @@ describe('Visualizer UI asset pipeline', () => {
     expect(existsSync(resolve('apps/visualizer/public/logo.png'))).toBe(true);
   });
 
-  it('waslagenie provider icon URL is /logo.png', async () => {
+  it('wasla provider icon URL is /logo.png', async () => {
     const { PROVIDER_ICONS } = await import('@cli/server/visualizer-server.js');
-    expect(PROVIDER_ICONS.waslagenie).toBe('/logo.png');
+    expect(PROVIDER_ICONS.wasla).toBe('/logo.png');
   });
 
   it('PROVIDER_ICONS does not contain the old branding API route', async () => {
     const { PROVIDER_ICONS } = await import('@cli/server/visualizer-server.js');
-    expect(Object.values(PROVIDER_ICONS)).not.toContain('/api/branding/waslagenie-logo');
+    expect(Object.values(PROVIDER_ICONS)).not.toContain('/api/branding/wasla-logo');
   });
 
   it('renders measured hub connectors instead of overflow satellite lines', () => {

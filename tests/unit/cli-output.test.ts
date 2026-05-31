@@ -34,9 +34,9 @@ describe('cli-output utilities', () => {
     expect(consoleLogSpy).toHaveBeenCalledWith('\u001b[32m✔  Done\u001b[0m');
   });
 
-  it('banner prints the WaslaGenie wordmark', () => {
+  it('banner prints the Wasla wordmark', () => {
     banner();
-    expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('____'));
+    expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('__,_|'));
   });
 
   it('error prints with ✗ marker to console.error', () => {

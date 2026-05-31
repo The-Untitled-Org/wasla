@@ -1,6 +1,6 @@
-import { WaslaGenieAdapter, Asset, AssetFormat } from '#core/types.js';
+import { WaslaAdapter, Asset, AssetFormat } from '#core/types.js';
 
-export abstract class BaseAdapter implements WaslaGenieAdapter {
+export abstract class BaseAdapter implements WaslaAdapter {
   abstract name: string;
   abstract displayName: string;
   abstract mcpKey: string;

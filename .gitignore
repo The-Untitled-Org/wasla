@@ -32,9 +32,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# WaslaGenie provider output (local AI configuration, never commit)
-/.waslgenie/
-/.waslagenie/
+# Wasla provider output (local AI configuration, never commit)
+/.wasla/
+/.wasla/
 /.claude/
 /.gemini/
 /.openclaw/

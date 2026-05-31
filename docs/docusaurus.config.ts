@@ -3,7 +3,7 @@ import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
-  title: 'WaslaGenie',
+  title: 'Wasla',
   tagline: 'Universal synchronization layer for AI agent orchestrators',
   favicon: 'img/favicon.ico',
 
@@ -12,10 +12,10 @@ const config: Config = {
   },
 
   url: 'https://The-Untitled-Org.github.io',
-  baseUrl: '/wasla-genie/',
+  baseUrl: '/wasla/',
 
   organizationName: 'The-Untitled-Org',
-  projectName: 'wasla-genie',
+  projectName: 'wasla',
   deploymentBranch: 'gh-pages',
 
   onBrokenLinks: 'throw',
@@ -37,7 +37,7 @@ const config: Config = {
       {
         docs: {
           sidebarPath: './sidebars.ts',
-          editUrl: 'https://github.com/The-Untitled-Org/wasla-genie/tree/main/docs/',
+          editUrl: 'https://github.com/The-Untitled-Org/wasla/tree/main/docs/',
           routeBasePath: '/',
         },
         blog: {
@@ -60,9 +60,9 @@ const config: Config = {
       disableSwitch: false,
     },
     navbar: {
-      title: 'WaslaGenie',
+      title: 'Wasla',
       logo: {
-        alt: 'WaslaGenie Logo',
+        alt: 'Wasla Logo',
         src: 'img/logo.png',
         width: 40,
         height: 40,
@@ -90,7 +90,7 @@ const config: Config = {
           position: 'right',
         },
         {
-          href: 'https://github.com/The-Untitled-Org/wasla-genie',
+          href: 'https://github.com/The-Untitled-Org/wasla',
           label: 'GitHub',
           position: 'right',
         },
@@ -125,7 +125,7 @@ const config: Config = {
             },
             {
               label: 'Contributors',
-              href: 'https://github.com/The-Untitled-Org/wasla-genie/graphs/contributors',
+              href: 'https://github.com/The-Untitled-Org/wasla/graphs/contributors',
             },
           ],
         },
@@ -134,11 +134,11 @@ const config: Config = {
           items: [
             {
               label: 'Repository',
-              href: 'https://github.com/The-Untitled-Org/wasla-genie',
+              href: 'https://github.com/The-Untitled-Org/wasla',
             },
             {
               label: 'Issues',
-              href: 'https://github.com/The-Untitled-Org/wasla-genie/issues',
+              href: 'https://github.com/The-Untitled-Org/wasla/issues',
             },
           ],
         },

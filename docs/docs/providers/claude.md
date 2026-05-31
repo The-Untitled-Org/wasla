@@ -6,7 +6,7 @@ sidebar_label: Claude Code
 
 # Claude Code Provider Contract
 
-Claude Code provides native project surfaces for subagents, Agent Skills, project memory, and MCP servers. WaslaGenie reads and writes those native surfaces directly.
+Claude Code provides native project surfaces for subagents, Agent Skills, project memory, and MCP servers. Wasla reads and writes those native surfaces directly.
 
 ## Native Paths
 

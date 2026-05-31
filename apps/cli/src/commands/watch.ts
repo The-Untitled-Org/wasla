@@ -35,7 +35,7 @@ export async function watchCommand(): Promise<void> {
       ignored: [
         /(^|[\/\\])node_modules([\/\\]|$)/,
         /(^|[\/\\])\.git([\/\\]|$)/,
-        /(^|[\/\\])\.waslagenie([\/\\]|$)/,
+        /(^|[\/\\])\.wasla([\/\\]|$)/,
         /(^|[\/\\])dist([\/\\]|$)/,
         /(^|[\/\\])output([\/\\]|$)/,
       ],

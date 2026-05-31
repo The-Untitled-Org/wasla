@@ -38,7 +38,7 @@ async function getEntityContent(
   await scanner.initialize();
   const assetType = mapEntityType(type);
   const discovered =
-    providerId === 'waslagenie'
+    providerId === 'wasla'
       ? await scanner.scanAllTools([assetType])
       : await scanner.scanTool(providerId, [assetType]);
   const target = discovered
@@ -71,8 +71,7 @@ function isAllowedOrigin(origin: string | undefined, port: number): boolean {
 
 function isKnownProvider(scope: 'user' | 'workspace', providerId: string): boolean {
   return (
-    providerId === 'waslagenie' ||
-    getAllAdapters(scope).some((adapter) => adapter.name === providerId)
+    providerId === 'wasla' || getAllAdapters(scope).some((adapter) => adapter.name === providerId)
   );
 }
 
@@ -107,7 +106,7 @@ function openBrowser(url: string): void {
 }
 
 export const PROVIDER_ICONS: Record<string, string> = {
-  waslagenie: '/logo.png',
+  wasla: '/logo.png',
   claude: 'https://cdn.simpleicons.org/claude',
   gemini: 'https://cdn.simpleicons.org/googlegemini',
   cursor: 'https://cdn.simpleicons.org/cursor',
@@ -127,9 +126,9 @@ async function buildConfig(scope: 'user' | 'workspace'): Promise<VisualizerConfi
 
   const providers = [
     {
-      id: 'waslagenie',
-      title: 'WaslaGenie',
-      iconUrl: PROVIDER_ICONS.waslagenie,
+      id: 'wasla',
+      title: 'Wasla',
+      iconUrl: PROVIDER_ICONS.wasla,
       isHub: true,
       isInstalled: true,
     },

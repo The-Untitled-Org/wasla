@@ -11,7 +11,7 @@ export async function statusCommand(): Promise<void> {
     const registryPath = getRegistryPath(scope);
 
     if (!(await fileExists(registryPath))) {
-      error('Registry not found. Run: waslagenie sync');
+      error('Registry not found. Run: wasla sync');
       process.exit(1);
     }
 

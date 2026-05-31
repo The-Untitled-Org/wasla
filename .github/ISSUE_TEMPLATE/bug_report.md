@@ -1,6 +1,6 @@
 ---
 name: 🐛 Bug Report
-about: Create a report to help us improve WaslaGenie
+about: Create a report to help us improve Wasla
 title: '[BUG] '
 labels: bug
 assignees: ''
@@ -23,7 +23,7 @@ If applicable, add screenshots or terminal logs to help explain your problem.
 
 ## 💻 Environment
 - **OS:** [e.g. macOS, Linux, Windows]
-- **WaslaGenie Version:** [e.g. 0.1.0]
+- **Wasla Version:** [e.g. 0.1.0]
 - **Node.js Version:** [e.g. 24.x]
 - **Orchestrator(s):** [e.g. Claude Code, Gemini CLI]
 

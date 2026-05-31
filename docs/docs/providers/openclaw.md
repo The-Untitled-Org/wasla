@@ -17,7 +17,7 @@ The repository contains an `openclaw` adapter and npm sync aliases, but its nati
 | MCP configuration | Unverified |
 | Context | Existing adapter assumes `AGENTS.md`; do not rely on this as a verified provider contract |
 
-OpenClaw should be treated as experimental. WaslaGenie must not claim reliable portability to or from OpenClaw until its native paths, file formats, and deletion semantics are confirmed from an authoritative source and covered by translation tests.
+OpenClaw should be treated as experimental. Wasla must not claim reliable portability to or from OpenClaw until its native paths, file formats, and deletion semantics are confirmed from an authoritative source and covered by translation tests.
 
 ## Current Core Guarantee
 

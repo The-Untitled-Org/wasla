@@ -1,10 +1,10 @@
-# Contributing to WaslaGenie
+# Contributing to Wasla
 
-We're excited to have you contribute to WaslaGenie! This document outlines how to get started.
+We're excited to have you contribute to Wasla! This document outlines how to get started.
 
 ## 🤝 The Team
 
-WaslaGenie is developed by The Untitled Org:
+Wasla is developed by The Untitled Org:
 
 - **@inegmdev** (Islam NEGM)
 - **@mustafabahaa** (Mustafa Bahaaeldeen)
@@ -20,8 +20,8 @@ WaslaGenie is developed by The Untitled Org:
 ### Setup
 
 ```bash
-git clone https://github.com/The-Untitled-Org/wasla-genie.git
-cd wasla-genie
+git clone https://github.com/The-Untitled-Org/wasla.git
+cd wasla
 
 npm install
 npm run visualizer:install
@@ -194,4 +194,4 @@ This project is licensed under the MIT License — see [LICENSE](LICENSE) for de
 
 ---
 
-**Thanks for contributing to WaslaGenie!** 🎉
+**Thanks for contributing to Wasla!** 🎉

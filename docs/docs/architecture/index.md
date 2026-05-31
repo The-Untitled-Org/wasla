@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Architecture Overview
 
-WaslaGenie is a local-first synchronization engine for AI tool assets. It discovers assets in the active providers, selects the latest source, mirrors content into the other active providers, and records the result in a scoped registry.
+Wasla is a local-first synchronization engine for AI tool assets. It discovers assets in the active providers, selects the latest source, mirrors content into the other active providers, and records the result in a scoped registry.
 
 There is no server and no remote database. The CLI operates on files already used by Claude Code, Gemini CLI, GitHub Copilot, GitHub Copilot CLI, Cursor, OpenCode, and the experimental OpenClaw adapter.
 
@@ -12,11 +12,11 @@ There is no server and no remote database. The CLI operates on files already use
 
 ```mermaid
 flowchart TD
-    CLI["waslagenie CLI<br/>sync | sync-to | status | watch | register"]
+    CLI["wasla CLI<br/>sync | sync-to | status | watch | register"]
     Scope["Scope configuration<br/>workspace | user"]
     Scanner["Scanner<br/>Detect active providers<br/>Discover native assets<br/>Ignore known mirrors as sources"]
     Syncer["Syncer<br/>Group by name and type<br/>Select latest source<br/>Reconcile deletions<br/>Mirror content"]
-    Registry["Scoped registry and canonical cache<br/>.waslagenie/ or ~/.waslagenie/"]
+    Registry["Scoped registry and canonical cache<br/>.wasla/ or ~/.wasla/"]
     Adapters["Provider adapters<br/>Claude | Gemini | Copilot | Cursor | OpenCode | OpenClaw"]
 
     CLI --> Scope
@@ -67,7 +67,7 @@ The registry calls mirrored targets `stubs`, but the target files contain usable
 ## Design Rules
 
 1. **Scope is explicit.** Workspace and user registries are separate.
-2. **Native files remain usable.** Tools do not need a WaslaGenie runtime to read mirrored assets.
+2. **Native files remain usable.** Tools do not need a Wasla runtime to read mirrored assets.
 3. **The latest edit wins.** The file with the newest modification time becomes the source during a general sync.
 4. **Adapters own provider differences.** Core synchronization logic does not hardcode provider file layouts.
 5. **The registry tracks managed mirrors.** Hashes and paths allow deletion reconciliation without deleting unrelated user files.

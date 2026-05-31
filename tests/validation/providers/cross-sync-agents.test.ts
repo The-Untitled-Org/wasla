@@ -13,7 +13,7 @@ describe('Cross-Provider Sync: Skills', () => {
   let tmpBase: string;
 
   beforeEach(async () => {
-    tmpBase = await mkdtemp(join(tmpdir(), 'waslagenie-e2e-agents-'));
+    tmpBase = await mkdtemp(join(tmpdir(), 'wasla-e2e-agents-'));
 
     const markers = {
       claude: join(tmpBase, '.claude'),
@@ -33,9 +33,9 @@ describe('Cross-Provider Sync: Skills', () => {
     // Mock the tool markers to point to our temp directory
     vi.spyOn(pathUtils, 'getToolMarkers').mockReturnValue(markers);
     vi.spyOn(pathUtils, 'getRegistryPath').mockReturnValue(
-      join(tmpBase, '.waslagenie', 'registry.json')
+      join(tmpBase, '.wasla', 'registry.json')
     );
-    vi.spyOn(pathUtils, 'getRegistryDir').mockReturnValue(join(tmpBase, '.waslagenie'));
+    vi.spyOn(pathUtils, 'getRegistryDir').mockReturnValue(join(tmpBase, '.wasla'));
   });
 
   afterEach(async () => {
@@ -125,11 +125,11 @@ describe('Cross-Provider Sync: Skills', () => {
   it('removes an unchanged legacy nested Claude context after migrating it to root', async () => {
     const contextContent = '# Shared project context\n';
     const legacyClaudeContext = join(tmpBase, '.claude', 'CLAUDE.md');
-    const registryPath = join(tmpBase, '.waslagenie', 'registry.json');
+    const registryPath = join(tmpBase, '.wasla', 'registry.json');
     const contentHash = createHash('sha256').update(contextContent).digest('hex');
     await writeText(join(tmpBase, 'GEMINI.md'), contextContent);
     await writeText(legacyClaudeContext, contextContent);
-    await ensureDir(join(tmpBase, '.waslagenie'));
+    await ensureDir(join(tmpBase, '.wasla'));
     await writeJSON(registryPath, {
       assets: [
         {

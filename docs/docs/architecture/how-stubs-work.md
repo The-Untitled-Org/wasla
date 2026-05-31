@@ -4,11 +4,11 @@ sidebar_position: 4
 
 # How Mirroring Works
 
-WaslaGenie mirrors full asset content into each active provider's native location. The registry calls these managed targets `stubs`, but they are usable native files or JSON entries, not references.
+Wasla mirrors full asset content into each active provider's native location. The registry calls these managed targets `stubs`, but they are usable native files or JSON entries, not references.
 
 ## Why Mirror Content?
 
-AI tools do not share one import mechanism. A provider must be able to load an asset even when WaslaGenie is not running. Full-content mirroring satisfies that requirement and keeps provider behavior predictable.
+AI tools do not share one import mechanism. A provider must be able to load an asset even when Wasla is not running. Full-content mirroring satisfies that requirement and keeps provider behavior predictable.
 
 ## File Assets
 
@@ -30,7 +30,7 @@ Directory-based skills keep supporting files alongside `SKILL.md`.
 
 ## MCP Assets
 
-MCP servers require structured updates. WaslaGenie parses the provider JSON document, modifies only the named MCP server entry, and writes the JSON document back.
+MCP servers require structured updates. Wasla parses the provider JSON document, modifies only the named MCP server entry, and writes the JSON document back.
 
 ```mermaid
 flowchart TD
@@ -65,11 +65,11 @@ Tracking metadata is stored in the scoped registry rather than inserted into use
 }
 ```
 
-Hashes let WaslaGenie distinguish a managed mirror from a mirror that the user edited after synchronization.
+Hashes let Wasla distinguish a managed mirror from a mirror that the user edited after synchronization.
 
 ## Deletion Reconciliation
 
-When a managed file disappears, WaslaGenie checks surviving mirrors:
+When a managed file disappears, Wasla checks surviving mirrors:
 
 1. If a surviving mirror was edited, it is preserved and can become the source.
 2. If no surviving mirror changed, managed copies and the canonical cache entry are removed.

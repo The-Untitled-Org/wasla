@@ -1,6 +1,6 @@
 # Team
 
-WaslaGenie is built and maintained by:
+Wasla is built and maintained by:
 
 - **@inegmdev** — Architecture & Adapters
 - **@mustafabahaa** — CLI & Core
@@ -14,4 +14,4 @@ See [Contributing Guide](/contributing) to get started.
 
 ---
 
-**Questions or ideas?** Open an issue on [GitHub](https://github.com/The-Untitled-Org/wasla-genie) or join the discussion.
+**Questions or ideas?** Open an issue on [GitHub](https://github.com/The-Untitled-Org/wasla) or join the discussion.

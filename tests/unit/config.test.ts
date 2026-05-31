@@ -11,11 +11,11 @@ import {
   writeConfiguredScope,
 } from '@utils/config';
 
-describe('WaslaGenie CLI config', () => {
+describe('Wasla CLI config', () => {
   let tmpBase: string;
 
   beforeEach(async () => {
-    tmpBase = await mkdtemp(join(tmpdir(), 'waslagenie-config-'));
+    tmpBase = await mkdtemp(join(tmpdir(), 'wasla-config-'));
     vi.spyOn(pathUtils, 'getRegistryDir').mockReturnValue(tmpBase);
   });
 
@@ -37,7 +37,7 @@ describe('WaslaGenie CLI config', () => {
 
   it('requires users to configure a scope before operational commands run', async () => {
     await expect(requireConfiguredScope()).rejects.toThrow(
-      'Scope is not configured. Run: waslagenie config --scope <user|workspace>'
+      'Scope is not configured. Run: wasla config --scope <user|workspace>'
     );
   });
 

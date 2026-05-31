@@ -12,7 +12,7 @@ describe('Cross-Provider Sync: MCP Servers', () => {
   let tmpBase: string;
 
   beforeEach(async () => {
-    tmpBase = await mkdtemp(join(tmpdir(), 'waslagenie-e2e-mcp-'));
+    tmpBase = await mkdtemp(join(tmpdir(), 'wasla-e2e-mcp-'));
 
     const markers = {
       claude: join(tmpBase, '.claude'),
@@ -31,9 +31,9 @@ describe('Cross-Provider Sync: MCP Servers', () => {
 
     vi.spyOn(pathUtils, 'getToolMarkers').mockReturnValue(markers);
     vi.spyOn(pathUtils, 'getRegistryPath').mockReturnValue(
-      join(tmpBase, '.waslagenie', 'registry.json')
+      join(tmpBase, '.wasla', 'registry.json')
     );
-    vi.spyOn(pathUtils, 'getRegistryDir').mockReturnValue(join(tmpBase, '.waslagenie'));
+    vi.spyOn(pathUtils, 'getRegistryDir').mockReturnValue(join(tmpBase, '.wasla'));
   });
 
   afterEach(async () => {

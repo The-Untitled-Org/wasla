@@ -44,7 +44,7 @@ export async function configCommand(options: ConfigOptions): Promise<boolean> {
     const response = await prompts<string>({
       type: 'select',
       name: 'scope' as const,
-      message: 'Where should WaslaGenie store and sync assets?',
+      message: 'Where should Wasla store and sync assets?',
       choices: [
         { title: 'Workspace - current project only', value: 'workspace' },
         { title: 'User - available across all projects', value: 'user' },

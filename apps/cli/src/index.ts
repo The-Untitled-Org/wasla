@@ -29,18 +29,18 @@ function readPackageVersion(moduleUrl: string): string {
 }
 
 program
-  .name('waslagenie')
+  .name('wasla')
   .description('Universal synchronization layer for AI agent orchestrators')
   .version(readPackageVersion(import.meta.url));
 
 program.addCommand(
-  new Command('install').description('Prepare WaslaGenie CLI state').action(installCommand)
+  new Command('install').description('Prepare Wasla CLI state').action(installCommand)
 );
 
 program.addCommand(
   new Command('register')
     .option('--to <targets>', 'Target provider(s), comma-separated. Example: claude,gemini')
-    .description('Register WaslaGenie helper skills inside installed AI tools')
+    .description('Register Wasla helper skills inside installed AI tools')
     .action((options) => registerCommand(options))
 );
 
@@ -68,7 +68,7 @@ program.addCommand(
   new Command('config')
     .option('--scope <scope>', 'Set scope to user or workspace')
     .option('--show', 'Show current config')
-    .description('Configure WaslaGenie settings')
+    .description('Configure Wasla settings')
     .action(async (options) => {
       await configCommand(options);
     })

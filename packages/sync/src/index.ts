@@ -1,4 +1,4 @@
-import { DiscoveredFile, AssetType, Asset, WaslaGenieAdapter } from '#core/types.js';
+import { DiscoveredFile, AssetType, Asset, WaslaAdapter } from '#core/types.js';
 import { RegistryManager } from '#core/registry.js';
 import { Scanner } from './scanner.js';
 import { getAdapter } from '#adapters/factory.js';
@@ -352,7 +352,7 @@ export class Syncer {
     }
 
     const candidates =
-      sourceTool === 'waslagenie'
+      sourceTool === 'wasla'
         ? (await this.scanner.scanAllTools([type])).filter((item) => item.name === name)
         : (await this.scanner.scanTool(sourceTool, [type])).filter((item) => item.name === name);
     const sourceCandidates = candidates.filter((item) => item.tool !== targetTool);
@@ -364,7 +364,7 @@ export class Syncer {
     }
 
     const sourceItems =
-      sourceTool === 'waslagenie' ? items.filter((item) => item.tool === items[0].tool) : items;
+      sourceTool === 'wasla' ? items.filter((item) => item.tool === items[0].tool) : items;
     const sorted = sourceItems.sort((a, b) => b.modifiedAt - a.modifiedAt);
     const source =
       type === 'skill'
@@ -497,7 +497,7 @@ export class Syncer {
   }
 
   private getTargetPath(
-    adapter: WaslaGenieAdapter,
+    adapter: WaslaAdapter,
     type: AssetType,
     name: string,
     relativePath: string
@@ -515,7 +515,7 @@ export class Syncer {
   }
 
   private async writeTarget(
-    adapter: WaslaGenieAdapter,
+    adapter: WaslaAdapter,
     asset: Asset,
     type: AssetType,
     name: string,
@@ -541,7 +541,7 @@ export class Syncer {
   }
 
   private async writeMcpServer(
-    adapter: WaslaGenieAdapter,
+    adapter: WaslaAdapter,
     name: string,
     content: string,
     targetPath: string
@@ -646,7 +646,7 @@ export class Syncer {
   }
 
   private async deleteStubTarget(asset: Asset, stub: Asset['stubs'][number]): Promise<number> {
-    let adapter: WaslaGenieAdapter;
+    let adapter: WaslaAdapter;
     try {
       adapter = getAdapter(stub.tool, this.scope);
     } catch {

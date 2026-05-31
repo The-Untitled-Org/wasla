@@ -49,7 +49,7 @@ export async function registerCommand(options: RegisterOptions = {}): Promise<vo
     }
 
     spacer();
-    section('Registering WaslaGenie helper skills...');
+    section('Registering Wasla helper skills...');
     spacer();
 
     await ensureDir(getRegistryDir(scope));

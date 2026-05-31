@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-WaslaGenie is currently in active development. Security fixes are provided for the latest published
+Wasla is currently in active development. Security fixes are provided for the latest published
 version only.
 
 | Version | Supported |
@@ -15,7 +15,7 @@ version only.
 Do not open a public GitHub issue for a suspected vulnerability.
 
 Report vulnerabilities privately through the repository's
-[Security Advisories](https://github.com/The-Untitled-Org/wasla-genie/security/advisories/new) page.
+[Security Advisories](https://github.com/The-Untitled-Org/wasla/security/advisories/new) page.
 
 Include:
 
@@ -37,4 +37,4 @@ Security reports may include issues affecting:
 - Published npm package contents
 
 For non-sensitive bugs or hardening suggestions that do not expose a vulnerability, open a regular
-[GitHub issue](https://github.com/The-Untitled-Org/wasla-genie/issues).
+[GitHub issue](https://github.com/The-Untitled-Org/wasla/issues).

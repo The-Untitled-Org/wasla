@@ -18,10 +18,10 @@ export async function readConfiguredScope(): Promise<WaslaScope | null> {
 
   const config = await readJSON<WaslaConfig>(configPath);
   if (typeof config !== 'object' || config === null || typeof config.scope !== 'string') {
-    throw new Error(`Invalid scope in ${configPath}. Run: waslagenie config --scope <scope>`);
+    throw new Error(`Invalid scope in ${configPath}. Run: wasla config --scope <scope>`);
   }
   if (config.scope !== 'user' && config.scope !== 'workspace') {
-    throw new Error(`Invalid scope in ${configPath}. Run: waslagenie config --scope <scope>`);
+    throw new Error(`Invalid scope in ${configPath}. Run: wasla config --scope <scope>`);
   }
   return config.scope;
 }
@@ -29,7 +29,7 @@ export async function readConfiguredScope(): Promise<WaslaScope | null> {
 export async function requireConfiguredScope(): Promise<WaslaScope> {
   const scope = await readConfiguredScope();
   if (!scope) {
-    throw new Error('Scope is not configured. Run: waslagenie config --scope <user|workspace>');
+    throw new Error('Scope is not configured. Run: wasla config --scope <user|workspace>');
   }
   return scope;
 }

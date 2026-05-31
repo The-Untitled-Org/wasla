@@ -10,11 +10,9 @@ vi.mock('prompts', () => ({
 }));
 
 vi.mock('#shared/config.js', () => ({
-  getConfigPath: vi.fn(() => '/home/test/.waslagenie/config.json'),
+  getConfigPath: vi.fn(() => '/home/test/.wasla/config.json'),
   getConfiguredRegistryPath: vi.fn((scope: string) =>
-    scope === 'user'
-      ? '/home/test/.waslagenie/registry.json'
-      : '/workspace/.waslagenie/registry.json'
+    scope === 'user' ? '/home/test/.wasla/registry.json' : '/workspace/.wasla/registry.json'
   ),
   readConfiguredScope: vi.fn(async () => null),
   writeConfiguredScope: writeConfiguredScopeMock,

@@ -79,9 +79,9 @@ export class ClaudeAdapter extends BaseAdapter {
   }
 
   async installSkill(): Promise<void> {
-    // Write a WaslaGenie skill into Claude's native skills directory.
+    // Write a Wasla skill into Claude's native skills directory.
     // We do NOT touch CLAUDE.md — that file belongs to the user.
-    const skillDir = join(this.paths.skill!, 'waslagenie');
+    const skillDir = join(this.paths.skill!, 'wasla');
     await ensureDir(skillDir);
 
     const skillPath = join(skillDir, 'SKILL.md');
@@ -91,19 +91,19 @@ export class ClaudeAdapter extends BaseAdapter {
 
     const skillContent = `---
 description: >
-  Runs WaslaGenie CLI commands to sync, inspect, or manage agents and MCPs
+  Runs Wasla CLI commands to sync, inspect, or manage agents and MCPs
   across AI orchestrators. Use when asked to sync tools, check sync status,
-  install WaslaGenie, or troubleshoot why an agent isn't appearing in a tool.
+  install Wasla, or troubleshoot why an agent isn't appearing in a tool.
 ---
 
-# WaslaGenie Operator
+# Wasla Operator
 
-Use the \`waslagenie\` CLI to sync agents and MCPs across all installed AI tools.
+Use the \`wasla\` CLI to sync agents and MCPs across all installed AI tools.
 
 \`\`\`bash
-waslagenie sync     # Mirror agents across all tools
-waslagenie status   # Show registry state
-waslagenie watch    # Auto-sync on file changes
+wasla sync     # Mirror agents across all tools
+wasla status   # Show registry state
+wasla watch    # Auto-sync on file changes
 \`\`\`
 `;
 

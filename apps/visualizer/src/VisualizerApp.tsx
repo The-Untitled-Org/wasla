@@ -384,7 +384,7 @@ export function VisualizerApp({
       setConfig((await response.json()) as VisualizerConfiguration);
     } catch {
       setConfig(null);
-      setLoadError('Cannot load workspace config. Start with: waslagenie ui');
+      setLoadError('Cannot load workspace config. Start with: wasla ui');
     }
   }, []);
 

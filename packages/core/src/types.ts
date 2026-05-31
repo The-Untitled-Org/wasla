@@ -39,7 +39,7 @@ export interface Registry {
 }
 
 // Adapter interface
-export interface WaslaGenieAdapter {
+export interface WaslaAdapter {
   name: string;
   displayName: string;
 
@@ -72,7 +72,7 @@ export interface WaslaGenieAdapter {
 // Scanner types
 export interface DiscoveredFile {
   path: string; // Full absolute path
-  relativePath: string; // Relative path within type dir (e.g., "waslagenie/SKILL.md" for skills)
+  relativePath: string; // Relative path within type dir (e.g., "wasla/SKILL.md" for skills)
   isStub: boolean;
   tool: string;
   type: AssetType;

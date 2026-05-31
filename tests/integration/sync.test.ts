@@ -5,7 +5,7 @@
  *  - Full scan → detect → sync pipeline with real file fixtures
  *  - "Latest-is-Greatest": newest file by mtime becomes the source
  *  - Stubs are NOT treated as originals during conflict detection
- *  - Stubs written to non-source tools contain waslagenie marker
+ *  - Stubs written to non-source tools contain wasla marker
  *  - Canonical registry location receives the synced content
  *  - Registry is persisted and reloadable after sync
  *  - Multiple assets synced in a single pass
@@ -28,7 +28,7 @@ import * as configUtils from '@utils/config';
 // ─── helpers ────────────────────────────────────────────────────────────────
 
 async function makeTmpDir(): Promise<string> {
-  return mkdtemp(join(tmpdir(), 'waslagenie-sync-'));
+  return mkdtemp(join(tmpdir(), 'wasla-sync-'));
 }
 
 let isolatedWorkspace: string;
@@ -57,9 +57,9 @@ beforeEach(async () => {
         }
   );
   vi.spyOn(pathUtils, 'getRegistryPath').mockImplementation((scope) =>
-    join(isolatedWorkspace, '.waslagenie', `${scope}-registry.json`)
+    join(isolatedWorkspace, '.wasla', `${scope}-registry.json`)
   );
-  vi.spyOn(pathUtils, 'getRegistryDir').mockReturnValue(join(isolatedWorkspace, '.waslagenie'));
+  vi.spyOn(pathUtils, 'getRegistryDir').mockReturnValue(join(isolatedWorkspace, '.wasla'));
   vi.spyOn(configUtils, 'readConfiguredScope').mockResolvedValue('workspace');
   vi.spyOn(configUtils, 'requireConfiguredScope').mockResolvedValue('workspace');
 });
@@ -188,25 +188,25 @@ describe('Sync — Latest-is-Greatest (real file fixture)', () => {
     expect(newerStat.mtimeMs).toBeGreaterThan(olderStat.mtimeMs);
   });
 
-  it('stub file is detectable by waslagenie marker', async () => {
+  it('stub file is detectable by wasla marker', async () => {
     const agentDir = join(tmpBase, 'agents');
     await ensureDir(agentDir);
     const stubPath = join(agentDir, 'stub.md');
-    await writeText(stubPath, '<!-- waslagenie-stub -->\nYou are a stub agent.');
+    await writeText(stubPath, '<!-- wasla-stub -->\nYou are a stub agent.');
 
     const content = await readText(stubPath);
-    expect(content.includes('waslagenie-stub') || content.includes('waslagenie')).toBe(true);
+    expect(content.includes('wasla-stub') || content.includes('wasla')).toBe(true);
   });
 
   it('original file without marker is NOT classified as stub', async () => {
     const agentDir = join(tmpBase, 'agents');
     await ensureDir(agentDir);
     const origPath = join(agentDir, 'researcher.md');
-    await writeText(origPath, 'You are a researcher. No waslagenie marker here.');
+    await writeText(origPath, 'You are a researcher. No wasla marker here.');
 
     const content = await readText(origPath);
-    expect(content.includes('waslagenie-stub')).toBe(false);
-    expect(content.includes('waslagenie:')).toBe(false);
+    expect(content.includes('wasla-stub')).toBe(false);
+    expect(content.includes('wasla:')).toBe(false);
   });
 });
 
@@ -276,11 +276,11 @@ describe('Sync — bootstrap installed adapter that has no agents/ dir', () => {
     await adapter.installSkill();
     await adapter.installSkill(); // second call — must be idempotent
 
-    const skillPath = join(claudeDir, 'skills', 'waslagenie', 'SKILL.md');
+    const skillPath = join(claudeDir, 'skills', 'wasla', 'SKILL.md');
     expect(await fileExists(skillPath)).toBe(true);
 
     const content = await readText(skillPath);
-    expect(content).toContain('WaslaGenie Operator');
+    expect(content).toContain('Wasla Operator');
     expect(await fileExists(join(claudeDir, 'CLAUDE.md'))).toBe(false); // CLAUDE.md not created
   });
 
@@ -290,7 +290,7 @@ describe('Sync — bootstrap installed adapter that has no agents/ dir', () => {
     await ensureDir(claudeDir);
 
     const agentsDir = join(claudeDir, 'agents');
-    const skillPath = join(agentsDir, 'waslagenie.md');
+    const skillPath = join(agentsDir, 'wasla.md');
     const contextPath = join(claudeDir, 'CLAUDE.md');
 
     // Precondition: no agents/ dir, no skill file, no context file
@@ -312,7 +312,7 @@ describe('Sync — bootstrap installed adapter that has no agents/ dir', () => {
     // Run syncCommand
     await syncCommand({ promptForScope: false });
 
-    // Registration is opt-in through `waslagenie register`.
+    // Registration is opt-in through `wasla register`.
     expect(await fileExists(agentsDir)).toBe(false);
     expect(await fileExists(skillPath)).toBe(false);
     expect(await fileExists(contextPath)).toBe(false);

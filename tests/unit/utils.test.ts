@@ -19,8 +19,8 @@ import { getFileName, getFileNameWithoutExt, getFileExtension } from '@utils/fs'
 
 describe('expandTilde', () => {
   it('expands leading ~ to homedir', () => {
-    const result = expandTilde('~/.waslagenie/registry.json');
-    expect(normalize(result)).toBe(resolve(join(homedir(), '.waslagenie/registry.json')));
+    const result = expandTilde('~/.wasla/registry.json');
+    expect(normalize(result)).toBe(resolve(join(homedir(), '.wasla/registry.json')));
   });
 
   it('returns the path unchanged when it does not start with ~', () => {
@@ -46,25 +46,25 @@ describe('Path Utilities (Production Mode)', () => {
     vi.unstubAllEnvs();
   });
 
-  it('returns user path containing .waslagenie/registry.json', () => {
+  it('returns user path containing .wasla/registry.json', () => {
     const p = getRegistryPath('user');
-    expect(p).toContain('.waslagenie');
+    expect(p).toContain('.wasla');
     expect(p).toContain('registry.json');
   });
 
   it('returns workspace path relative to cwd', () => {
     const p = getRegistryPath('workspace');
-    expect(p).toBe(resolve('.waslagenie/registry.json'));
+    expect(p).toBe(resolve('.wasla/registry.json'));
   });
 
-  it('returns user dir containing .waslagenie', () => {
+  it('returns user dir containing .wasla', () => {
     const d = getRegistryDir('user');
-    expect(d).toContain('.waslagenie');
+    expect(d).toContain('.wasla');
   });
 
-  it('returns workspace dir as .waslagenie in cwd', () => {
+  it('returns workspace dir as .wasla in cwd', () => {
     const d = getRegistryDir('workspace');
-    expect(d).toBe(resolve('.waslagenie'));
+    expect(d).toBe(resolve('.wasla'));
   });
 });
 
@@ -253,7 +253,7 @@ describe('fs helpers — filesystem interaction', () => {
     const { mkdtemp } = await import('fs/promises');
     const { tmpdir } = await import('os');
     const { join } = await import('path');
-    tmpBase = await mkdtemp(join(tmpdir(), 'waslagenie-fs-test-'));
+    tmpBase = await mkdtemp(join(tmpdir(), 'wasla-fs-test-'));
   });
 
   afterEach(async () => {

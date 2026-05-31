@@ -1,12 +1,12 @@
 # Contributing
 
-We welcome contributions to WaslaGenie! Whether you're interested in fixing bugs, adding features, improving documentation, or creating adapters for new tools, there's a place for you here.
+We welcome contributions to Wasla! Whether you're interested in fixing bugs, adding features, improving documentation, or creating adapters for new tools, there's a place for you here.
 
 ## Getting Started
 
 ```bash
-git clone https://github.com/The-Untitled-Org/wasla-genie
-cd wasla-genie
+git clone https://github.com/The-Untitled-Org/wasla
+cd wasla
 npm install
 npm run dev
 ```
@@ -46,7 +46,7 @@ npm run docs:build        # Build static docs
 - `docs/` — Docusaurus documentation
 - `blog/` — Blog posts
 
-See [Development Guide](https://github.com/The-Untitled-Org/wasla-genie/blob/main/DEVELOPMENT.md) for VSCode setup and debugging.
+See [Development Guide](https://github.com/The-Untitled-Org/wasla/blob/main/DEVELOPMENT.md) for VSCode setup and debugging.
 
 ## Writing an Adapter
 
@@ -69,8 +69,8 @@ Be respectful and collaborative. We're building this together.
 - Check the [Project Specification](/specs/project-spec)
 - Read the [Design Discussion](/discussions/ai-discussions)
 - Browse [Meetings of Mind](/discussions/MoM)
-- Open an issue on [GitHub](https://github.com/The-Untitled-Org/wasla-genie)
+- Open an issue on [GitHub](https://github.com/The-Untitled-Org/wasla)
 
 ---
 
-**Thanks for contributing to WaslaGenie!** ✨
+**Thanks for contributing to Wasla!** ✨

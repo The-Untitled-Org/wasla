@@ -6,7 +6,7 @@ sidebar_label: OpenCode
 
 # OpenCode Provider Contract
 
-OpenCode has native custom agents and Agent Skills. WaslaGenie targets those surfaces directly; it does not turn skills into commands.
+OpenCode has native custom agents and Agent Skills. Wasla targets those surfaces directly; it does not turn skills into commands.
 
 ## Native Paths
 
@@ -17,11 +17,11 @@ OpenCode has native custom agents and Agent Skills. WaslaGenie targets those sur
 | Instructions | `AGENTS.md` | `~/.config/opencode/AGENTS.md` | Read and write as `context` |
 | Config/MCP | `opencode.json` | `~/.config/opencode/opencode.json` | Merge MCP entries under `mcp` |
 
-`commands/` is a different OpenCode capability and is not WaslaGenie's skill destination.
+`commands/` is a different OpenCode capability and is not Wasla's skill destination.
 
 ## MCP Translation
 
-WaslaGenie normalizes MCP servers internally and converts the OpenCode representation at the adapter boundary.
+Wasla normalizes MCP servers internally and converts the OpenCode representation at the adapter boundary.
 
 ```json
 {

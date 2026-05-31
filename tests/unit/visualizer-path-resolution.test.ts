@@ -6,9 +6,7 @@ function fakePkgUrl(suffix: string): string {
   // Build a platform-safe file URL for a fake global install location.
   // pathToFileURL handles the Windows drive-letter requirement.
   const base =
-    process.platform === 'win32'
-      ? 'C:/npm/lib/node_modules/wasla-genie'
-      : '/usr/lib/node_modules/wasla-genie';
+    process.platform === 'win32' ? 'C:/npm/lib/node_modules/wasla' : '/usr/lib/node_modules/wasla';
   return pathToFileURL(`${base}/${suffix}`).href;
 }
 
@@ -20,7 +18,7 @@ describe('resolveVisualizerDist', () => {
 
     expect(result).toContain(join('dist', 'visualizer'));
     expect(result).not.toContain(process.cwd());
-    expect(result).toContain(join('wasla-genie', 'dist', 'visualizer'));
+    expect(result).toContain(join('wasla', 'dist', 'visualizer'));
   });
 
   it('produces a different path from process.cwd()-based resolution', async () => {

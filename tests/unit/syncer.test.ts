@@ -24,7 +24,7 @@ import * as pathUtils from '@utils/paths';
 // ─── helpers ────────────────────────────────────────────────────────────────
 
 async function makeTmpDir(): Promise<string> {
-  return mkdtemp(join(tmpdir(), 'waslagenie-syncer-'));
+  return mkdtemp(join(tmpdir(), 'wasla-syncer-'));
 }
 
 let isolatedWorkspace: string;
@@ -41,9 +41,9 @@ beforeEach(async () => {
     'github-copilot-cli': join(isolatedWorkspace, '.github'),
   });
   vi.spyOn(pathUtils, 'getRegistryPath').mockReturnValue(
-    join(isolatedWorkspace, '.waslagenie', 'registry.json')
+    join(isolatedWorkspace, '.wasla', 'registry.json')
   );
-  vi.spyOn(pathUtils, 'getRegistryDir').mockReturnValue(join(isolatedWorkspace, '.waslagenie'));
+  vi.spyOn(pathUtils, 'getRegistryDir').mockReturnValue(join(isolatedWorkspace, '.wasla'));
 });
 
 afterEach(async () => {
@@ -117,7 +117,7 @@ describe('Syncer.sync — missing discovered files', () => {
     const scanner = new Scanner('user');
     const missingPath = join(
       isolatedWorkspace,
-      '.waslagenie',
+      '.wasla',
       'mcp',
       'io.github.github',
       'github-mcp-server.json'
@@ -232,7 +232,7 @@ describe('Syncer — core sync() logic', () => {
   it('groups, writes missing stubs, updates registry, and logs interactive prompts', async () => {
     const { readText, writeText, ensureDir } = await import('@utils/fs');
     const fsMock = vi.mocked(await import('@utils/fs'));
-    await ensureDir(join(isolatedWorkspace, '.waslagenie'));
+    await ensureDir(join(isolatedWorkspace, '.wasla'));
 
     // Setup a fake registry & scanner
     const registry = new RegistryManager('workspace');

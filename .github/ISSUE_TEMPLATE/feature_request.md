@@ -1,6 +1,6 @@
 ---
 name: ✨ Feature Request
-about: Suggest an idea for WaslaGenie
+about: Suggest an idea for Wasla
 title: '[FEATURE] '
 labels: enhancement
 assignees: ''
