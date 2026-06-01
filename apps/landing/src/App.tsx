@@ -215,6 +215,14 @@ export default function App() {
               Visualizer
             </a>
             <a
+              href="https://the-untitled-org.github.io/wasla/docs/blog"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-sky-500 dark:hover:text-sky-400 transition-colors"
+            >
+              Blog
+            </a>
+            <a
               href="https://the-untitled-org.github.io/wasla/docs/"
               target="_blank"
               rel="noopener noreferrer"
@@ -1065,6 +1073,12 @@ export default function App() {
               className="hover:text-slate-700 dark:hover:text-slate-400 transition-colors"
             >
               Documentation
+            </a>
+            <a
+              href="https://the-untitled-org.github.io/wasla/docs/blog"
+              className="hover:text-slate-700 dark:hover:text-slate-400 transition-colors"
+            >
+              Blog
             </a>
             <a
               href="https://www.npmjs.com/package/@untitled-devs/wasla"
