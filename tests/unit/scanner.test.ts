@@ -14,6 +14,10 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Scanner } from '@syncer/scanner';
 import type { DiscoveredFile } from '@core/types';
 import * as pathUtils from '@utils/paths';
+import { ensureDir, writeText } from '@utils/fs';
+import { join } from 'path';
+import { mkdtemp, rm } from 'fs/promises';
+import { tmpdir } from 'os';
 
 vi.mock('fs/promises', async (importActual) => {
   const actual = await importActual<typeof import('fs/promises')>();
@@ -229,23 +233,6 @@ describe('Scanner — grouping by name+type', () => {
   });
 });
 
-// ─── extractAssetName (Private, tested via scanTool indirectly or specifically) ──
-
-describe('Scanner.extractAssetName (via type logic)', () => {
-  it('correctly handles dot files and paths', async () => {
-    const scanner = new Scanner('workspace');
-    const extract = (scanner as any).extractAssetName.bind(scanner);
-
-    expect(extract('wasla/SKILL.md')).toBe('wasla');
-    expect(extract('wasla\\SKILL.md')).toBe('wasla');
-    expect(extract('researcher.md')).toBe('researcher');
-    expect(extract('my.cool.researcher.md')).toBe('my.cool.researcher');
-    expect(extract('no-extension')).toBe('no-extension');
-    expect(extract('nested/path.with.dots/file.md')).toBe('nested');
-    expect(extract('nested\\path.with.dots\\file.md')).toBe('nested');
-  });
-});
-
 // ─── scanTool & scanAllTools ──────────────────────────────────────────────────
 
 describe('Scanner.scanTool & scanAllTools', () => {
@@ -256,55 +243,42 @@ describe('Scanner.scanTool & scanAllTools', () => {
     );
   });
 
-  it('skips non-directories and handles stub detection', async () => {
-    const fs = await import('@utils/fs');
-    const fsp = await import('fs/promises');
-    const stubPath = '/tmp/claude/skills/testfile.md';
-
-    const isDirSpy = vi
-      .spyOn(fs, 'isDirectory')
-      .mockResolvedValueOnce(false) // First loop skips
-      .mockResolvedValueOnce(true); // Second loop passes
-
-    const statSpy = vi.spyOn(fsp, 'stat').mockResolvedValue({ mtimeMs: 1234 } as any);
-
+  it('delegates discovery to provider patterns and classifies registered stubs', async () => {
+    const tmpBase = await mkdtemp(join(tmpdir(), 'wasla-scanner-'));
+    const claude = join(tmpBase, '.claude');
+    const stubPath = join(claude, 'skills', 'testfile.md');
+    await ensureDir(join(claude, 'skills'));
+    await writeText(stubPath, '# Test\n');
     const scanner = new Scanner('workspace');
-    vi.spyOn(scanner as any, 'recursivelyFindFiles').mockResolvedValue([stubPath]);
-    (scanner as any).stubPaths.add(stubPath);
+    (scanner as any).stubReferences.set(`${stubPath}|`, new Set(['skill']));
     vi.spyOn(pathUtils, 'getToolMarkers').mockReturnValue({
-      claude: '/tmp/claude',
+      claude,
     });
 
-    const res = await scanner.scanTool('claude', ['agent', 'skill']);
+    const res = await scanner.scanTool('claude', ['skill']);
 
     expect(res).toHaveLength(1);
     expect(res[0].isStub).toBe(true);
     expect(res[0].name).toBe('testfile');
-    expect(res[0].modifiedAt).toBe(1234);
 
-    isDirSpy.mockRestore();
-    statSpy.mockRestore();
     vi.restoreAllMocks();
+    await rm(tmpBase, { recursive: true, force: true });
   });
 
   it('returns false for a discovered file absent from the stub registry', async () => {
-    const fs = await import('@utils/fs');
-    const fsp = await import('fs/promises');
-
-    vi.spyOn(fs, 'isDirectory').mockResolvedValue(true);
-    const statSpy = vi.spyOn(fsp, 'stat').mockResolvedValue({ mtimeMs: 5555 } as any);
-
+    const tmpBase = await mkdtemp(join(tmpdir(), 'wasla-scanner-'));
+    const gemini = join(tmpBase, '.gemini');
+    const skillPath = join(gemini, 'skills', 'unreadable', 'SKILL.md');
+    await ensureDir(join(gemini, 'skills', 'unreadable'));
+    await writeText(skillPath, '# Test\n');
     const scanner = new Scanner('workspace');
-    vi.spyOn(scanner as any, 'recursivelyFindFiles').mockResolvedValue([
-      '/tmp/gemini/skills/unreadable/SKILL.md',
-    ]);
     vi.spyOn(pathUtils, 'getToolMarkers').mockReturnValue({
-      gemini: '/tmp/gemini',
+      gemini,
     });
     const res = await scanner.scanTool('gemini', ['skill']);
     expect(res[0].isStub).toBe(false);
 
-    statSpy.mockRestore();
     vi.restoreAllMocks();
+    await rm(tmpBase, { recursive: true, force: true });
   });
 });

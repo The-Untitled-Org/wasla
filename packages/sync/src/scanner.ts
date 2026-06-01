@@ -1,8 +1,6 @@
 import { AssetType, DiscoveredFile, Conflict } from '#core/types.js';
-import { fileExists, isDirectory, readJSON } from '#shared/fs.js';
-import { join, relative } from 'path';
 import { getToolMarkers, getRegistryPath } from '#shared/paths.js';
-import { stat, readdir } from 'fs/promises';
+import { readJSON } from '#shared/fs.js';
 import { getAdapter } from '#adapters/factory.js';
 
 interface Registry {
@@ -13,14 +11,14 @@ interface Registry {
     stubs: Array<{
       tool: string;
       path: string;
+      targetKey?: string;
     }>;
   }>;
 }
 
 export class Scanner {
   private scope: 'user' | 'workspace';
-  private stubPaths: Set<string> = new Set();
-  private stubTypes: Map<string, Set<AssetType>> = new Map();
+  private stubReferences: Map<string, Set<AssetType>> = new Map();
 
   constructor(scope: 'user' | 'workspace' = 'workspace') {
     this.scope = scope;
@@ -34,10 +32,10 @@ export class Scanner {
 
       for (const asset of registry.assets) {
         for (const stub of asset.stubs) {
-          this.stubPaths.add(stub.path);
-          const types = this.stubTypes.get(stub.path) || new Set<AssetType>();
+          const key = this.referenceKey(stub.path, stub.targetKey);
+          const types = this.stubReferences.get(key) || new Set<AssetType>();
           types.add(asset.type);
-          this.stubTypes.set(stub.path, types);
+          this.stubReferences.set(key, types);
         }
       }
     } catch {
@@ -68,142 +66,23 @@ export class Scanner {
     }
 
     const adapter = getAdapter(toolName, this.scope);
+    const selectedTypes = new Set(assetTypes);
     const discovered: DiscoveredFile[] = [];
-
-    for (const type of assetTypes) {
-      const typePathRecord = adapter.paths as Record<AssetType, string | undefined>;
-      const typePath = typePathRecord[type];
-
-      if (type === 'context') {
-        let sourcePath = typePath;
-        if (sourcePath && !(await fileExists(sourcePath)) && this.scope === 'workspace') {
-          const legacyPath = join(toolPath, adapter.contextFile);
-          if (await fileExists(legacyPath)) {
-            sourcePath = legacyPath;
-          }
-        }
-
-        if (!sourcePath || !(await fileExists(sourcePath))) {
-          continue;
-        }
-
-        const stats = await stat(sourcePath);
-        discovered.push({
-          path: sourcePath,
-          relativePath: adapter.contextFile,
-          isStub: this.stubPaths.has(sourcePath),
+    for (const location of adapter.locations) {
+      if (!location.read || !selectedTypes.has(location.type)) continue;
+      discovered.push(
+        ...(await location.discover({
           tool: toolName,
-          type,
-          name: 'context',
-          modifiedAt: stats.mtimeMs,
-        });
-        continue;
-      }
-
-      if (type === 'mcp' && typePath?.endsWith('.json') && (await fileExists(typePath))) {
-        const config = await readJSON<Record<string, unknown>>(typePath);
-        const servers = this.readNestedRecord(config, adapter.mcpKey);
-        const stats = await stat(typePath);
-
-        for (const [name, server] of Object.entries(servers)) {
-          discovered.push({
-            path: typePath,
-            relativePath: `${name}.json`,
-            isStub: this.stubPaths.has(typePath),
-            tool: toolName,
-            type,
-            name,
-            modifiedAt: stats.mtimeMs,
-            content: JSON.stringify(
-              adapter.mcpFromNative(server as Record<string, unknown>),
-              null,
-              2
-            ),
-          });
-        }
-        continue;
-      }
-
-      if (!typePath || !(await isDirectory(typePath))) {
-        if (process.env.DEBUG_SCANNER) {
-          console.log(
-            `[Scanner] Skipping ${type} for ${toolName}: typePath=${typePath}, isDir=${typePath ? await isDirectory(typePath) : 'N/A'}`
-          );
-        }
-        continue;
-      }
-
-      // Recursively find all files in the directory tree
-      const files = await this.recursivelyFindFiles(typePath);
-      if (process.env.DEBUG_SCANNER) {
-        console.log(`[Scanner] Found ${files.length} files for ${type} at ${typePath}`);
-      }
-
-      for (const filePath of files) {
-        const isStub = this.stubPaths.has(filePath);
-        const trackedTypes = this.stubTypes.get(filePath);
-        if (isStub && trackedTypes && !trackedTypes.has(type)) {
-          continue;
-        }
-
-        // Compute relative path from typePath
-        const relativePath = relative(typePath, filePath);
-        const name = this.extractAssetName(relativePath);
-
-        if (process.env.DEBUG_SCANNER) {
-          console.log(
-            `[Scanner] Processing: path=${filePath}, rel=${relativePath}, name=${name}, isStub=${isStub}`
-          );
-        }
-
-        if (name.toLowerCase() === 'wasla') {
-          if (process.env.DEBUG_SCANNER) {
-            console.log(`[Scanner] Skipping wasla asset`);
-          }
-          continue;
-        }
-
-        const stats = await stat(filePath);
-
-        discovered.push({
-          path: filePath,
-          relativePath,
-          isStub,
-          tool: toolName,
-          type,
-          name,
-          modifiedAt: stats.mtimeMs,
-        });
-      }
+          isStub: (reference, type) => {
+            const trackedTypes =
+              this.stubReferences.get(this.referenceKey(reference.path, reference.targetKey)) ??
+              this.stubReferences.get(this.referenceKey(reference.path));
+            return trackedTypes?.has(type) ?? false;
+          },
+        }))
+      );
     }
-
     return discovered;
-  }
-
-  private async recursivelyFindFiles(dirPath: string): Promise<string[]> {
-    const files: string[] = [];
-
-    try {
-      const entries = await readdir(dirPath, { withFileTypes: true });
-
-      for (const entry of entries) {
-        const fullPath = join(dirPath, entry.name);
-
-        if (entry.isDirectory()) {
-          // Recursively search subdirectories
-          const subFiles = await this.recursivelyFindFiles(fullPath);
-          files.push(...subFiles);
-        } else if (entry.isFile()) {
-          // Include all files
-          files.push(fullPath);
-        }
-      }
-    } catch {
-      // If directory doesn't exist or can't be read, return empty
-      return [];
-    }
-
-    return files;
   }
 
   async scanAllTools(
@@ -263,36 +142,7 @@ export class Scanner {
     return grouped;
   }
 
-  private extractAssetName(relativePathOrFileName: string): string {
-    // For nested paths: wasla/SKILL.md -> wasla
-    // For flat files: researcher.md -> researcher
-    const parts = relativePathOrFileName.split(/[/\\]/);
-    if (parts.length > 1) {
-      // Nested: return first directory
-      return parts[0];
-    }
-    // Flat: remove extension
-    const fileName = parts[0];
-    const dotIndex = fileName.lastIndexOf('.');
-    if (dotIndex <= 0) {
-      return fileName;
-    }
-    return fileName.substring(0, dotIndex);
-  }
-
-  private readNestedRecord(
-    config: Record<string, unknown>,
-    keyPath: string
-  ): Record<string, unknown> {
-    let value: unknown = config;
-    for (const key of keyPath.split('.')) {
-      if (!value || typeof value !== 'object' || Array.isArray(value)) {
-        return {};
-      }
-      value = (value as Record<string, unknown>)[key];
-    }
-    return value && typeof value === 'object' && !Array.isArray(value)
-      ? (value as Record<string, unknown>)
-      : {};
+  private referenceKey(path: string, targetKey?: string): string {
+    return `${path}|${targetKey ?? ''}`;
   }
 }

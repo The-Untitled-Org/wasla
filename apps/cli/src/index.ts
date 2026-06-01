@@ -7,6 +7,7 @@ import { fileURLToPath } from 'url';
 import { installCommand } from './commands/install.js';
 import { installSkillCommand } from './commands/install-skill.js';
 import { setupCommand } from './commands/setup.js';
+import { syncCommand } from './commands/sync.js';
 import { statusCommand } from './commands/status.js';
 import { watchCommand } from './commands/watch.js';
 import { visualizerCommand } from './server/visualizer-server.js';
@@ -49,6 +50,13 @@ program.addCommand(
     .option('--scope <scope>', 'Sync scope: user or workspace')
     .description('Provision a provider and hydrate it with the latest Wasla assets')
     .action((provider, options) => setupCommand(provider, options))
+);
+
+program.addCommand(
+  new Command('sync')
+    .option('--scope <scope>', 'Sync scope: user or workspace')
+    .description('Synchronize assets across installed AI tools')
+    .action((options) => syncCommand(options))
 );
 
 program.addCommand(

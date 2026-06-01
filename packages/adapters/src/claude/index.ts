@@ -1,8 +1,12 @@
-import { BaseAdapter } from './base.js';
+import { BaseAdapter } from '../base.js';
 import { Asset } from '#core/types.js';
 import { fileExists, writeText, ensureDir } from '#shared/fs.js';
 import { dirname, join } from 'path';
 import { getToolMarkers } from '#shared/paths.js';
+import { claudeAgentLocations } from './agents.js';
+import { claudeContextLocations } from './context.js';
+import { claudeMcpLocations } from './mcp.js';
+import { claudeSkillLocations } from './skills.js';
 
 export class ClaudeAdapter extends BaseAdapter {
   name = 'claude';
@@ -22,7 +26,7 @@ export class ClaudeAdapter extends BaseAdapter {
       skill: join(markers.claude, 'skills'),
       mcp:
         this.scope === 'workspace'
-          ? join(markers.claude, 'mcp.json')
+          ? join(workspaceRoot, '.mcp.json')
           : join(markers.claude, 'settings.json'),
       context:
         this.scope === 'workspace'
@@ -43,6 +47,16 @@ export class ClaudeAdapter extends BaseAdapter {
 
   get skillDirs() {
     return [this.paths.skill!];
+  }
+
+  get locations() {
+    const locations = [
+      ...claudeAgentLocations(this.paths.agent),
+      ...claudeSkillLocations(this.paths.skill),
+      ...claudeMcpLocations(this.paths.mcp),
+      ...claudeContextLocations(this.scope, this.paths.context, getToolMarkers(this.scope).claude),
+    ];
+    return locations;
   }
 
   async isInstalled(): Promise<boolean> {

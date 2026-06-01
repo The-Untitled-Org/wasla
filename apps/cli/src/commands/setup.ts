@@ -45,8 +45,8 @@ export async function setupCommand(provider: string, options: SetupOptions = {})
     highlight('Setup complete');
     spacer();
     metric('Assets discovered', setup.result.assetsDiscovered);
-    metric('Stubs written', setup.result.stubsWritten);
-    metric('Stubs deleted', setup.result.stubsDeleted);
+    metric('Mirrors written', setup.result.stubsWritten);
+    metric('Mirrors removed', setup.result.stubsDeleted);
   } catch (err) {
     error(`Setup failed: ${err}`);
     process.exit(1);

@@ -1,8 +1,12 @@
-import { BaseAdapter } from './base.js';
+import { BaseAdapter } from '../base.js';
 import { Asset } from '#core/types.js';
 import { fileExists, writeText, ensureDir } from '#shared/fs.js';
 import { dirname, join } from 'path';
 import { getToolMarkers } from '#shared/paths.js';
+import { githubCopilotAgentLocations } from './agents.js';
+import { githubCopilotContextLocations } from './context.js';
+import { githubCopilotMcpLocations } from './mcp.js';
+import { githubCopilotSkillLocations } from './skills.js';
 
 export class GithubCopilotAdapter extends BaseAdapter {
   name = 'github-copilot';
@@ -31,6 +35,19 @@ export class GithubCopilotAdapter extends BaseAdapter {
 
   get skillDirs() {
     return [this.paths.skill!];
+  }
+
+  get locations() {
+    return [
+      ...githubCopilotAgentLocations(this.paths.agent),
+      ...githubCopilotSkillLocations(this.paths.skill),
+      ...githubCopilotMcpLocations(
+        this.paths.mcp,
+        (server) => this.mcpFromNative(server),
+        (server) => this.mcpToNative(server)
+      ),
+      ...githubCopilotContextLocations(this.paths.context),
+    ];
   }
 
   formats = {

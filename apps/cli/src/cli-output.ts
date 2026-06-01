@@ -81,7 +81,7 @@ export function assetList(
         .sort()
         .filter((provider) => !activeProviderSet || activeProviderSet.has(provider));
       console.log(`  ${color('•', ansi.green)} ${color(asset.name, ansi.bold)}`);
-      console.log(`    ${color('Mirrors:', ansi.blue)} ${providers.join(', ') || 'none'}`);
+      console.log(`    ${color('Managed copies:', ansi.blue)} ${providers.join(', ') || 'none'}`);
       if (includeModifiedAt) {
         console.log(
           `    ${color('Updated:', ansi.blue)} ${new Date(asset.last_modified_at).toLocaleString()}`

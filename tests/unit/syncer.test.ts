@@ -139,6 +139,7 @@ describe('Syncer.sync — missing discovered files', () => {
     await expect(syncer.sync(false)).resolves.toEqual({
       stubsWritten: 0,
       stubsDeleted: 0,
+      writtenPaths: [],
       assetsDiscovered: 0,
     });
   });

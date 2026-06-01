@@ -86,7 +86,7 @@ describe('cli-output utilities', () => {
     );
 
     expect(consoleLogSpy).toHaveBeenCalledWith('\u001b[36m\u001b[1m  SKILLS (1)\u001b[0m');
-    expect(consoleLogSpy).toHaveBeenCalledWith('    \u001b[34mMirrors:\u001b[0m claude');
+    expect(consoleLogSpy).toHaveBeenCalledWith('    \u001b[34mManaged copies:\u001b[0m claude');
     expect(consoleLogSpy).not.toHaveBeenCalledWith(expect.stringContaining('openclaw'));
   });
 
@@ -107,7 +107,7 @@ describe('cli-output utilities', () => {
     );
 
     expect(consoleLogSpy).toHaveBeenCalledWith('\u001b[36m\u001b[1m  MCP SERVERS (1)\u001b[0m');
-    expect(consoleLogSpy).toHaveBeenCalledWith('    \u001b[34mMirrors:\u001b[0m none');
+    expect(consoleLogSpy).toHaveBeenCalledWith('    \u001b[34mManaged copies:\u001b[0m none');
     expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Updated:'));
   });
 
@@ -130,7 +130,9 @@ describe('cli-output utilities', () => {
     );
 
     expect(consoleLogSpy).toHaveBeenCalledWith('\u001b[36m\u001b[1m  SKILLS (1)\u001b[0m');
-    expect(consoleLogSpy).toHaveBeenCalledWith('    \u001b[34mMirrors:\u001b[0m claude, gemini');
+    expect(consoleLogSpy).toHaveBeenCalledWith(
+      '    \u001b[34mManaged copies:\u001b[0m claude, gemini'
+    );
   });
 
   it('step prints with newline', () => {

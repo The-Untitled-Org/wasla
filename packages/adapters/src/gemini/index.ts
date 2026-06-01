@@ -1,8 +1,12 @@
-import { BaseAdapter } from './base.js';
+import { BaseAdapter } from '../base.js';
 import { Asset } from '#core/types.js';
 import { fileExists, writeText, ensureDir } from '#shared/fs.js';
 import { dirname, join } from 'path';
 import { getToolMarkers } from '#shared/paths.js';
+import { geminiAgentLocations } from './agents.js';
+import { geminiContextLocations } from './context.js';
+import { geminiMcpLocations } from './mcp.js';
+import { geminiSkillLocations } from './skills.js';
 
 export class GeminiAdapter extends BaseAdapter {
   name = 'gemini';
@@ -40,6 +44,15 @@ export class GeminiAdapter extends BaseAdapter {
 
   get skillDirs() {
     return [this.paths.skill!!];
+  }
+
+  get locations() {
+    return [
+      ...geminiAgentLocations(this.paths.agent),
+      ...geminiSkillLocations(this.paths.skill),
+      ...geminiMcpLocations(this.paths.mcp, (server) => this.mcpFromNative(server)),
+      ...geminiContextLocations(this.scope, this.paths.context, this.paths.mcp),
+    ];
   }
 
   async isInstalled(): Promise<boolean> {

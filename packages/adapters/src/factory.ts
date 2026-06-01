@@ -1,11 +1,11 @@
-import { OpenCodeAdapter } from './opencode.js';
-import { CursorAdapter } from './cursor.js';
-import { GithubCopilotAdapter } from './github-copilot.js';
-import { GithubCopilotCliAdapter } from './github-copilot-cli.js';
+import { OpenCodeAdapter } from './opencode/index.js';
+import { CursorAdapter } from './cursor/index.js';
+import { GithubCopilotAdapter } from './github-copilot/index.js';
+import { GithubCopilotCliAdapter } from './github-copilot-cli/index.js';
 import { WaslaAdapter } from '#core/types.js';
-import { ClaudeAdapter } from './claude.js';
-import { GeminiAdapter } from './gemini.js';
-import { OpenclawAdapter } from './openclaw.js';
+import { ClaudeAdapter } from './claude/index.js';
+import { GeminiAdapter } from './gemini/index.js';
+import { OpenclawAdapter } from './openclaw/index.js';
 
 function createAdapters(scope: 'user' | 'workspace' = 'user'): Record<string, WaslaAdapter> {
   return {

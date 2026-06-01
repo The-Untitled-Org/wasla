@@ -217,6 +217,21 @@ describe('Copilot host MCP locations', () => {
   });
 });
 
+describe('OpenCode skill locations', () => {
+  it('keeps compatibility skill directories read-only', () => {
+    const adapter = new OpenCodeAdapter('workspace');
+    const compatibility = adapter.locations.filter((location) =>
+      location.id.includes('compatible')
+    );
+
+    expect(compatibility.map((location) => location.id)).toEqual([
+      'claude-compatible-skills',
+      'agent-compatible-skills',
+    ]);
+    expect(compatibility.every((location) => location.read && !location.write)).toBe(true);
+  });
+});
+
 // ─── writeStub — skill type ───────────────────────────────────────────────────
 
 describe.each([

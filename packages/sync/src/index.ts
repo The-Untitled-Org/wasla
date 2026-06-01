@@ -1,18 +1,17 @@
-import { DiscoveredFile, AssetType, Asset, WaslaAdapter } from '#core/types.js';
+import {
+  DiscoveredFile,
+  AssetType,
+  Asset,
+  WaslaAdapter,
+  AssetLocation,
+  NativeAssetReference,
+} from '#core/types.js';
 import { RegistryManager } from '#core/registry.js';
 import { Scanner } from './scanner.js';
 import { getAdapter } from '#adapters/factory.js';
-import { basename, dirname, join, sep } from 'path';
+import { dirname, join, sep } from 'path';
 import { getRegistryDir } from '#shared/paths.js';
-import {
-  readText,
-  writeText,
-  ensureDir,
-  fileExists,
-  readJSON,
-  writeJSON,
-  removePath,
-} from '#shared/fs.js';
+import { readText, writeText, ensureDir, removePath } from '#shared/fs.js';
 import { createHash } from 'crypto';
 
 export class Syncer {
@@ -34,6 +33,7 @@ export class Syncer {
     stubsWritten: number;
     stubsDeleted: number;
     assetsDiscovered: number;
+    writtenPaths: string[];
   }> {
     // Initialize scanner with registry stub information
     await this.scanner.initialize();
@@ -57,6 +57,7 @@ export class Syncer {
     const installedTools = await this.scanner.detectInstalledTools();
 
     let stubsWritten = 0;
+    const writtenPaths: string[] = [];
     const stubsDeleted = await this.reconcileDeletedAssets(grouped, installedTools);
     const assetsDiscovered = Object.keys(grouped).length;
 
@@ -107,49 +108,42 @@ export class Syncer {
       // Mirror to all other tool locations
       for (const tool of installedTools) {
         const adapter = getAdapter(tool, this.scope);
-        const pathsRecord = adapter.paths as Record<AssetType, string | undefined>;
-        const formatsRecord = adapter.formats as Record<AssetType, string | undefined>;
-        const typeDir = pathsRecord[type as AssetType];
-
-        if (!typeDir) {
+        const location = this.getWriteLocation(adapter, type);
+        if (!location) {
           // This tool doesn't support this asset type
           continue;
         }
 
         const filesToMirror =
-          type === 'skill' && formatsRecord.skill === 'md'
+          type === 'skill' && location.format === 'md'
             ? items.filter((item) => item.tool === latest.tool)
             : [latest];
-        let primaryTargetPath: string | undefined;
+        let primaryReference: NativeAssetReference | undefined;
 
         for (const file of filesToMirror) {
-          const targetPath = this.getTargetPath(adapter, type, name, file.relativePath);
-          if (!targetPath) continue;
-
-          if (file.path === latest.path) {
-            primaryTargetPath = targetPath;
-          }
-
-          // Don't overwrite the latest source if it's already there
-          if (tool === latest.tool && file.path === targetPath) {
-            continue;
-          }
-
           const fileContent =
             file.content ?? (file.path === latest.path ? content : await readText(file.path));
 
-          // Write the mirrored content (Option B)
-          if (await this.writeTarget(adapter, asset, type, name, fileContent, targetPath)) {
+          const result = await location.writeAsset({
+            name,
+            content: fileContent,
+            relativePath: file.relativePath,
+          });
+          if (file.path === latest.path) {
+            primaryReference = result.reference;
+          }
+          if (result.changed) {
             stubsWritten++;
+            writtenPaths.push(result.reference.path);
           }
         }
 
-        if (!primaryTargetPath) {
+        if (!primaryReference) {
           continue;
         }
 
         // Update stub info in registry
-        await this.upsertStub(asset, tool, primaryTargetPath, contentHash);
+        await this.upsertStub(asset, tool, location.id, primaryReference, contentHash);
       }
 
       // Also save to canonical registry location
@@ -172,6 +166,7 @@ export class Syncer {
       stubsWritten,
       stubsDeleted,
       assetsDiscovered,
+      writtenPaths: [...new Set(writtenPaths)],
     };
   }
 
@@ -194,6 +189,7 @@ export class Syncer {
     stubsWritten: number;
     stubsDeleted: number;
     assetsDiscovered: number;
+    writtenPaths: string[];
   }> {
     // Initialize scanner with registry stub information
     await this.scanner.initialize();
@@ -224,6 +220,7 @@ export class Syncer {
     await this.removeMissingFiles(deletionGrouped);
 
     let stubsWritten = 0;
+    const writtenPaths: string[] = [];
     const stubsDeleted = await this.reconcileDeletedAssets(
       deletionGrouped,
       [...new Set([sourceTool, ...targetTools])],
@@ -272,47 +269,48 @@ export class Syncer {
           last_synced_at: new Date().toISOString(),
         });
       }
-      await this.upsertStub(asset, sourceTool, source.path, contentHash);
+      await this.upsertStub(
+        asset,
+        sourceTool,
+        source.patternId,
+        { path: source.path, targetKey: source.targetKey },
+        contentHash
+      );
 
       // Write only to target tools
       for (const tool of targetTools) {
         const adapter = getAdapter(tool, this.scope);
-        const formatsRecord = adapter.formats as Record<AssetType, string | undefined>;
-        const pathsRecord = adapter.paths as Record<AssetType, string | undefined>;
-        const typeDir = pathsRecord[type as AssetType];
-        if (!typeDir || !formatsRecord[type as AssetType]) {
+        const location = this.getWriteLocation(adapter, type);
+        if (!location) {
           // This tool doesn't support this asset type
           continue;
         }
-        const filesToMirror = type === 'skill' && formatsRecord.skill === 'md' ? items : [source];
-        let primaryTargetPath: string | undefined;
+        const filesToMirror = type === 'skill' && location.format === 'md' ? items : [source];
+        let primaryReference: NativeAssetReference | undefined;
 
         for (const file of filesToMirror) {
-          const targetPath = this.getTargetPath(adapter, type, name, file.relativePath);
-          if (!targetPath) continue;
-
-          if (file.path === source.path) {
-            primaryTargetPath = targetPath;
-          }
-
-          // Don't overwrite the source if it's already there
-          if (tool === sourceTool && file.path === targetPath) {
-            continue;
-          }
-
           const fileContent =
             file.content ?? (file.path === source.path ? content : await readText(file.path));
-          if (await this.writeTarget(adapter, asset, type, name, fileContent, targetPath)) {
+          const result = await location.writeAsset({
+            name,
+            content: fileContent,
+            relativePath: file.relativePath,
+          });
+          if (file.path === source.path) {
+            primaryReference = result.reference;
+          }
+          if (result.changed) {
             stubsWritten++;
+            writtenPaths.push(result.reference.path);
           }
         }
 
-        if (!primaryTargetPath) {
+        if (!primaryReference) {
           continue;
         }
 
         // Update stub info in registry
-        await this.upsertStub(asset, tool, primaryTargetPath, contentHash);
+        await this.upsertStub(asset, tool, location.id, primaryReference, contentHash);
       }
 
       // Also save to canonical registry location
@@ -335,6 +333,7 @@ export class Syncer {
       stubsWritten,
       stubsDeleted,
       assetsDiscovered,
+      writtenPaths: [...new Set(writtenPaths)],
     };
   }
 
@@ -387,27 +386,35 @@ export class Syncer {
       };
       this.registry.addAsset(asset);
     }
-    await this.upsertStub(asset, source.tool, source.path, contentHash);
+    await this.upsertStub(
+      asset,
+      source.tool,
+      source.patternId,
+      { path: source.path, targetKey: source.targetKey },
+      contentHash
+    );
 
     const adapter = getAdapter(targetTool, this.scope);
-    const formatsRecord = adapter.formats as Record<AssetType, string | undefined>;
-    if (!adapter.paths[type] || !formatsRecord[type]) {
+    const location = this.getWriteLocation(adapter, type);
+    if (!location) {
       throw new Error(`${targetTool} does not support ${type}`);
     }
-    const filesToMirror = type === 'skill' && formatsRecord.skill === 'md' ? sourceItems : [source];
+    const filesToMirror = type === 'skill' && location.format === 'md' ? sourceItems : [source];
     let written = false;
-    let primaryTargetPath: string | undefined;
+    let primaryReference: NativeAssetReference | undefined;
     for (const file of filesToMirror) {
-      const targetPath = this.getTargetPath(adapter, type, name, file.relativePath);
-      if (!targetPath) continue;
-      if (file.path === source.path) primaryTargetPath = targetPath;
       const fileContent =
         file.content ?? (file.path === source.path ? content : await readText(file.path));
-      written =
-        (await this.writeTarget(adapter, asset, type, name, fileContent, targetPath)) || written;
+      const result = await location.writeAsset({
+        name,
+        content: fileContent,
+        relativePath: file.relativePath,
+      });
+      if (file.path === source.path) primaryReference = result.reference;
+      written = result.changed || written;
     }
-    if (primaryTargetPath) {
-      this.upsertStub(asset, targetTool, primaryTargetPath, contentHash);
+    if (primaryReference) {
+      this.upsertStub(asset, targetTool, location.id, primaryReference, contentHash);
     }
     await ensureDir(dirname(this.getCanonicalPath(type, name)));
     await writeText(this.getCanonicalPath(type, name), content);
@@ -427,8 +434,13 @@ export class Syncer {
     const discovered = (await this.scanner.scanTool(tool, [type])).find(
       (item) => item.name === name
     );
-    const path = asset?.stubs.find((stub) => stub.tool === tool)?.path ?? discovered?.path;
-    if (!path) return false;
+    const stub = asset?.stubs.find((candidate) => candidate.tool === tool);
+    const reference = stub
+      ? { path: stub.path, targetKey: stub.targetKey }
+      : discovered
+        ? { path: discovered.path, targetKey: discovered.targetKey }
+        : undefined;
+    if (!reference) return false;
     const deletableAsset: Asset = asset ?? {
       id: RegistryManager.generateId(),
       name,
@@ -439,7 +451,8 @@ export class Syncer {
     };
     const deleted = await this.deleteStubTarget(deletableAsset, {
       tool,
-      path,
+      patternId: stub?.patternId ?? discovered?.patternId,
+      ...reference,
       written_at: new Date().toISOString(),
       hash: '',
     });
@@ -496,105 +509,40 @@ export class Syncer {
     );
   }
 
-  private getTargetPath(
-    adapter: WaslaAdapter,
-    type: AssetType,
-    name: string,
-    relativePath: string
-  ): string | undefined {
-    const typeDir = adapter.paths[type];
-    const format = adapter.formats[type];
-    if (!typeDir || !format) return undefined;
-
-    if (type === 'context' || type === 'mcp') return typeDir;
-    if (format === 'agent.md') return join(typeDir, `${name}.agent.md`);
-    if (format === 'mdc') return join(typeDir, `${name}.mdc`);
-    if (format === 'instructions.md') return join(typeDir, `${name}.instructions.md`);
-    if (type === 'skill' && dirname(relativePath) !== '.') return join(typeDir, relativePath);
-    return join(typeDir, `${name}.${format}`);
+  private getWriteLocation(adapter: WaslaAdapter, type: AssetType): AssetLocation | undefined {
+    return adapter.locations
+      .filter((location) => location.type === type && location.write)
+      .sort((a, b) => b.priority - a.priority)[0];
   }
 
-  private async writeTarget(
-    adapter: WaslaAdapter,
+  private async upsertStub(
     asset: Asset,
-    type: AssetType,
-    name: string,
-    content: string,
-    targetPath: string
-  ): Promise<boolean> {
-    if (type === 'context') {
-      if ((await fileExists(targetPath)) && (await readText(targetPath)) === content) {
-        return false;
-      }
-      await ensureDir(dirname(targetPath));
-      await writeText(targetPath, content);
-      return true;
-    }
-    if (type === 'mcp') {
-      return this.writeMcpServer(adapter, name, content, targetPath);
-    }
-    if ((await fileExists(targetPath)) && (await readText(targetPath)) === content) {
-      return false;
-    }
-    await adapter.writeStub(asset, content, targetPath);
-    return true;
-  }
-
-  private async writeMcpServer(
-    adapter: WaslaAdapter,
-    name: string,
-    content: string,
-    targetPath: string
-  ): Promise<boolean> {
-    const config = (await fileExists(targetPath))
-      ? await readJSON<Record<string, unknown>>(targetPath)
-      : {};
-    let node: Record<string, unknown> = config;
-    const keys = adapter.mcpKey.split('.');
-    for (const key of keys.slice(0, -1)) {
-      const child = node[key];
-      if (!child || typeof child !== 'object' || Array.isArray(child)) {
-        node[key] = {};
-      }
-      node = node[key] as Record<string, unknown>;
-    }
-    const leaf = keys[keys.length - 1];
-    const servers =
-      node[leaf] && typeof node[leaf] === 'object' && !Array.isArray(node[leaf])
-        ? (node[leaf] as Record<string, unknown>)
-        : {};
-    const nextServer = adapter.mcpToNative(
-      JSON.parse(content) as Record<string, unknown>
-    ) as unknown;
-    if (JSON.stringify(servers[name]) === JSON.stringify(nextServer)) {
-      return false;
-    }
-    servers[name] = nextServer;
-    node[leaf] = servers;
-    await ensureDir(dirname(targetPath));
-    await writeJSON(targetPath, config);
-    return true;
-  }
-
-  private async upsertStub(asset: Asset, tool: string, path: string, hash: string): Promise<void> {
+    tool: string,
+    patternId: string | undefined,
+    reference: NativeAssetReference,
+    hash: string
+  ): Promise<void> {
     const existingStub = asset.stubs.find((stub) => stub.tool === tool);
     if (existingStub) {
       if (
         asset.type === 'context' &&
-        existingStub.path !== path &&
-        (await fileExists(existingStub.path)) &&
-        this.calculateHash(await readText(existingStub.path)) === existingStub.hash
+        existingStub.path !== reference.path &&
+        (await this.removeUnchangedExistingStub(asset, existingStub))
       ) {
-        await removePath(existingStub.path);
+        // The old provider-owned context location was cleaned up.
       }
-      existingStub.path = path;
+      existingStub.patternId = patternId;
+      existingStub.path = reference.path;
+      existingStub.targetKey = reference.targetKey;
       existingStub.written_at = new Date().toISOString();
       existingStub.hash = hash;
       return;
     }
     asset.stubs.push({
       tool,
-      path,
+      patternId,
+      path: reference.path,
+      targetKey: reference.targetKey,
       written_at: new Date().toISOString(),
       hash,
     });
@@ -615,7 +563,10 @@ export class Syncer {
       if (trackedStubs.length === 0) continue;
 
       const itemForStub = (stub: Asset['stubs'][number]) =>
-        items.find((item) => item.tool === stub.tool && item.path === stub.path);
+        items.find(
+          (item) =>
+            item.tool === stub.tool && item.path === stub.path && item.targetKey === stub.targetKey
+        );
       const missing = trackedStubs.filter((stub) => !itemForStub(stub));
       if (missing.length === 0) continue;
       if (requiredDeletedTool && !missing.some((stub) => stub.tool === requiredDeletedTool)) {
@@ -653,35 +604,31 @@ export class Syncer {
       return 0;
     }
 
-    if (asset.type === 'mcp') {
-      if (!(await fileExists(stub.path))) return 0;
-      const config = await readJSON<Record<string, unknown>>(stub.path);
-      let node: Record<string, unknown> = config;
-      const keys = adapter.mcpKey.split('.');
-      for (const key of keys.slice(0, -1)) {
-        const child = node[key];
-        if (!child || typeof child !== 'object' || Array.isArray(child)) return 0;
-        node = child as Record<string, unknown>;
-      }
-      const servers = node[keys[keys.length - 1]];
-      if (!servers || typeof servers !== 'object' || Array.isArray(servers)) return 0;
-      if (!(asset.name in (servers as Record<string, unknown>))) return 0;
-      delete (servers as Record<string, unknown>)[asset.name];
-      await writeJSON(stub.path, config);
-      return 1;
-    }
+    const location =
+      adapter.locations.find((candidate) => candidate.id === stub.patternId) ??
+      adapter.locations.find(
+        (candidate) =>
+          candidate.type === asset.type &&
+          candidate.watchPaths.some(
+            (path) => stub.path === path || stub.path.startsWith(`${path}${sep}`)
+          )
+      );
+    if (!location) return 0;
+    return (await location.removeAsset({ path: stub.path, targetKey: stub.targetKey }, asset.name))
+      ? 1
+      : 0;
+  }
 
-    if (!(await fileExists(stub.path))) return 0;
-    if (
-      asset.type === 'skill' &&
-      adapter.formats.skill === 'md' &&
-      basename(stub.path) === 'SKILL.md'
-    ) {
-      await removePath(dirname(stub.path));
-    } else {
-      await removePath(stub.path);
+  private async removeUnchangedExistingStub(
+    asset: Asset,
+    stub: Asset['stubs'][number]
+  ): Promise<boolean> {
+    try {
+      if (this.calculateHash(await readText(stub.path)) !== stub.hash) return false;
+    } catch {
+      return false;
     }
-    return 1;
+    return (await this.deleteStubTarget(asset, stub)) > 0;
   }
 
   private getCanonicalPath(type: AssetType, name: string): string {

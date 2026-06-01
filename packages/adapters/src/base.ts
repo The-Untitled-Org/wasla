@@ -1,4 +1,4 @@
-import { WaslaAdapter, Asset, AssetFormat } from '#core/types.js';
+import { WaslaAdapter, Asset, AssetFormat, AssetLocation } from '#core/types.js';
 import { ensureDir, fileExists, readText, writeText } from '#shared/fs.js';
 import { join } from 'path';
 
@@ -8,6 +8,7 @@ export abstract class BaseAdapter implements WaslaAdapter {
   abstract mcpKey: string;
   abstract contextFile: string;
   abstract skillDirs: string[];
+  abstract locations: AssetLocation[];
 
   abstract paths: {
     agent?: string;
@@ -25,8 +26,9 @@ export abstract class BaseAdapter implements WaslaAdapter {
   abstract isInstalled(): Promise<boolean>;
 
   async provision(): Promise<void> {
-    if (this.paths.agent) await ensureDir(this.paths.agent);
-    if (this.paths.skill) await ensureDir(this.paths.skill);
+    for (const location of this.locations.filter((location) => location.write)) {
+      await location.provision?.();
+    }
   }
 
   protected async installOperatorSkill(): Promise<void> {

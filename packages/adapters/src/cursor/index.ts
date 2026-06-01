@@ -1,13 +1,17 @@
-import { BaseAdapter } from './base.js';
+import { BaseAdapter } from '../base.js';
 import { Asset } from '#core/types.js';
 import { fileExists, writeText, ensureDir } from '#shared/fs.js';
 import { dirname, join } from 'path';
 import { getToolMarkers } from '#shared/paths.js';
+import { cursorAgentLocations } from './agents.js';
+import { cursorContextLocations } from './context.js';
+import { cursorMcpLocations } from './mcp.js';
+import { cursorSkillLocations } from './skills.js';
 
-export class OpenclawAdapter extends BaseAdapter {
-  name = 'openclaw';
-  displayName = 'OpenClaw';
-  private scope: 'user' | 'workspace';
+export class CursorAdapter extends BaseAdapter {
+  name = 'cursor';
+  displayName = 'Cursor';
+  protected scope: 'user' | 'workspace';
 
   constructor(scope: 'user' | 'workspace' = 'workspace') {
     super();
@@ -16,36 +20,41 @@ export class OpenclawAdapter extends BaseAdapter {
 
   get paths() {
     const markers = getToolMarkers(this.scope);
-    const workspaceRoot =
-      this.scope === 'workspace' ? dirname(markers.openclaw) : join(markers.openclaw, 'workspace');
+    const base = markers['cursor'];
     return {
-      skill:
-        this.scope === 'workspace'
-          ? join(workspaceRoot, 'skills')
-          : join(markers.openclaw, 'skills'),
-      mcp: this.scope === 'user' ? join(markers.openclaw, 'openclaw.json') : undefined,
-      context: join(workspaceRoot, 'AGENTS.md'),
+      agent: join(base, 'agents'),
+      skill: join(base, 'skills'),
+      mcp: join(base, 'mcp.json'),
+      context: this.scope === 'workspace' ? join(dirname(base), 'AGENTS.md') : undefined,
     };
   }
 
-  mcpKey = 'mcp.servers';
+  mcpKey = 'mcpServers';
   contextFile = 'AGENTS.md';
-
-  formats = {
-    skill: 'md' as const,
-    mcp: 'json' as const,
-    context: 'md' as const,
-  };
 
   get skillDirs() {
     return [this.paths.skill!];
   }
 
+  get locations() {
+    return [
+      ...cursorAgentLocations(this.paths.agent),
+      ...cursorSkillLocations(this.paths.skill),
+      ...cursorMcpLocations(this.paths.mcp),
+      ...cursorContextLocations(this.paths.context),
+    ];
+  }
+
+  formats = {
+    agent: 'md' as const,
+    skill: 'md' as const,
+    mcp: 'json' as const,
+    context: 'md' as const,
+  };
+
   async isInstalled(): Promise<boolean> {
-    if (this.scope === 'user') {
-      return fileExists(getToolMarkers(this.scope).openclaw);
-    }
-    return (await fileExists(this.paths.context!)) || (await fileExists(this.paths.skill!));
+    const markers = getToolMarkers(this.scope);
+    return fileExists(markers['cursor']);
   }
 
   async writeStub(asset: Asset, content: string, targetPath: string): Promise<void> {

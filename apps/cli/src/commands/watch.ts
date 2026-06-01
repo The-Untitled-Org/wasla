@@ -26,7 +26,7 @@ export async function watchCommand(options: WatchOptions = {}): Promise<void> {
     const watchDirs = [
       ...new Set(
         getAllAdapters(scope).flatMap((adapter) =>
-          Object.values(adapter.paths).filter((path): path is string => Boolean(path))
+          adapter.locations.flatMap((location) => location.watchPaths)
         )
       ),
     ];
@@ -66,7 +66,7 @@ export async function watchCommand(options: WatchOptions = {}): Promise<void> {
           const result = await syncer.sync(false);
           const now = new Date().toLocaleTimeString();
           console.log(
-            `[${now}] Synced: ${result.stubsWritten} written, ${result.stubsDeleted} deleted`
+            `[${now}] Synced: ${result.stubsWritten} mirrors written, ${result.stubsDeleted} mirrors removed`
           );
         } while (pendingSync);
       } catch (err) {

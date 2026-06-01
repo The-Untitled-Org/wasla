@@ -66,8 +66,8 @@ describe('Cross-Provider Sync: MCP Servers', () => {
 
     // 4. Assert that the MCP config was correctly propagated to other providers
 
-    // Claude stores workspace MCPs in .claude/mcp.json.
-    const claudeStub = join(tmpBase, '.claude', 'mcp.json');
+    // Claude stores project-scoped MCPs in the workspace root .mcp.json file.
+    const claudeStub = join(tmpBase, '.mcp.json');
     expect(await fileExists(claudeStub), 'Claude MCP mirror should exist').toBe(true);
     expect(JSON.parse(await readText(claudeStub)).mcpServers.postgres).toEqual(serverConfig);
 
@@ -162,9 +162,9 @@ describe('Cross-Provider Sync: MCP Servers', () => {
     expect(
       JSON.parse(await readText(join(tmpBase, '.gemini', 'settings.json'))).mcpServers.filesystem
     ).toEqual(expected);
-    expect(
-      JSON.parse(await readText(join(tmpBase, '.claude', 'mcp.json'))).mcpServers.filesystem
-    ).toEqual(expected);
+    expect(JSON.parse(await readText(join(tmpBase, '.mcp.json'))).mcpServers.filesystem).toEqual(
+      expected
+    );
   });
 
   it('attaches and detaches one MCP server from a selected provider', async () => {
@@ -180,7 +180,7 @@ describe('Cross-Provider Sync: MCP Servers', () => {
     );
 
     await syncer.attachAssetToTool('local', 'mcp', 'gemini', 'claude');
-    const claudeMcpPath = join(tmpBase, '.claude', 'mcp.json');
+    const claudeMcpPath = join(tmpBase, '.mcp.json');
     expect(JSON.parse(await readText(claudeMcpPath)).mcpServers.local).toEqual({
       command: 'node',
       args: ['server.js'],

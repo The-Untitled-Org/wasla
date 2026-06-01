@@ -1,8 +1,12 @@
-import { BaseAdapter } from './base.js';
+import { BaseAdapter } from '../base.js';
 import { Asset } from '#core/types.js';
 import { fileExists, writeText, ensureDir } from '#shared/fs.js';
 import { dirname, join } from 'path';
 import { getToolMarkers } from '#shared/paths.js';
+import { openCodeAgentLocations } from './agents.js';
+import { openCodeContextLocations } from './context.js';
+import { openCodeMcpLocations } from './mcp.js';
+import { openCodeSkillLocations } from './skills.js';
 
 export class OpenCodeAdapter extends BaseAdapter {
   name = 'opencode';
@@ -35,6 +39,19 @@ export class OpenCodeAdapter extends BaseAdapter {
 
   get skillDirs() {
     return [this.paths.skill!];
+  }
+
+  get locations() {
+    return [
+      ...openCodeAgentLocations(this.paths.agent, this.paths.mcp),
+      ...openCodeSkillLocations(this.scope, this.paths.skill),
+      ...openCodeMcpLocations(
+        this.paths.mcp,
+        (server) => this.mcpFromNative(server),
+        (server) => this.mcpToNative(server)
+      ),
+      ...openCodeContextLocations(this.paths.context),
+    ];
   }
 
   formats = {

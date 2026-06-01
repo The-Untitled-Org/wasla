@@ -1,8 +1,12 @@
-import { BaseAdapter } from './base.js';
+import { BaseAdapter } from '../base.js';
 import { Asset } from '#core/types.js';
 import { fileExists, writeText, ensureDir } from '#shared/fs.js';
 import { dirname, join } from 'path';
 import { getToolMarkers } from '#shared/paths.js';
+import { githubCopilotCliAgentLocations } from './agents.js';
+import { githubCopilotCliContextLocations } from './context.js';
+import { githubCopilotCliMcpLocations } from './mcp.js';
+import { githubCopilotCliSkillLocations } from './skills.js';
 
 export class GithubCopilotCliAdapter extends BaseAdapter {
   name = 'github-copilot-cli';
@@ -32,6 +36,15 @@ export class GithubCopilotCliAdapter extends BaseAdapter {
     return [this.paths.skill!];
   }
 
+  get locations() {
+    return [
+      ...githubCopilotCliAgentLocations(this.paths.agent),
+      ...githubCopilotCliSkillLocations(this.paths.skill),
+      ...githubCopilotCliMcpLocations(this.paths.mcp),
+      ...githubCopilotCliContextLocations(this.paths.context),
+    ];
+  }
+
   formats = {
     agent: 'agent.md' as const,
     skill: 'md' as const,
@@ -46,7 +59,6 @@ export class GithubCopilotCliAdapter extends BaseAdapter {
       (await fileExists(join(base, 'copilot-instructions.md'))) ||
       (await fileExists(join(base, 'agents'))) ||
       (await fileExists(join(base, 'skills'))) ||
-      (this.scope === 'workspace' && (await fileExists(join(dirname(base), '.mcp.json')))) ||
       (this.scope === 'user' && (await fileExists(join(base, 'mcp-config.json'))))
     );
   }
