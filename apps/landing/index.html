@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/x-icon" href="./img/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="./img/logo-transparent.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="./img/logo.png" />
+    <link rel="apple-touch-icon" href="./img/logo.png" />
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Wasla — One skill layer. Every AI orchestrator. Zero duplication. Automatically synchronize your custom agent skills and MCP tools across Claude Code, Gemini CLI, Cursor, OpenCode, OpenClaw, and GitHub Copilot." />
+    <meta name="keywords" content="AI Agent, MCP, Model Context Protocol, Claude Code, Gemini CLI, Cursor, OpenCode, OpenClaw, GitHub Copilot, Sync, Developer Tools" />
+    <meta name="author" content="The Untitled Org" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://the-untitled-org.github.io/wasla/" />
+    <meta property="og:title" content="Wasla — Universal Sync Layer for AI Orchestrators" />
+    <meta property="og:description" content="One skill layer. Every AI orchestrator. Zero duplication. Automatically sync custom agent skills and MCP configurations." />
+    <meta property="og:image" content="https://the-untitled-org.github.io/wasla/img/logo.png" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://the-untitled-org.github.io/wasla/" />
+    <meta property="twitter:title" content="Wasla — Universal Sync Layer for AI Orchestrators" />
+    <meta property="twitter:description" content="One skill layer. Every AI orchestrator. Zero duplication. Automatically sync custom agent skills and MCP configurations." />
+    <meta property="twitter:image" content="https://the-untitled-org.github.io/wasla/img/logo.png" />
+
+    <!-- JSON-LD Structured Data for AI & Search Engines -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Wasla",
+        "operatingSystem": "Windows, macOS, Linux",
+        "applicationCategory": "DeveloperApplication",
+        "offers": {
+          "@type": "Offer",
+          "price": "0.00",
+          "priceCurrency": "USD"
+        },
+        "description": "Wasla is a universal synchronization layer that automatically syncs agent instructions and MCP configurations across Claude Code, Gemini CLI, Cursor, and OpenCode.",
+        "publisher": {
+          "@type": "Organization",
+          "name": "The Untitled Org",
+          "url": "https://github.com/The-Untitled-Org"
+        },
+        "softwareVersion": "1.0.2",
+        "downloadUrl": "https://www.npmjs.com/package/@untitled-devs/wasla",
+        "codeRepository": "https://github.com/The-Untitled-Org/wasla"
+      }
+    </script>
+    
+    <!-- Google Fonts Preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <script>
+      const savedTheme = localStorage.getItem('wasla-theme');
+      const useDarkTheme = savedTheme
+        ? savedTheme === 'dark'
+        : window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.classList.toggle('dark', useDarkTheme);
+    </script>
+    
+    <title>Wasla — The Universal Sync Layer for AI Orchestrators</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

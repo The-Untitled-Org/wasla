@@ -1,0 +1,76 @@
+.spotlight-card {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  background: hsl(var(--card-bg));
+  border: 1px solid hsl(var(--border));
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
+}
+
+.spotlight-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    400px circle at var(--x, 0px) var(--y, 0px),
+    var(--spotlight-color),
+    transparent 80%
+  );
+  opacity: var(--spotlight-opacity, 0);
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1;
+}
+
+/* Subtle glowing border on hover */
+.spotlight-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  padding: 1.5px;
+  background: radial-gradient(
+    250px circle at var(--x, 0px) var(--y, 0px),
+    hsl(var(--primary) / 0.5),
+    transparent 70%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: var(--spotlight-opacity, 0);
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 2;
+}
+
+.spotlight-card:hover {
+  transform: translateY(-4px);
+  border-color: hsl(var(--card-hover-border));
+  box-shadow:
+    0 18px 42px rgba(15, 23, 42, 0.12),
+    0 0 25px hsl(var(--glow-color));
+}
+
+.dark .spotlight-card {
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+}
+
+.dark .spotlight-card:hover {
+  box-shadow:
+    0 18px 42px rgba(0, 0, 0, 0.28),
+    0 0 25px hsl(var(--glow-color));
+}
+
+.spotlight-card-content {
+  position: relative;
+  z-index: 3;
+  height: 100%;
+}

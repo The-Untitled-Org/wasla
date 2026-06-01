@@ -12,7 +12,7 @@ const config: Config = {
   },
 
   url: 'https://The-Untitled-Org.github.io',
-  baseUrl: '/wasla/',
+  baseUrl: '/wasla/docs/',
 
   organizationName: 'The-Untitled-Org',
   projectName: 'wasla',

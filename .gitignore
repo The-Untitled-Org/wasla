@@ -33,6 +33,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # Wasla provider output (local AI configuration, never commit)
+/.codex/
 /.wasla/
 /.wasla/
 /.claude/

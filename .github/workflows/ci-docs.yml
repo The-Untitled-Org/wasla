@@ -68,8 +68,8 @@ jobs:
           path: output/
           retention-days: 14
 
-  build-docs:
-    name: Build Docusaurus
+  build-pages:
+    name: Build Pages
     needs: [build, test]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
@@ -82,22 +82,34 @@ jobs:
         with:
           node-version: 24
           cache: 'npm'
-          cache-dependency-path: docs/package-lock.json
+          cache-dependency-path: |
+            apps/docs/package-lock.json
+            apps/landing/package-lock.json
 
-      - name: Install docs dependencies
-        run: cd docs && npm ci
+      - name: Install dependencies
+        run: |
+          cd apps/docs && npm ci
+          cd ../landing && npm ci
 
       - name: Build Docusaurus
-        run: cd docs && npm run build
+        run: cd apps/docs && npm run build
+
+      - name: Build Landing Page
+        run: cd apps/landing && npm run build
+
+      - name: Combine Outputs
+        run: |
+          mkdir -p apps/landing/dist/docs
+          cp -r apps/docs/build/* apps/landing/dist/docs/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./docs/build
+          path: ./apps/landing/dist
 
   deploy-docs:
     name: Deploy to GitHub Pages
-    needs: build-docs
+    needs: build-pages
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:

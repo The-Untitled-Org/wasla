@@ -1,0 +1,214 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: 203 87% 43%; /* Wasla Brand Blue */
+  --primary-foreground: 210 40% 98%;
+  
+  --background: 210 40% 99%;
+  --foreground: 224 71% 4%;
+  
+  --card-bg: 0 0% 100% / 0.7;
+  --border: 220 14% 90%;
+  --card-hover-border: 203 87% 43%;
+  --glow-color: 203 87% 43% / 0.08;
+
+  --accent: 203 87% 43%;
+  --accent-secondary: 196 90% 48%;
+  --accent-green: 142 71% 45%;
+  
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.dark {
+  --background: 224 71% 4%;
+  --foreground: 213 31% 91%;
+  
+  --card-bg: 224 71% 6% / 0.6;
+  --border: 224 71% 12%;
+  --card-hover-border: 203 87% 43%;
+  --glow-color: 203 87% 43% / 0.15;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body {
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+code, pre {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+
+
+.network-stage {
+  left: 50%;
+  margin-left: -500px;
+  width: 1000px;
+  height: 360px;
+  transform-origin: top center;
+}
+
+.provider-mark {
+  display: flex;
+  height: 44px;
+  width: 44px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.86);
+  backdrop-filter: blur(12px);
+  animation: node-float 4s ease-in-out infinite;
+}
+
+.dark .provider-mark {
+  background: rgba(4, 16, 30, 0.88);
+}
+
+.provider-label {
+  white-space: nowrap;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.62);
+  padding: 5px 9px;
+  color: #475569;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  backdrop-filter: blur(10px);
+}
+
+.dark .provider-label {
+  background: rgba(4, 16, 30, 0.62);
+  color: #cbd5e1;
+}
+
+@keyframes node-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@media (max-width: 680px) {
+  .network-stage {
+    margin-bottom: -137px;
+    transform: scale(0.62);
+  }
+
+  .provider-label {
+    display: none;
+  }
+}
+
+@media (max-width: 430px) {
+  .network-stage {
+    margin-bottom: -223px;
+    transform: scale(0.38);
+  }
+}
+
+/* Glowing text classes */
+.text-glow-primary {
+  text-shadow: 0 0 20px rgba(14, 131, 205, 0.3);
+}
+
+.text-glow-secondary {
+  text-shadow: 0 0 20px rgba(14, 165, 233, 0.3);
+}
+
+/* Glassmorphism elements */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+.dark .glass-panel {
+  background: rgba(8, 12, 24, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Radial Glow Backdrops */
+.radial-glow {
+  background: radial-gradient(circle, rgba(14, 131, 205, 0.15) 0%, rgba(2, 4, 10, 0) 70%);
+}
+
+.radial-glow-cyan {
+  background: radial-gradient(circle, rgba(14, 165, 233, 0.1) 0%, rgba(2, 4, 10, 0) 70%);
+}
+
+/* Animated gradient border */
+@keyframes border-glow {
+  0%, 100% {
+    border-color: rgba(14, 131, 205, 0.3);
+  }
+  50% {
+    border-color: rgba(14, 165, 233, 0.6);
+  }
+}
+
+.animate-glow-border {
+  animation: border-glow 4s ease-in-out infinite;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #f8fafc;
+}
+.dark ::-webkit-scrollbar-track {
+  background: #02040a;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 5px;
+  border: 2px solid #f8fafc;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border: 2px solid #02040a;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #0e83cd;
+}
+
+/* Orbit rotations */
+@keyframes spin-clockwise {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes spin-counter-clockwise {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+.animate-orbit-1 {
+  animation: spin-clockwise 25s linear infinite;
+}
+
+.animate-orbit-2 {
+  animation: spin-counter-clockwise 35s linear infinite;
+}
+
+.animate-orbit-3 {
+  animation: spin-clockwise 45s linear infinite;
+}
