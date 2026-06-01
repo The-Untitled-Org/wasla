@@ -1,43 +1,34 @@
-import { dirname, join } from 'path';
-import { ensureDir, fileExists, readJSON, writeJSON } from './fs.js';
-import { getRegistryDir, getRegistryPath } from './paths.js';
+import prompts from 'prompts';
+import { getRegistryPath } from './paths.js';
 
 export type WaslaScope = 'user' | 'workspace';
 
-interface WaslaConfig {
-  scope: WaslaScope;
-}
-
-export function getConfigPath(): string {
-  return join(getRegistryDir('user'), 'config.json');
-}
-
-export async function readConfiguredScope(): Promise<WaslaScope | null> {
-  const configPath = getConfigPath();
-  if (!(await fileExists(configPath))) return null;
-
-  const config = await readJSON<WaslaConfig>(configPath);
-  if (typeof config !== 'object' || config === null || typeof config.scope !== 'string') {
-    throw new Error(`Invalid scope in ${configPath}. Run: wasla config --scope <scope>`);
+export async function resolveScope(explicitScope?: string): Promise<WaslaScope> {
+  if (explicitScope) {
+    if (explicitScope !== 'user' && explicitScope !== 'workspace') {
+      throw new Error('Invalid scope. Use: user or workspace');
+    }
+    return explicitScope;
   }
-  if (config.scope !== 'user' && config.scope !== 'workspace') {
-    throw new Error(`Invalid scope in ${configPath}. Run: wasla config --scope <scope>`);
-  }
-  return config.scope;
-}
 
-export async function requireConfiguredScope(): Promise<WaslaScope> {
-  const scope = await readConfiguredScope();
-  if (!scope) {
-    throw new Error('Scope is not configured. Run: wasla config --scope <user|workspace>');
+  if (!process.stdin.isTTY) {
+    throw new Error('Scope is required in non-interactive mode. Use: --scope <user|workspace>');
   }
-  return scope;
-}
 
-export async function writeConfiguredScope(scope: WaslaScope): Promise<void> {
-  const configPath = getConfigPath();
-  await ensureDir(dirname(configPath));
-  await writeJSON<WaslaConfig>(configPath, { scope });
+  const response = await prompts<'scope'>({
+    type: 'select',
+    name: 'scope',
+    message: 'Where should Wasla sync assets?',
+    choices: [
+      { title: 'Workspace - current project only', value: 'workspace' },
+      { title: 'User - available across all projects', value: 'user' },
+    ],
+    initial: 0,
+  });
+  if (response.scope !== 'user' && response.scope !== 'workspace') {
+    throw new Error('Scope selection cancelled');
+  }
+  return response.scope;
 }
 
 export function getConfiguredRegistryPath(scope: WaslaScope): string {

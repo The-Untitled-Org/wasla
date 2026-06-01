@@ -83,7 +83,7 @@ Runs Vitest in debug mode. Great for stepping through test logic.
 F5 → "Debug Sync Command"
 ```
 
-Runs `wasla sync` with debugger attached.
+Runs the Wasla setup flow with debugger attached.
 
 ### How to Debug
 

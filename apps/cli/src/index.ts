@@ -6,10 +6,8 @@ import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { installCommand } from './commands/install.js';
 import { registerCommand } from './commands/register.js';
-import { syncCommand } from './commands/sync.js';
-import { syncToCommand } from './commands/sync-to.js';
+import { setupCommand } from './commands/setup.js';
 import { statusCommand } from './commands/status.js';
-import { configCommand } from './commands/config.js';
 import { watchCommand } from './commands/watch.js';
 import { visualizerCommand } from './server/visualizer-server.js';
 import { banner } from './cli-output.js';
@@ -40,48 +38,38 @@ program.addCommand(
 program.addCommand(
   new Command('register')
     .option('--to <targets>', 'Target provider(s), comma-separated. Example: claude,gemini')
+    .option('--scope <scope>', 'Sync scope: user or workspace')
     .description('Register Wasla helper skills inside installed AI tools')
     .action((options) => registerCommand(options))
 );
 
 program.addCommand(
-  new Command('sync')
-    .description('Scan and sync agents/MCPs across tools')
-    .action(() => syncCommand())
-);
-
-program.addCommand(
-  new Command('sync-to')
-    .option('--from <source>', 'Source tool (gemini, claude, etc.)')
-    .option('--to <targets>', 'Target tool(s), comma-separated')
-    .description('Sync agents/MCPs from one tool to specific target(s)')
-    .action((options) => syncToCommand(options))
+  new Command('setup')
+    .argument('<provider>', 'Provider to provision and hydrate (gemini, claude, etc.)')
+    .option('--scope <scope>', 'Sync scope: user or workspace')
+    .description('Provision a provider and hydrate it with the latest Wasla assets')
+    .action((provider, options) => setupCommand(provider, options))
 );
 
 program.addCommand(
   new Command('status')
+    .option('--scope <scope>', 'Sync scope: user or workspace')
     .description('Show all discovered assets and their sync state')
-    .action(() => statusCommand())
+    .action((options) => statusCommand(options))
 );
 
 program.addCommand(
-  new Command('config')
-    .option('--scope <scope>', 'Set scope to user or workspace')
-    .option('--show', 'Show current config')
-    .description('Configure Wasla settings')
-    .action(async (options) => {
-      await configCommand(options);
-    })
-);
-
-program.addCommand(
-  new Command('watch').description('Watch for changes and auto-sync').action(() => watchCommand())
+  new Command('watch')
+    .option('--scope <scope>', 'Sync scope: user or workspace')
+    .description('Watch for changes and auto-sync')
+    .action((options) => watchCommand(options))
 );
 
 program.addCommand(
   new Command('visualizer')
     .option('--port <port>', 'Port to bind', '4072')
     .option('--no-open', 'Do not open browser automatically')
+    .option('--scope <scope>', 'Sync scope: user or workspace')
     .description('Open interactive sync visualizer with built-in backend')
     .action((options) => visualizerCommand(options))
 );
@@ -90,6 +78,7 @@ program.addCommand(
   new Command('ui')
     .option('--port <port>', 'Port to bind', '4072')
     .option('--no-open', 'Do not open browser automatically')
+    .option('--scope <scope>', 'Sync scope: user or workspace')
     .description('Alias for `visualizer`')
     .action((options) => visualizerCommand(options))
 );

@@ -1,49 +1,55 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { join } from 'path';
-import { mkdtemp, rm } from 'fs/promises';
-import { tmpdir } from 'os';
-import { writeText } from '@utils/fs';
-import * as pathUtils from '@utils/paths';
-import {
-  getConfigPath,
-  readConfiguredScope,
-  requireConfiguredScope,
-  writeConfiguredScope,
-} from '@utils/config';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
-describe('Wasla CLI config', () => {
-  let tmpBase: string;
+const { promptsMock } = vi.hoisted(() => ({
+  promptsMock: vi.fn(),
+}));
 
-  beforeEach(async () => {
-    tmpBase = await mkdtemp(join(tmpdir(), 'wasla-config-'));
-    vi.spyOn(pathUtils, 'getRegistryDir').mockReturnValue(tmpBase);
-  });
+vi.mock('prompts', () => ({
+  default: promptsMock,
+}));
 
-  afterEach(async () => {
+import { resolveScope } from '@utils/config';
+
+describe('Wasla CLI scope resolution', () => {
+  const originalIsTTY = Object.getOwnPropertyDescriptor(process.stdin, 'isTTY');
+
+  afterEach(() => {
+    vi.clearAllMocks();
     vi.restoreAllMocks();
-    await rm(tmpBase, { recursive: true, force: true });
+    if (originalIsTTY) {
+      Object.defineProperty(process.stdin, 'isTTY', originalIsTTY);
+    } else {
+      delete (process.stdin as NodeJS.ReadStream & { isTTY?: boolean }).isTTY;
+    }
   });
 
-  it('returns null before a scope is configured', async () => {
-    await expect(readConfiguredScope()).resolves.toBeNull();
+  it('uses an explicit workspace scope without prompting', async () => {
+    await expect(resolveScope('workspace')).resolves.toBe('workspace');
+    expect(promptsMock).not.toHaveBeenCalled();
   });
 
-  it('persists the selected scope independently from registry files', async () => {
-    await writeConfiguredScope('workspace');
-
-    expect(getConfigPath()).toBe(join(tmpBase, 'config.json'));
-    await expect(readConfiguredScope()).resolves.toBe('workspace');
+  it('uses an explicit user scope without prompting', async () => {
+    await expect(resolveScope('user')).resolves.toBe('user');
+    expect(promptsMock).not.toHaveBeenCalled();
   });
 
-  it('requires users to configure a scope before operational commands run', async () => {
-    await expect(requireConfiguredScope()).rejects.toThrow(
-      'Scope is not configured. Run: wasla config --scope <user|workspace>'
+  it('rejects an invalid explicit scope', async () => {
+    await expect(resolveScope('invalid')).rejects.toThrow('Invalid scope');
+  });
+
+  it('requires --scope when stdin is not interactive', async () => {
+    Object.defineProperty(process.stdin, 'isTTY', { configurable: true, value: false });
+
+    await expect(resolveScope()).rejects.toThrow('Scope is required in non-interactive mode');
+  });
+
+  it('prompts for a scope in an interactive terminal', async () => {
+    Object.defineProperty(process.stdin, 'isTTY', { configurable: true, value: true });
+    promptsMock.mockResolvedValue({ scope: 'workspace' });
+
+    await expect(resolveScope()).resolves.toBe('workspace');
+    expect(promptsMock).toHaveBeenCalledWith(
+      expect.objectContaining({ type: 'select', name: 'scope' })
     );
-  });
-
-  it('rejects an invalid persisted scope', async () => {
-    await writeText(getConfigPath(), JSON.stringify({ scope: 'invalid' }));
-
-    await expect(readConfiguredScope()).rejects.toThrow('Invalid scope');
   });
 });

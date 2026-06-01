@@ -96,18 +96,17 @@ Wasla is not a persistent system daemon. It is a **session-scoped co-process**: 
 7. User closes Claude Code → Wasla co-process exits
 ```
 
-### Manual Sync
+### Provider Setup
 
-Users can also trigger sync manually anytime:
+Users provision a provider and trigger a full scan with:
 ```bash
-wasla sync              # Full scan and interactive sync
-wasla sync --quiet      # Fast check (assumes Y/n from previous)
+wasla setup gemini --scope workspace
 ```
 
 ### User Experience (Example)
 
 ```
-$ wasla sync
+$ wasla setup gemini --scope workspace
 🔍 Scanning tool directories...
 
 Agent "researcher" changed:
@@ -226,7 +225,7 @@ For each tool (Claude Code, Gemini CLI, OpenClaw):
 
 3. **Test skill system**
    - Can a skill detect tool launch?
-   - Can it run `wasla sync` successfully?
+   - Can it run `wasla setup <provider> --scope <scope>` successfully?
    - Can it access both home and project dirs?
 
 **Status:** OpenClaw and OpenAI Codex CLI MCP paths are critical blockers.
@@ -299,7 +298,7 @@ For each tool (Claude Code, Gemini CLI, OpenClaw):
 
 1. **`src/skills/sync.md`**
    - Minimal Wasla skill code
-   - Runs `wasla sync --quick` on tool launch
+   - Runs `wasla watch --scope <scope>` while the tool is open
    - Captures sync output/warnings
 
 2. **`apps/cli/src/commands/install.ts`**
@@ -343,7 +342,7 @@ MVP complete
 ✅ MCP config synced across all three tools<br />
 ✅ Tool-open trigger automatically syncs (user opens Claude → sync runs)<br />
 ✅ `wasla status` shows all assets and locations<br />
-✅ Manual `wasla sync` works and detects changes correctly<br />
+✅ `wasla setup <provider>` provisions missing native files and detects changes correctly<br />
 ✅ Registry accurately tracks file hashes/mtimes<br />
 ✅ Latest version is always used as source (mtime-based)
 

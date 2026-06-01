@@ -3,15 +3,19 @@ import { Scanner } from '#sync/scanner.js';
 import { assetList, section, error, info, metric, spacer } from '../cli-output.js';
 import { fileExists } from '#shared/fs.js';
 import { getRegistryPath } from '#shared/paths.js';
-import { requireConfiguredScope } from '#shared/config.js';
+import { resolveScope } from '#shared/config.js';
 
-export async function statusCommand(): Promise<void> {
+interface StatusOptions {
+  scope?: string;
+}
+
+export async function statusCommand(options: StatusOptions = {}): Promise<void> {
   try {
-    const scope = await requireConfiguredScope();
+    const scope = await resolveScope(options.scope);
     const registryPath = getRegistryPath(scope);
 
     if (!(await fileExists(registryPath))) {
-      error('Registry not found. Run: wasla sync');
+      error('Registry not found. Run: wasla setup <provider> --scope <user|workspace>');
       process.exit(1);
     }
 

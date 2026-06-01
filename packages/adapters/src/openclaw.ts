@@ -67,7 +67,7 @@ export class OpenclawAdapter extends BaseAdapter {
   }
 
   async installSkill(): Promise<void> {
-    // OpenClaw skill installation would go here
+    await this.installOperatorSkill();
   }
 
   getRootConfigAppend(): string | null {

@@ -15,7 +15,7 @@ flowchart LR
     User["User scope"]
     WorkspaceRegistry["project/.wasla/<br/>registry.json<br/>agents/<br/>skills/<br/>mcp/<br/>context/"]
     WorkspaceProviders["Project provider markers<br/>.claude | .gemini | .github | .vscode"]
-    UserRegistry["~/.wasla/<br/>config.json<br/>registry.json<br/>agents/<br/>skills/<br/>mcp/<br/>context/"]
+    UserRegistry["~/.wasla/<br/>registry.json<br/>agents/<br/>skills/<br/>mcp/<br/>context/"]
     UserProviders["Home provider markers<br/>~/.claude | ~/.gemini | ~/.cursor"]
 
     Scope --> Workspace
@@ -26,7 +26,8 @@ flowchart LR
     User --> UserProviders
 ```
 
-The global preference is stored in `~/.wasla/config.json`. Commands resolve the selected registry from that preference. Interactive `wasla sync` asks for the scope before scanning.
+Commands accept `--scope user` or `--scope workspace`. When scope is omitted in an interactive
+terminal, Wasla prompts before scanning. Wasla does not persist an active scope preference.
 
 ## Registry Responsibilities
 

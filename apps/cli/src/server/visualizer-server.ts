@@ -10,7 +10,7 @@ import { getAllAdapters, getInstalledAdapters } from '#adapters/factory.js';
 import { error, highlight, info, section, spacer } from '../cli-output.js';
 import { Syncer } from '#sync/index.js';
 import { Scanner } from '#sync/scanner.js';
-import { requireConfiguredScope } from '#shared/config.js';
+import { resolveScope } from '#shared/config.js';
 import type {
   ConnectionChangedMessage,
   ConnectionChangedResultMessage,
@@ -26,6 +26,7 @@ export function resolveVisualizerDist(moduleUrl: string): string {
 interface VisualizerOptions {
   port?: string;
   noOpen?: boolean;
+  scope?: string;
 }
 
 async function getEntityContent(
@@ -193,7 +194,7 @@ function sendJson(res: ServerResponse, statusCode: number, body: unknown): void 
 
 export async function visualizerCommand(options: VisualizerOptions): Promise<void> {
   try {
-    const scope = await requireConfiguredScope();
+    const scope = await resolveScope(options.scope);
     const host = '127.0.0.1';
     const port = Number(options.port || 4072);
     const shouldOpen = options.noOpen !== true;

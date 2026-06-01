@@ -42,7 +42,7 @@ export default function App() {
   // Mock terminal logs
   const terminalContent = {
     sync: [
-      { text: '$ wasla sync', type: 'cmd' },
+      { text: '$ wasla setup gemini --scope workspace', type: 'cmd' },
       { text: '🔍 Scanning workspace for orchestrator directories...', type: 'info' },
       { text: 'Found configuration roots:', type: 'info' },
       { text: '  • Claude Code:  .claude/', type: 'success' },
@@ -947,7 +947,7 @@ export default function App() {
               </span>
               <div>
                 <h4 className="font-bold text-slate-900 dark:text-white mb-1">
-                  Perform Initial Sync
+                  Set Up A Provider
                 </h4>
                 <p className="text-slate-500 dark:text-slate-400 text-sm">
                   Analyzes modification dates and syncs all config directories.
@@ -955,12 +955,14 @@ export default function App() {
               </div>
             </div>
             <div className="flex items-center bg-white dark:bg-slate-950 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-900 w-full md:w-auto font-mono text-sm justify-between shadow-sm">
-              <span className="text-slate-700 dark:text-slate-300 mr-4">wasla sync</span>
+              <span className="text-slate-700 dark:text-slate-300 mr-4">
+                wasla setup gemini --scope workspace
+              </span>
               <button
-                onClick={() => handleCopy('wasla sync')}
+                onClick={() => handleCopy('wasla setup gemini --scope workspace')}
                 className="text-sky-600 hover:text-sky-500 dark:text-sky-400 dark:hover:text-sky-300 text-xs font-semibold"
               >
-                {copiedText === 'wasla sync' ? 'Copied!' : 'Copy'}
+                {copiedText === 'wasla setup gemini --scope workspace' ? 'Copied!' : 'Copy'}
               </button>
             </div>
           </div>

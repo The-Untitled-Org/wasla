@@ -23,7 +23,6 @@ import { tmpdir } from 'os';
 import { mkdtemp, rm, utimes } from 'fs/promises';
 import type { Registry } from '@core/types';
 import * as pathUtils from '@utils/paths';
-import * as configUtils from '@utils/config';
 
 // ─── helpers ────────────────────────────────────────────────────────────────
 
@@ -60,8 +59,6 @@ beforeEach(async () => {
     join(isolatedWorkspace, '.wasla', `${scope}-registry.json`)
   );
   vi.spyOn(pathUtils, 'getRegistryDir').mockReturnValue(join(isolatedWorkspace, '.wasla'));
-  vi.spyOn(configUtils, 'readConfiguredScope').mockResolvedValue('workspace');
-  vi.spyOn(configUtils, 'requireConfiguredScope').mockResolvedValue('workspace');
 });
 
 afterEach(async () => {
@@ -241,7 +238,7 @@ describe('Sync — idempotency', () => {
 
 // ─── Bootstrap on sync ────────────────────────────────────────────────────────
 
-import { syncCommand } from '@cli/commands/sync.js';
+import { setupCommand } from '@cli/commands/setup.js';
 import { ClaudeAdapter } from '@adapters/claude';
 import { GeminiAdapter } from '@adapters/gemini';
 
@@ -284,24 +281,16 @@ describe('Sync — bootstrap installed adapter that has no agents/ dir', () => {
     expect(await fileExists(join(claudeDir, 'CLAUDE.md'))).toBe(false); // CLAUDE.md not created
   });
 
-  it('does not register a helper skill during sync', async () => {
-    // Simulate: user created `.claude/` manually, no subfolders
+  it('setup provisions a missing Gemini workspace and hydrates Claude assets', async () => {
     const claudeDir = join(tmpBase, '.claude');
-    await ensureDir(claudeDir);
+    const claudeAgentDir = join(claudeDir, 'agents');
+    await ensureDir(claudeAgentDir);
+    await writeText(join(claudeAgentDir, 'reviewer.md'), '# Reviewer\n');
+    const geminiDir = join(tmpBase, '.gemini');
 
-    const agentsDir = join(claudeDir, 'agents');
-    const skillPath = join(agentsDir, 'wasla.md');
-    const contextPath = join(claudeDir, 'CLAUDE.md');
-
-    // Precondition: no agents/ dir, no skill file, no context file
-    expect(await fileExists(agentsDir)).toBe(false);
-    expect(await fileExists(skillPath)).toBe(false);
-    expect(await fileExists(contextPath)).toBe(false);
-
-    // Setup mock tool markers to point to our temp dir
     vi.spyOn(pathUtils, 'getToolMarkers').mockReturnValue({
       claude: claudeDir,
-      gemini: join(tmpBase, '.gemini'),
+      gemini: geminiDir,
       openclaw: join(tmpBase, '.openclaw'),
       opencode: join(tmpBase, '.opencode'),
       cursor: join(tmpBase, '.cursor'),
@@ -309,12 +298,9 @@ describe('Sync — bootstrap installed adapter that has no agents/ dir', () => {
       'github-copilot-cli': join(tmpBase, '.github-fake'),
     });
 
-    // Run syncCommand
-    await syncCommand({ promptForScope: false });
+    await setupCommand('gemini', { scope: 'workspace' });
 
-    // Registration is opt-in through `wasla register`.
-    expect(await fileExists(agentsDir)).toBe(false);
-    expect(await fileExists(skillPath)).toBe(false);
-    expect(await fileExists(contextPath)).toBe(false);
+    expect(await readText(join(geminiDir, 'agents', 'reviewer.md'))).toBe('# Reviewer\n');
+    expect(await fileExists(join(geminiDir, 'skills', 'wasla', 'SKILL.md'))).toBe(true);
   });
 });

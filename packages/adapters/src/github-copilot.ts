@@ -93,7 +93,7 @@ export class GithubCopilotAdapter extends BaseAdapter {
   }
 
   async installSkill(): Promise<void> {
-    // TBD
+    await this.installOperatorSkill();
   }
 
   getRootConfigAppend(): string | null {

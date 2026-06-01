@@ -22,7 +22,7 @@ import { CursorAdapter } from '@adapters/cursor';
 import { GithubCopilotAdapter } from '@adapters/github-copilot';
 import { GithubCopilotCliAdapter } from '@adapters/github-copilot-cli';
 import { writeText, ensureDir, readText, fileExists } from '@utils/fs';
-import { join } from 'path';
+import { dirname, join } from 'path';
 import { tmpdir } from 'os';
 import { mkdtemp, rm } from 'fs/promises';
 import type { Asset } from '@core/types';
@@ -463,6 +463,28 @@ describe('ClaudeAdapter.installSkill', () => {
     vi.restoreAllMocks();
   });
 
+  it('updates an existing helper skill when its instructions are stale', async () => {
+    const { vi } = await import('vitest');
+    const pathUtils = await import('@utils/paths');
+    vi.spyOn(pathUtils, 'getToolMarkers').mockReturnValue({
+      claude: tmpBase,
+      gemini: '',
+      openclaw: '',
+      codex: '',
+    });
+    const skillPath = join(tmpBase, 'skills', 'wasla', 'SKILL.md');
+    await ensureDir(dirname(skillPath));
+    await writeText(skillPath, '# Old Wasla helper\n');
+
+    const adapter = new ClaudeAdapter('workspace');
+    await adapter.installSkill();
+
+    const content = await readText(skillPath);
+    expect(content).toContain('wasla setup claude --scope <user|workspace>');
+
+    vi.restoreAllMocks();
+  });
+
   it('does NOT touch CLAUDE.md', async () => {
     const { vi } = await import('vitest');
     const pathUtils = await import('@utils/paths');
@@ -545,8 +567,23 @@ describe('GeminiAdapter.installSkill', () => {
 });
 
 describe('OpenclawAdapter.installSkill', () => {
-  it('does nothing (no-op for now)', async () => {
+  it('creates a Wasla helper skill', async () => {
+    const { vi } = await import('vitest');
+    const pathUtils = await import('@utils/paths');
+    const tmpBase = await makeTmpDir();
+    vi.spyOn(pathUtils, 'getToolMarkers').mockReturnValue({
+      claude: '',
+      gemini: '',
+      openclaw: join(tmpBase, '.openclaw'),
+      codex: '',
+    });
+
     const adapter = new OpenclawAdapter('workspace');
-    await expect(adapter.installSkill()).resolves.toBeUndefined();
+    await adapter.installSkill();
+
+    expect(await fileExists(join(tmpBase, 'skills', 'wasla', 'SKILL.md'))).toBe(true);
+
+    vi.restoreAllMocks();
+    await rm(tmpBase, { recursive: true, force: true });
   });
 });

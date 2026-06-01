@@ -29,9 +29,9 @@ Wasla scans each tool, discovers what you've built, and mirrors the content into
 
 ```bash
 npm i -g @untitled-devs/wasla  # Install the CLI executable
-wasla sync                       # Choose scope, scan, discover, and mirror assets
-wasla status                     # Inspect assets grouped by type and provider
-wasla register                   # Optional: add helper skills to AI tools
+wasla setup gemini --scope workspace  # Provision Gemini and mirror the latest assets
+wasla status --scope workspace        # Inspect assets grouped by type and provider
+wasla register --scope workspace      # Optional: add helper skills to detected tools
 ```
 
 ## Key Features

@@ -4,14 +4,16 @@ sidebar_position: 2
 
 # Synchronization Flow
 
-`wasla sync` performs a full multi-provider synchronization. `wasla sync-to` uses the same engine with an explicit source and selected targets.
+`wasla setup <provider>` provisions a provider and performs a full multi-provider synchronization.
+`wasla watch` uses the same engine continuously while a provider is open.
 
 ## General Sync
 
 ```mermaid
 flowchart TD
-    Start["User runs wasla sync"]
+    Start["User runs wasla setup gemini"]
     Scope["Select workspace or user scope"]
+    Provision["Provision Gemini native directories and helper skill"]
     Detect["Detect active provider adapters"]
     Scan["Scan agents, skills, MCP entries, and context files"]
     Group["Group files by asset name and type"]
@@ -20,7 +22,7 @@ flowchart TD
     Mirror["Mirror content to supported active providers"]
     Save["Write canonical cache and save registry.json"]
 
-    Start --> Scope --> Detect --> Scan --> Group --> Reconcile --> Select --> Mirror --> Save
+    Start --> Scope --> Provision --> Detect --> Scan --> Group --> Reconcile --> Select --> Mirror --> Save
 ```
 
 ## Source Selection
@@ -34,25 +36,23 @@ For a general sync, the source is dynamic:
 
 This is the **Latest is Greatest** rule. It lets users edit an asset from any supported tool without assigning permanent ownership.
 
-## Targeted Sync
+## Provider Setup
 
-Use targeted sync when direction matters:
+Use setup when opening a provider that has no native workspace files yet:
 
 ```bash
-wasla sync-to --from gemini --to claude,github-copilot
+wasla setup gemini --scope workspace
 ```
 
 ```mermaid
 flowchart LR
-    Gemini["Gemini native assets"]
-    Scanner["Scanner<br/>Scan source provider"]
+    Existing["Existing provider assets"]
+    Setup["Setup<br/>Provision Gemini"]
+    Scanner["Scanner<br/>Scan active providers"]
     Syncer["Syncer<br/>Mirror supported assets"]
-    Claude["Claude Code"]
-    Copilot["GitHub Copilot"]
+    Gemini["Gemini native assets"]
 
-    Gemini --> Scanner --> Syncer
-    Syncer --> Claude
-    Syncer --> Copilot
+    Existing --> Setup --> Scanner --> Syncer --> Gemini
 ```
 
 ## Status Output

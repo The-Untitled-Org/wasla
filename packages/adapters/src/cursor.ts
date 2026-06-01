@@ -63,7 +63,7 @@ export class CursorAdapter extends BaseAdapter {
   }
 
   async installSkill(): Promise<void> {
-    // TBD
+    await this.installOperatorSkill();
   }
 
   getRootConfigAppend(): string | null {

@@ -2,10 +2,11 @@ import { getInstalledAdapters } from '#adapters/factory.js';
 import { section, success, error, warning, highlight, spacer } from '../cli-output.js';
 import { getRegistryDir } from '#shared/paths.js';
 import { ensureDir } from '#shared/fs.js';
-import { requireConfiguredScope } from '#shared/config.js';
+import { resolveScope } from '#shared/config.js';
 
 interface RegisterOptions {
   to?: string;
+  scope?: string;
 }
 
 export async function registerCommand(options: RegisterOptions = {}): Promise<void> {
@@ -13,7 +14,7 @@ export async function registerCommand(options: RegisterOptions = {}): Promise<vo
     section('Detecting installed orchestrators...');
     spacer();
 
-    const scope = await requireConfiguredScope();
+    const scope = await resolveScope(options.scope);
     const adapters = await getInstalledAdapters(scope);
 
     if (adapters.length === 0) {

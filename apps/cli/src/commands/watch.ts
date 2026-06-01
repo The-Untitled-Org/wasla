@@ -4,11 +4,15 @@ import { Scanner } from '#sync/scanner.js';
 import { Syncer } from '#sync/index.js';
 import { getAllAdapters } from '#adapters/factory.js';
 import { section, success, error, info, spacer } from '../cli-output.js';
-import { requireConfiguredScope } from '#shared/config.js';
+import { resolveScope } from '#shared/config.js';
 
-export async function watchCommand(): Promise<void> {
+interface WatchOptions {
+  scope?: string;
+}
+
+export async function watchCommand(options: WatchOptions = {}): Promise<void> {
   try {
-    const scope = await requireConfiguredScope();
+    const scope = await resolveScope(options.scope);
 
     section('Watching for changes...');
     spacer();

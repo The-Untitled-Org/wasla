@@ -26,7 +26,7 @@ vi.mock('#shared/paths.js', () => ({
 }));
 
 vi.mock('#shared/config.js', () => ({
-  requireConfiguredScope: vi.fn(async () => 'workspace'),
+  resolveScope: vi.fn(async () => 'workspace'),
 }));
 
 vi.mock('@cli/cli-output', () => ({

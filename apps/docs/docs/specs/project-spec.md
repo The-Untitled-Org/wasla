@@ -60,17 +60,17 @@ The original file never moves. The tool that created it owns it forever.
 ### 2.3 MVP Commands
 
 ```bash
-npx @untitled-devs/wasla sync        # run without global install
+npx @untitled-devs/wasla setup gemini --scope workspace  # run without global install
 npm i -g @untitled-devs/wasla        # optional: install the CLI executable
-wasla register         # optional: register Wasla helper skill in each tool
-wasla sync             # manual: scan, discover, write stubs (also called automatically on tool open)
-wasla status           # show all discovered assets and stub state
-wasla config           # set scope (user vs workspace)
+wasla setup <provider> --scope <scope>  # provision a provider and hydrate its native files
+wasla register --scope <scope>          # optional: register helper skills in detected tools
+wasla watch --scope <scope>             # synchronize continuously while a tool is open
+wasla status --scope <scope>            # show all discovered assets and mirror state
 ```
 
 **Sync trigger:** Session-scoped background sync. When a tool starts, the Wasla skill installed in that tool **launches Wasla as a background co-process**. Wasla watches for file changes across all tool directories and syncs in real time. It exits cleanly when the tool closes. This is not a persistent system daemon — it only runs while a supported tool is active.
 
-Manual `wasla sync` is also available anytime for a one-shot full scan.
+`wasla setup <provider>` also performs a one-shot full scan after provisioning the provider.
 
 ---
 
@@ -376,20 +376,16 @@ Runs only when the user explicitly wants Wasla helper skills inside installed to
   ✔  Registered in OpenClaw
   ✔  Registered in Gemini CLI
 
-⚙️  Scope: user (~/.wasla/)
-    Change anytime with: wasla config --scope workspace
-
-✨  Registration complete. Run wasla sync to start.
+✨  Registration complete. Run wasla setup <provider> --scope <scope> to hydrate a provider.
 ```
 
 ---
 
-### `wasla sync` (manual or auto-triggered)
+### `wasla setup <provider>`
 
-Manual invocation:
+Provision a provider and hydrate it from the latest provider versions:
 ```bash
-wasla sync              # Full scan and sync
-wasla sync --quick      # Fast check (hash/mtime-based, called by tool-open trigger)
+wasla setup gemini --scope workspace
 ```
 
 Example output:
@@ -430,7 +426,7 @@ Example output:
     3 assets synced · 1 unchanged · 0 errors
 ```
 
-**Note:** This command is called automatically whenever a tool launches (via Wasla skill), and can also be called manually anytime. No explicit conflict resolution needed — latest edits are automatically detected and synced with user confirmation.
+**Note:** Helper skills call setup when a provider needs initialization and call watch for continuous synchronization. No explicit conflict resolution is needed: latest edits are selected automatically.
 
 ---
 
@@ -447,13 +443,14 @@ old-helper       agent   claude     openclaw ✘               orphaned (.bak)
 
 ---
 
-### `wasla config`
+### Scope selection
 
 ```bash
-wasla config --scope user        # store registry in ~/.wasla/
-wasla config --scope workspace   # store registry in .wasla/
-wasla config --show              # print current config
+wasla setup gemini --scope user       # use registry in ~/.wasla/
+wasla setup gemini --scope workspace  # use registry in .wasla/
 ```
+
+Commands prompt for scope in interactive terminals when `--scope` is omitted. Scope is not persisted.
 
 ---
 
@@ -582,11 +579,11 @@ wasla/
 - ✅ Claude Code + Gemini CLI + OpenAI Codex CLI + OpenClaw support
 - ✅ Agents + MCPs sync (content mirror strategy)
 - ✅ Session-scoped background sync (co-process launched by tool skill, exits with tool)
-- ✅ Manual sync (`wasla sync`) also available
+- ✅ Provider bootstrap (`wasla setup <provider>`) performs one-shot synchronization
 - ✅ Conflict resolution (interactive, Latest-is-Greatest)
 - ✅ Orphan handling (.bak)
 - ✅ User + workspace scope
-- ✅ `npx wasla sync` + optional `wasla register`
+- ✅ `npx wasla setup <provider>` + optional `wasla register`
 - ✅ Export/import for backup (`wasla export`, `wasla import`)
 - ✅ Gradual centralization foundation (`~/.wasla/` as optional canonical location)
 - 🔄 Transformers concept (format conversion + vendor updates)

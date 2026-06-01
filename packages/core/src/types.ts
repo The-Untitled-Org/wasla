@@ -62,6 +62,7 @@ export interface WaslaAdapter {
   };
 
   isInstalled(): Promise<boolean>;
+  provision(): Promise<void>;
   mcpFromNative(server: Record<string, unknown>): Record<string, unknown>;
   mcpToNative(server: Record<string, unknown>): Record<string, unknown>;
   writeStub(asset: Asset, content: string, targetPath: string): Promise<void>;
@@ -84,9 +85,4 @@ export interface DiscoveredFile {
 // CLI types
 export interface SyncOptions {
   interactive?: boolean;
-}
-
-export interface ConfigOptions {
-  scope?: 'user' | 'workspace';
-  show?: boolean;
 }

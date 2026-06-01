@@ -68,7 +68,7 @@ Say you create an agent inside Gemini CLI:
 ~/.gemini/agents/researcher.md   ← original, owned by Gemini
 ```
 
-After `wasla sync`, Wasla writes a minimal stub into every other tool:
+After `wasla setup gemini --scope user`, Wasla writes mirrored content into the new provider:
 
 ```
 ~/.claude/agents/researcher.md   ← stub, written by Wasla
@@ -119,23 +119,21 @@ The same pattern applies across every asset type:
 
 ```bash
 npm i -g @untitled-devs/wasla
-wasla config --scope workspace
-wasla sync
+wasla setup gemini --scope workspace
 ```
 
-Choose `workspace` or `user` once before running operational commands.
+Use `workspace` for the current project or `user` for assets shared across projects.
 
 **Or run via `npx` (no global installation required):**
 
 ```bash
-npx @untitled-devs/wasla config --scope workspace
-npx @untitled-devs/wasla sync
+npx @untitled-devs/wasla setup gemini --scope workspace
 ```
 
 Optional helper registration:
 
 ```bash
-wasla register
+wasla register --scope workspace
 ```
 
 `register` detects supported orchestrators and adds the Wasla helper skill inside each one.
@@ -148,27 +146,27 @@ Use `wasla register --to claude` (or comma-separated targets) to install only sp
 ### End users (installed package)
 
 ```bash
-# Run once on demand
-wasla sync
+# Provision a provider and hydrate it with the latest assets
+wasla setup gemini --scope workspace
 
 # Keep syncing while you work
-wasla watch
+wasla watch --scope workspace
 
 # Open the visualizer dashboard
-wasla visualizer
+wasla visualizer --scope workspace
 
 # Optional: install helper skill in all detected providers
-wasla register
+wasla register --scope workspace
 
 # Optional: install helper skill in specific providers only
-wasla register --to claude,gemini
+wasla register --to claude,gemini --scope workspace
 ```
 
 You can also run without global install:
 
 ```bash
-# Run sync
-npx @untitled-devs/wasla sync
+# Set up Gemini in the current workspace
+npx @untitled-devs/wasla setup gemini --scope workspace
 
 # Open visualizer
 npx @untitled-devs/wasla visualizer
@@ -177,10 +175,10 @@ npx @untitled-devs/wasla visualizer
 ### You (developing this repo)
 
 ```bash
-# Build + run sync using your configured scope
-npm run sync
+# Build + set up Gemini in workspace scope
+npm run setup:gemini
 
-# Build + run watch using your configured scope
+# Build + run watch and choose a scope when prompted
 npm run watch
 ```
 
@@ -196,7 +194,7 @@ For local development without repeated global installs:
 
 ```bash
 npm link
-wasla sync
+wasla setup gemini --scope workspace
 ```
 
 Then after code changes, run `npm run build` (or any script that builds) and use `wasla` again.
@@ -205,10 +203,10 @@ Then after code changes, run `npm run build` (or any script that builds) and use
 
 ## ⚡ Usage
 
-### One-time sync
+### Set up a provider
 
 ```bash
-wasla sync
+wasla setup gemini --scope workspace
 ```
 
 ```
@@ -256,24 +254,24 @@ No restart. No manual trigger. The moment something changes — it's everywhere.
 
 ### Scope — workspace or user level
 
-Choose the active scope before running sync, watch, status, or the visualizer:
+Pass a scope to each operational command. If omitted in an interactive terminal, Wasla prompts.
 
 ```bash
-# Use the current project workspace registry
-wasla config --scope workspace
+# Provision Gemini from the current project workspace
+wasla setup gemini --scope workspace
 
-# Use the user-level registry across projects
-wasla config --scope user
+# Keep user-level providers synchronized across projects
+wasla watch --scope user
 ```
 
-All other commands use the saved scope automatically. They do not accept `--scope`.
+Wasla does not persist an active scope preference.
 
 ---
 
 ### Status — see everything and where it lives
 
 ```bash
-wasla status
+wasla status --scope workspace
 ```
 
 ```
@@ -315,13 +313,12 @@ review-pr          command    openclaw    claude ✔  gemini ✔  codex ✔  her
 
 ## 🗃️ Registry Storage
 
-Wasla keeps its own state separately from all orchestrators. You choose the active scope explicitly before the first sync:
+Wasla keeps its own state separately from all orchestrators. Each command selects its scope explicitly:
 
 **User-level** (available across all your projects):
 ```
 ~/.wasla/
-├── registry.json     ← user-scope assets and stub locations
-└── config.json       ← active scope preference
+└── registry.json     ← user-scope assets and stub locations
 ```
 
 **Workspace-level** (scoped to current project only):
@@ -330,10 +327,10 @@ Wasla keeps its own state separately from all orchestrators. You choose the acti
 └── registry.json     ← workspace-scope assets and stub locations
 ```
 
-Switch anytime:
+Select scope per command:
 ```bash
-wasla config --scope workspace
-wasla config --scope user
+wasla setup gemini --scope workspace
+wasla watch --scope user
 ```
 
 ---

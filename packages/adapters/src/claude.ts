@@ -79,35 +79,7 @@ export class ClaudeAdapter extends BaseAdapter {
   }
 
   async installSkill(): Promise<void> {
-    // Write a Wasla skill into Claude's native skills directory.
-    // We do NOT touch CLAUDE.md — that file belongs to the user.
-    const skillDir = join(this.paths.skill!, 'wasla');
-    await ensureDir(skillDir);
-
-    const skillPath = join(skillDir, 'SKILL.md');
-    if (await fileExists(skillPath)) {
-      return; // already installed, idempotent
-    }
-
-    const skillContent = `---
-description: >
-  Runs Wasla CLI commands to sync, inspect, or manage agents and MCPs
-  across AI orchestrators. Use when asked to sync tools, check sync status,
-  install Wasla, or troubleshoot why an agent isn't appearing in a tool.
----
-
-# Wasla Operator
-
-Use the \`wasla\` CLI to sync agents and MCPs across all installed AI tools.
-
-\`\`\`bash
-wasla sync     # Mirror agents across all tools
-wasla status   # Show registry state
-wasla watch    # Auto-sync on file changes
-\`\`\`
-`;
-
-    await writeText(skillPath, skillContent);
+    await this.installOperatorSkill();
   }
 
   getRootConfigAppend(): string | null {

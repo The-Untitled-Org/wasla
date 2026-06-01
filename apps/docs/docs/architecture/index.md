@@ -12,8 +12,8 @@ There is no server and no remote database. The CLI operates on files already use
 
 ```mermaid
 flowchart TD
-    CLI["wasla CLI<br/>sync | sync-to | status | watch | register"]
-    Scope["Scope configuration<br/>workspace | user"]
+    CLI["wasla CLI<br/>setup | status | watch | register"]
+    Scope["Runtime scope selection<br/>workspace | user"]
     Scanner["Scanner<br/>Detect active providers<br/>Discover native assets<br/>Ignore known mirrors as sources"]
     Syncer["Syncer<br/>Group by name and type<br/>Select latest source<br/>Reconcile deletions<br/>Mirror content"]
     Registry["Scoped registry and canonical cache<br/>.wasla/ or ~/.wasla/"]
