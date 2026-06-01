@@ -9,7 +9,24 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 
 
-## [1.0.2] - 2026-05-31
+## [1.1.0] - 2026-06-01
+
+### Added
+
+- `a08c076` feat: add new components for landing page including LogoLoop, Magnetic, ShinyText, SplitText, SpotlightCard, and WaslaNetwork
+- `f4d4256` feat: bootstrap landing app with React, Vite, and custom motion components
+- `85aa930` feat: add Giscus comments to blog posts and link blog in landing page navigation
+- `d22dc61` feat: refresh documentation visual theme, update CI action versions, and adjust logo paths
+
+### Fixed
+
+- `bd8fc5c` fix: update documentation links in App component to point to the correct path
+
+### Other
+
+- `89330b6` Update project name from 'وصل جيني' to 'وصلة'
+
+## [1.0.2] - 2026-06-01
 
 ### Added
 
@@ -18,6 +35,10 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ### Changed
 
 - `278b455` refactor: rename WaslaGenie to Wasla across the codebase
+
+### Chores
+
+- `a2c2a7a` chore(release): v1.0.2
 
 ## [1.0.1] - 2026-05-31
 
