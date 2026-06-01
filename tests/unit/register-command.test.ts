@@ -38,10 +38,10 @@ vi.mock('@cli/cli-output', () => ({
   spacer: vi.fn(),
 }));
 
-import { registerCommand } from '@cli/commands/register.js';
+import { installSkillCommand } from '@cli/commands/install-skill.js';
 import { error } from '@cli/cli-output';
 
-describe('registerCommand', () => {
+describe('installSkillCommand', () => {
   const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
 
   beforeEach(() => {
@@ -49,21 +49,21 @@ describe('registerCommand', () => {
   });
 
   it('registers skill in all installed providers when --to is not provided', async () => {
-    await registerCommand();
+    await installSkillCommand();
 
     expect(installedAdapters[0].installSkill).toHaveBeenCalledTimes(1);
     expect(installedAdapters[1].installSkill).toHaveBeenCalledTimes(1);
   });
 
   it('registers only targeted providers when --to is provided', async () => {
-    await registerCommand({ to: 'gemini' });
+    await installSkillCommand({ to: 'gemini' });
 
     expect(installedAdapters[0].installSkill).not.toHaveBeenCalled();
     expect(installedAdapters[1].installSkill).toHaveBeenCalledTimes(1);
   });
 
   it('exits with error for unknown targets', async () => {
-    await registerCommand({ to: 'unknown' });
+    await installSkillCommand({ to: 'unknown' });
 
     expect(error).toHaveBeenCalled();
     expect(exitSpy).toHaveBeenCalledWith(1);

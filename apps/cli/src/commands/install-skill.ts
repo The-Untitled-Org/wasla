@@ -4,12 +4,12 @@ import { getRegistryDir } from '#shared/paths.js';
 import { ensureDir } from '#shared/fs.js';
 import { resolveScope } from '#shared/config.js';
 
-interface RegisterOptions {
+interface InstallSkillOptions {
   to?: string;
   scope?: string;
 }
 
-export async function registerCommand(options: RegisterOptions = {}): Promise<void> {
+export async function installSkillCommand(options: InstallSkillOptions = {}): Promise<void> {
   try {
     section('Detecting installed orchestrators...');
     spacer();
@@ -50,7 +50,7 @@ export async function registerCommand(options: RegisterOptions = {}): Promise<vo
     }
 
     spacer();
-    section('Registering Wasla helper skills...');
+    section('Installing Wasla helper skills...');
     spacer();
 
     await ensureDir(getRegistryDir(scope));
@@ -58,16 +58,16 @@ export async function registerCommand(options: RegisterOptions = {}): Promise<vo
     for (const adapter of targets) {
       try {
         await adapter.installSkill();
-        success(`Registered in ${adapter.displayName}`);
+        success(`Installed helper skill in ${adapter.displayName}`);
       } catch (e) {
-        error(`Failed to register in ${adapter.displayName}: ${e}`);
+        error(`Failed to install helper skill in ${adapter.displayName}: ${e}`);
       }
     }
 
     spacer();
-    highlight('Registration complete!');
+    highlight('Helper skill installation complete!');
   } catch (err) {
-    error(`Registration failed: ${err}`);
+    error(`Helper skill installation failed: ${err}`);
     process.exit(1);
   }
 }

@@ -63,7 +63,7 @@ The original file never moves. The tool that created it owns it forever.
 npx @untitled-devs/wasla setup gemini --scope workspace  # run without global install
 npm i -g @untitled-devs/wasla        # optional: install the CLI executable
 wasla setup <provider> --scope <scope>  # provision a provider and hydrate its native files
-wasla register --scope <scope>          # optional: register helper skills in detected tools
+wasla install-skill --scope <scope>     # optional: install helper skills in detected tools
 wasla watch --scope <scope>             # synchronize continuously while a tool is open
 wasla status --scope <scope>            # show all discovered assets and mirror state
 ```
@@ -357,7 +357,7 @@ interface WaslaAdapter {
 
 ## 7. CLI Specification
 
-### `wasla register`
+### `wasla install-skill`
 
 Runs only when the user explicitly wants Wasla helper skills inside installed tools.
 
@@ -583,7 +583,7 @@ wasla/
 - ✅ Conflict resolution (interactive, Latest-is-Greatest)
 - ✅ Orphan handling (.bak)
 - ✅ User + workspace scope
-- ✅ `npx wasla setup <provider>` + optional `wasla register`
+- ✅ `npx wasla setup <provider>` + optional `wasla install-skill`
 - ✅ Export/import for backup (`wasla export`, `wasla import`)
 - ✅ Gradual centralization foundation (`~/.wasla/` as optional canonical location)
 - 🔄 Transformers concept (format conversion + vendor updates)

@@ -5,7 +5,7 @@ import { existsSync, readFileSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { installCommand } from './commands/install.js';
-import { registerCommand } from './commands/register.js';
+import { installSkillCommand } from './commands/install-skill.js';
 import { setupCommand } from './commands/setup.js';
 import { statusCommand } from './commands/status.js';
 import { watchCommand } from './commands/watch.js';
@@ -36,11 +36,11 @@ program.addCommand(
 );
 
 program.addCommand(
-  new Command('register')
+  new Command('install-skill')
     .option('--to <targets>', 'Target provider(s), comma-separated. Example: claude,gemini')
     .option('--scope <scope>', 'Sync scope: user or workspace')
-    .description('Register Wasla helper skills inside installed AI tools')
-    .action((options) => registerCommand(options))
+    .description('Install Wasla helper skills inside installed AI tools')
+    .action((options) => installSkillCommand(options))
 );
 
 program.addCommand(

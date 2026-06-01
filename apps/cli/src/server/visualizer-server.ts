@@ -11,6 +11,7 @@ import { error, highlight, info, section, spacer } from '../cli-output.js';
 import { Syncer } from '#sync/index.js';
 import { Scanner } from '#sync/scanner.js';
 import { resolveScope } from '#shared/config.js';
+import { runSetup } from '../commands/setup.js';
 import type {
   ConnectionChangedMessage,
   ConnectionChangedResultMessage,
@@ -230,6 +231,23 @@ export async function visualizerCommand(options: VisualizerOptions): Promise<voi
 
       if (req.method === 'GET' && pathname === '/api/config') {
         sendJson(res, 200, await buildConfig(scope));
+        return;
+      }
+
+      const setupMatch = pathname.match(/^\/api\/providers\/([^/]+)\/setup$/);
+      if (req.method === 'POST' && setupMatch) {
+        const provider = decodeURIComponent(setupMatch[1]);
+        if (!isKnownProvider(scope, provider) || provider === 'wasla') {
+          sendJson(res, 400, { error: 'valid provider is required' });
+          return;
+        }
+        const setup = await runSetup(provider, scope);
+        sendJson(res, 200, {
+          ok: true,
+          provider: setup.adapter.name,
+          title: setup.adapter.displayName,
+          result: setup.result,
+        });
         return;
       }
 

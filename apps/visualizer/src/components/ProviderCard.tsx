@@ -18,10 +18,12 @@ export type ProviderCardData = {
 
 type ProviderCardProps = {
   data: ProviderCardData;
+  isSetupPending?: boolean;
   onEntityDragStart: (payload: EntityInteractionPayload, event: DragEvent) => void;
   onEntityDrop: (targetProviderId: string, event: DragEvent) => void;
   onEntityDelete: (payload: EntityInteractionPayload) => void;
   onEntityClick: (payload: EntityInteractionPayload) => void;
+  onSetupProvider: (providerId: string) => void;
 };
 
 const entityTypes = ['instruction', 'agent', 'skill', 'mcp'] as const;
@@ -35,10 +37,12 @@ function typeLabel(type: VisualizerEntityType): string {
 
 export function ProviderCard({
   data,
+  isSetupPending = false,
   onEntityDragStart,
   onEntityDrop,
   onEntityDelete,
   onEntityClick,
+  onSetupProvider,
 }: ProviderCardProps) {
   const stopDeleteClick = (event: MouseEvent, payload: EntityInteractionPayload) => {
     event.stopPropagation();
@@ -63,7 +67,15 @@ export function ProviderCard({
             title="Not installed"
           />
         </div>
-        <p className="provider-empty">Install this orchestrator to enable visual sync.</p>
+        <p className="provider-empty">Set up this provider to enable visual sync immediately.</p>
+        <button
+          type="button"
+          className="provider-setup-button"
+          onClick={() => onSetupProvider(data.providerId)}
+          disabled={isSetupPending}
+        >
+          {isSetupPending ? 'Setting up...' : 'Set up provider'}
+        </button>
       </article>
     );
   }

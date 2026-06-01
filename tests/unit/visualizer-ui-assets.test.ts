@@ -32,6 +32,8 @@ describe('Visualizer UI asset pipeline', () => {
 
     expect(app).toContain('<svg className="provider-connectors"');
     expect(app).toContain('data-provider-slot={provider.id}');
+    expect(app).toContain('/api/providers/${encodeURIComponent(providerId)}/setup');
+    expect(styles).toContain('.provider-setup-button');
     expect(styles).not.toContain('.provider-satellites');
     expect(styles).not.toContain('.provider-satellite-slot');
   });

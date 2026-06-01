@@ -139,7 +139,7 @@ npx @untitled-devs/wasla sync
 Optional helper registration:
 
 ```bash
-wasla register
+wasla install-skill
 ```
 
 ---

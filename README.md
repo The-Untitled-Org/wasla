@@ -133,11 +133,11 @@ npx @untitled-devs/wasla setup gemini --scope workspace
 Optional helper registration:
 
 ```bash
-wasla register --scope workspace
+wasla install-skill --scope workspace
 ```
 
-`register` detects supported orchestrators and adds the Wasla helper skill inside each one.
-Use `wasla register --to claude` (or comma-separated targets) to install only specific providers.
+`install-skill` detects supported orchestrators and adds the Wasla helper skill inside each one.
+Use `wasla install-skill --to claude` (or comma-separated targets) to install only specific providers.
 
 ---
 
@@ -156,10 +156,10 @@ wasla watch --scope workspace
 wasla visualizer --scope workspace
 
 # Optional: install helper skill in all detected providers
-wasla register --scope workspace
+wasla install-skill --scope workspace
 
 # Optional: install helper skill in specific providers only
-wasla register --to claude,gemini --scope workspace
+wasla install-skill --to claude,gemini --scope workspace
 ```
 
 You can also run without global install:

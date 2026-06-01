@@ -12,7 +12,7 @@ export async function installCommand(): Promise<void> {
     console.log('Common commands:');
     console.log('  wasla setup gemini --scope workspace');
     console.log(
-      '  wasla register --scope workspace  # optional: add helper skills to existing tools'
+      '  wasla install-skill --scope workspace  # optional: add helper skills to existing tools'
     );
     console.log('  wasla watch --scope workspace');
     console.log('');

@@ -187,6 +187,30 @@ button {
   color: #ef4444;
 }
 
+.provider-setup-button {
+  margin-top: auto;
+  align-self: flex-start;
+  padding: 10px 14px;
+  border-radius: 11px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-bright));
+  color: white;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  transition: transform 180ms ease, opacity 180ms ease, box-shadow 180ms ease;
+  box-shadow: 0 12px 24px rgba(14, 131, 205, 0.22);
+}
+
+.provider-setup-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.provider-setup-button:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
 .action-button svg,
 .content-modal header svg,
 .error-alert svg {

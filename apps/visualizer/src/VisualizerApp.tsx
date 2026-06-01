@@ -115,6 +115,7 @@ function Workspace({
   const [isClosed, setIsClosed] = useState(false);
   const [mutationError, setMutationError] = useState<string | null>(null);
   const [connectorLines, setConnectorLines] = useState<ConnectorLine[]>([]);
+  const [setupPendingByProvider, setSetupPendingByProvider] = useState<Record<string, boolean>>({});
   const stageRef = useRef<HTMLDivElement | null>(null);
   const hub = config.providers.find((provider) => provider.isHub);
   const providers = config.providers.filter((provider) => !provider.isHub);
@@ -263,6 +264,28 @@ function Workspace({
     }
   }, []);
 
+  const onSetupProvider = useCallback(
+    async (providerId: string) => {
+      setMutationError(null);
+      setSetupPendingByProvider((previous) => ({ ...previous, [providerId]: true }));
+      try {
+        const response = await fetch(`/api/providers/${encodeURIComponent(providerId)}/setup`, {
+          method: 'POST',
+        });
+        if (!response.ok) {
+          const data = (await response.json().catch(() => ({}))) as { error?: string };
+          throw new Error(data.error || 'Provider setup failed');
+        }
+        await onRefreshConfig();
+      } catch (error) {
+        setMutationError(error instanceof Error ? error.message : String(error));
+      } finally {
+        setSetupPendingByProvider((previous) => ({ ...previous, [providerId]: false }));
+      }
+    },
+    [onRefreshConfig]
+  );
+
   const closeVisualizer = useCallback(() => {
     void fetch('/api/shutdown', { method: 'POST', keepalive: true });
     window.close();
@@ -274,6 +297,7 @@ function Workspace({
     onEntityDrop,
     onEntityDelete,
     onEntityClick,
+    onSetupProvider,
   };
 
   if (isClosed) {
@@ -345,7 +369,11 @@ function Workspace({
               className={`provider-slot provider-slot-${position}`}
               data-provider-slot={provider.id}
             >
-              <ProviderCard data={cardData(provider, attachedByProvider)} {...handlers} />
+              <ProviderCard
+                data={cardData(provider, attachedByProvider)}
+                isSetupPending={setupPendingByProvider[provider.id] === true}
+                {...handlers}
+              />
             </div>
           );
         })}
