@@ -1,4 +1,3 @@
-import { Avatar, Box, Card, CardContent, Chip, Stack, Typography } from '@mui/material';
 import type { DragEvent, MouseEvent } from 'react';
 import type { VisualizerEntityType } from '#core/visualizer-types';
 
@@ -46,85 +45,93 @@ export function ProviderCard({
     onEntityDelete(payload);
   };
 
+  if (data.isInstalled === false) {
+    return (
+      <article className="provider-card provider-card-unavailable">
+        <div className="provider-node-header">
+          <div className="provider-identity">
+            {data.iconUrl ? (
+              <img src={data.iconUrl} alt="" className="provider-node-avatar" />
+            ) : null}
+            <div>
+              <h2>{data.title}</h2>
+              <span className="provider-unavailable">Available provider</span>
+            </div>
+          </div>
+          <span
+            className="provider-node-status provider-node-status-unavailable"
+            title="Not installed"
+          />
+        </div>
+        <p className="provider-empty">Install this orchestrator to enable visual sync.</p>
+      </article>
+    );
+  }
+
   return (
-    <Card
-      variant="providerNode"
-      className={[
-        'provider-card',
-        data.isHub ? 'provider-card-hub' : '',
-        data.isInstalled === false ? 'provider-card-unavailable' : '',
-      ]
-        .filter(Boolean)
-        .join(' ')}
-      elevation={0}
+    <article
+      className={['provider-card', data.isHub ? 'provider-card-hub' : ''].filter(Boolean).join(' ')}
       onDragOver={(event) => {
-        if (data.isInstalled === false) return;
         event.preventDefault();
         event.dataTransfer.dropEffect = 'copy';
       }}
-      onDrop={
-        data.isInstalled === false ? undefined : (event) => onEntityDrop(data.providerId, event)
-      }
+      onDrop={(event) => onEntityDrop(data.providerId, event)}
     >
-      <CardContent>
-        <Stack direction="row" className="provider-node-header">
-          <Stack direction="row" spacing={1} className="floating-inline">
+      <div className="provider-node-header">
+        <div className="provider-title-wrap">
+          <div className="provider-identity">
             {data.iconUrl ? (
-              <Avatar src={data.iconUrl} alt={data.title} className="provider-node-avatar" />
+              <img src={data.iconUrl} alt="" className="provider-node-avatar" />
             ) : null}
-            <Typography variant="h6">
-              {data.title}
-              {data.isInstalled === false ? ' (not installed)' : ''}
-            </Typography>
-          </Stack>
-          <Box
-            className={
-              data.isInstalled === false
-                ? 'provider-node-status provider-node-status-unavailable'
-                : 'provider-node-status'
-            }
-          />
-        </Stack>
-        <Stack className="provider-groups">
-          {entityTypes.map((type) => {
-            const items = data.attachedByType[type] ?? [];
-            if (!items.length) return null;
-            return (
-              <Stack key={type} className="provider-group">
-                <Typography variant="overline" className="provider-group-title">
-                  {typeLabel(type)}
-                </Typography>
-                <Stack direction="row" className="provider-chip-wrap">
-                  {items.map((entity) => {
-                    const payload = { name: entity, type, providerId: data.providerId };
-                    return (
-                      <Chip
-                        key={`${type}-${entity}`}
-                        size="small"
-                        label={entity}
-                        draggable={data.isInstalled !== false}
-                        className={`entity-chip entity-chip-${type}`}
+            <h2>{data.title}</h2>
+          </div>
+        </div>
+        <span className="provider-node-status" title="Installed" />
+      </div>
+      <div className="provider-groups">
+        {entityTypes.map((type) => {
+          const items = data.attachedByType[type] ?? [];
+          if (!items.length) return null;
+          return (
+            <section key={type} className="provider-group">
+              <h3 className="provider-group-title">{typeLabel(type)}</h3>
+              <div className="provider-chip-wrap">
+                {items.map((entity) => {
+                  const payload = { name: entity, type, providerId: data.providerId };
+                  return (
+                    <span key={`${type}-${entity}`} className={`entity-chip entity-chip-${type}`}>
+                      <button
+                        type="button"
+                        draggable
                         onDragStart={(event) => onEntityDragStart(payload, event)}
-                        onDelete={
-                          data.isHub || data.isInstalled === false
-                            ? undefined
-                            : (event) => stopDeleteClick(event, payload)
-                        }
                         onClick={() => onEntityClick(payload)}
-                      />
-                    );
-                  })}
-                </Stack>
-              </Stack>
-            );
-          })}
-          {!Object.values(data.attachedByType).some((arr) => arr.length > 0) ? (
-            <Typography variant="body2" color="text.secondary">
-              No attached entities
-            </Typography>
-          ) : null}
-        </Stack>
-      </CardContent>
-    </Card>
+                      >
+                        {entity}
+                      </button>
+                      {!data.isHub ? (
+                        <button
+                          type="button"
+                          className="entity-chip-delete"
+                          aria-label={`Detach ${entity}`}
+                          title={`Detach ${entity}`}
+                          onClick={(event) => stopDeleteClick(event, payload)}
+                        >
+                          <svg viewBox="0 0 20 20" aria-hidden="true">
+                            <path d="M6 6l8 8m0-8-8 8" />
+                          </svg>
+                        </button>
+                      ) : null}
+                    </span>
+                  );
+                })}
+              </div>
+            </section>
+          );
+        })}
+        {!Object.values(data.attachedByType).some((arr) => arr.length > 0) ? (
+          <p className="provider-empty">No attached entities</p>
+        ) : null}
+      </div>
+    </article>
   );
 }

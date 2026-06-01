@@ -1,20 +1,11 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type DragEvent } from 'react';
 import {
-  Alert,
-  Box,
-  Card,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  Stack,
-  Typography,
-} from '@mui/material';
-import {
   ProviderCard,
   type EntityInteractionPayload,
   type ProviderCardData,
 } from './components/ProviderCard';
 import { FloatingActions } from './components/FloatingActions';
+import DotField from './components/DotField';
 import { useVisualizerSocket } from './hooks/useVisualizerSocket';
 import type {
   ConnectionChangedMessage,
@@ -287,21 +278,36 @@ function Workspace({
 
   if (isClosed) {
     return (
-      <Box className="workspace-closed">
-        <Card variant="glassPanel" className="workspace-closed-card">
-          <Stack spacing={1}>
-            <Typography variant="h6">Visualizer closed</Typography>
-            <Typography variant="body2" color="text.secondary">
-              The local server has stopped. You can close this tab.
-            </Typography>
-          </Stack>
-        </Card>
-      </Box>
+      <main className="workspace-closed">
+        <section className="workspace-closed-card glass-panel">
+          <h1>Visualizer closed</h1>
+          <p>The local server has stopped. You can close this tab.</p>
+        </section>
+      </main>
     );
   }
 
   return (
-    <Box className="workspace-shell">
+    <main className="workspace-shell">
+      <DotField
+        dotRadius={1.5}
+        dotSpacing={12}
+        cursorRadius={400}
+        bulgeStrength={80}
+        glowColor={mode === 'dark' ? '#0ea5e9' : '#ffffff'}
+        gradientFrom={mode === 'dark' ? 'rgba(14, 165, 233, 0.25)' : 'rgba(2, 132, 199, 0.25)'}
+        gradientTo={mode === 'dark' ? 'rgba(56, 189, 248, 0.15)' : 'rgba(14, 165, 233, 0.15)'}
+      />
+      <header className="workspace-header">
+        <div className="brand">
+          <img src="/logo.png" alt="" />
+          <div>
+            <strong>wasla</strong>
+            <span>Connection visualizer</span>
+          </div>
+        </div>
+        <p>Drag an asset to mirror it across your installed orchestrators.</p>
+      </header>
       <FloatingActions
         isDark={mode === 'dark'}
         connected={connected}
@@ -310,53 +316,70 @@ function Workspace({
         onShutdown={closeVisualizer}
       />
       {mutationError ? (
-        <Alert
-          severity="error"
-          onClose={() => setMutationError(null)}
-          sx={{ position: 'absolute', top: 76, right: 20, zIndex: 12, maxWidth: 520 }}
-        >
-          {mutationError}
-        </Alert>
+        <div className="error-alert" role="alert">
+          <span>{mutationError}</span>
+          <button type="button" aria-label="Dismiss error" onClick={() => setMutationError(null)}>
+            <svg viewBox="0 0 20 20" aria-hidden="true">
+              <path d="M6 6l8 8m0-8-8 8" />
+            </svg>
+          </button>
+        </div>
       ) : null}
-      <Box ref={stageRef} className="workspace-stage">
+      <div ref={stageRef} className="workspace-stage">
         <svg className="provider-connectors" aria-hidden="true">
           {connectorLines.map((line) => (
             <line key={line.providerId} x1={line.x1} y1={line.y1} x2={line.x2} y2={line.y2} />
           ))}
         </svg>
         {hub ? (
-          <Box className="provider-slot provider-slot-center" data-provider-slot={hub.id}>
+          <div className="provider-slot provider-slot-center" data-provider-slot={hub.id}>
             <ProviderCard data={cardData(hub, attachedByProvider)} {...handlers} />
-          </Box>
+          </div>
         ) : null}
         {providers.map((provider, index) => {
           const position = orbitPositions[index];
           if (!position) return null;
           return (
-            <Box
+            <div
               key={provider.id}
               className={`provider-slot provider-slot-${position}`}
               data-provider-slot={provider.id}
             >
               <ProviderCard data={cardData(provider, attachedByProvider)} {...handlers} />
-            </Box>
+            </div>
           );
         })}
-      </Box>
-      <Dialog
-        open={selectedContent.open}
-        onClose={() => setSelectedContent((previous) => ({ ...previous, open: false }))}
-        fullWidth
-        maxWidth="md"
-      >
-        <DialogTitle>{selectedContent.title}</DialogTitle>
-        <DialogContent>
-          <Box component="pre" className="entity-content-preview">
-            {selectedContent.body}
-          </Box>
-        </DialogContent>
-      </Dialog>
-    </Box>
+      </div>
+      {selectedContent.open ? (
+        <div
+          className="modal-backdrop"
+          role="presentation"
+          onMouseDown={() => setSelectedContent((previous) => ({ ...previous, open: false }))}
+        >
+          <section
+            className="content-modal glass-panel"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="content-modal-title"
+            onMouseDown={(event) => event.stopPropagation()}
+          >
+            <header>
+              <h2 id="content-modal-title">{selectedContent.title}</h2>
+              <button
+                type="button"
+                aria-label="Close content preview"
+                onClick={() => setSelectedContent((previous) => ({ ...previous, open: false }))}
+              >
+                <svg viewBox="0 0 20 20" aria-hidden="true">
+                  <path d="M6 6l8 8m0-8-8 8" />
+                </svg>
+              </button>
+            </header>
+            <pre className="entity-content-preview">{selectedContent.body}</pre>
+          </section>
+        </div>
+      ) : null}
+    </main>
   );
 }
 
@@ -394,16 +417,11 @@ export function VisualizerApp({
 
   if (!config) {
     return (
-      <Box className="workspace-loading">
-        <Stack spacing={0.75} className="loading-state">
-          <Typography variant="body1">{loadError ?? 'Loading workspace config...'}</Typography>
-          {loadError ? (
-            <Typography variant="caption" color="text.secondary">
-              No demo data is used in this view.
-            </Typography>
-          ) : null}
-        </Stack>
-      </Box>
+      <main className="workspace-loading">
+        <img src="/logo.png" alt="" />
+        <p>{loadError ?? 'Loading workspace config...'}</p>
+        {loadError ? <span>No demo data is used in this view.</span> : null}
+      </main>
     );
   }
 

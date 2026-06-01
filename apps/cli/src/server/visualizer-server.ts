@@ -107,13 +107,13 @@ function openBrowser(url: string): void {
 
 export const PROVIDER_ICONS: Record<string, string> = {
   wasla: '/logo.png',
-  claude: 'https://cdn.simpleicons.org/claude',
-  gemini: 'https://cdn.simpleicons.org/googlegemini',
-  cursor: 'https://cdn.simpleicons.org/cursor',
-  opencode: 'https://cdn.simpleicons.org/openai',
-  openclaw: 'https://cdn.simpleicons.org/anthropic',
-  'github-copilot': 'https://cdn.simpleicons.org/githubcopilot',
-  'github-copilot-cli': 'https://cdn.simpleicons.org/github',
+  claude: '/img/claude.png',
+  gemini: '/img/gemini.png',
+  cursor: '/img/cursor.png',
+  opencode: '/img/opencode.png',
+  openclaw: '/img/openclaw.png',
+  'github-copilot': '/img/copilot.png',
+  'github-copilot-cli': '/img/copilot-cli.png',
 };
 
 async function buildConfig(scope: 'user' | 'workspace'): Promise<VisualizerConfiguration> {
