@@ -1,7 +1,7 @@
 
 <div align="center">
 
-<img src="docs/static/img/logo-wordmark.png" alt="Wasla" width="640" />
+<img src="apps/docs/static/img/logo-wordmark.png" alt="Wasla" width="640" />
 
 **وصلة** — *One skill layer. Every AI orchestrator. Zero duplication.*
 

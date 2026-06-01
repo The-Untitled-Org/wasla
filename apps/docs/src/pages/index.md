@@ -1,13 +1,11 @@
 ---
-
-
 ---
 
 <div align="center">
 
 <img src="img/logo-wordmark.png" alt="Wasla" width="640" />
 
-**وصل جيني** — *One skill layer. Every AI orchestrator. Zero duplication.*
+**وصلة ** — _One skill layer. Every AI orchestrator. Zero duplication._
 
 [![MIT License](https://img.shields.io/badge/license-MIT-00C896?style=flat-square)](https://github.com/The-Untitled-Org/wasla/blob/main/LICENSE)
 [![GitHub](https://img.shields.io/badge/github-The--Untitled--Org-00C896?style=flat-square&logo=github)](https://github.com/The-Untitled-Org/wasla)
@@ -86,6 +84,7 @@ Each stub contains only the minimum that native tool needs to load the original:
 wasla_ref: ~/.gemini/agents/researcher.md
 origin: gemini
 ---
+
 Refer to source definition at ~/.gemini/agents/researcher.md
 ```
 
@@ -108,13 +107,13 @@ The same pattern applies across every asset type:
 
 ## 🗂️ What Gets Synced
 
-| Asset | Scanned From | Synced To |
-|---|---|---|
-| **Agents / Sub-agents** | `~/.{tool}/agents/` | All other tools' agent dirs |
-| **MCP Servers** | `~/.{tool}/mcp/` | All other tools' MCP configs |
-| **Skills / Prompts** | `~/.{tool}/skills/` | All other tools' skill dirs |
-| **Custom Commands** | `~/.{tool}/commands/` | All other tools' command dirs |
-| **Cron Jobs** | `~/.{tool}/crons/` | All other tools' cron dirs |
+| Asset                   | Scanned From          | Synced To                     |
+| ----------------------- | --------------------- | ----------------------------- |
+| **Agents / Sub-agents** | `~/.{tool}/agents/`   | All other tools' agent dirs   |
+| **MCP Servers**         | `~/.{tool}/mcp/`      | All other tools' MCP configs  |
+| **Skills / Prompts**    | `~/.{tool}/skills/`   | All other tools' skill dirs   |
+| **Custom Commands**     | `~/.{tool}/commands/` | All other tools' command dirs |
+| **Cron Jobs**           | `~/.{tool}/crons/`    | All other tools' cron dirs    |
 
 ---
 
@@ -228,14 +227,14 @@ review-pr          command    openclaw    claude ✔  gemini ✔  codex ✔  her
 
 ## 🧩 Supported Orchestrators
 
-| Tool | Auto-detect | Scan | Sync | Skill Install | Daemon |
-|---|---|---|---|---|---|
-| **Claude Code** | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Gemini CLI** | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **OpenAI Codex** | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **OpenClaw** | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Hermes** | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Custom / BYO** | 🔧 | 🔧 | 🔧 | 🔧 | 🔧 |
+| Tool             | Auto-detect | Scan | Sync | Skill Install | Daemon |
+| ---------------- | ----------- | ---- | ---- | ------------- | ------ |
+| **Claude Code**  | ✅          | ✅   | ✅   | ✅            | ✅     |
+| **Gemini CLI**   | ✅          | ✅   | ✅   | ✅            | ✅     |
+| **OpenAI Codex** | ✅          | ✅   | ✅   | ✅            | ✅     |
+| **OpenClaw**     | ✅          | ✅   | ✅   | ✅            | ✅     |
+| **Hermes**       | ✅          | ✅   | ✅   | ✅            | ✅     |
+| **Custom / BYO** | 🔧          | 🔧   | 🔧   | 🔧            | 🔧     |
 
 > Adding a new tool? See [Writing an Adapter](/architecture/adapters).
 
@@ -246,6 +245,7 @@ review-pr          command    openclaw    claude ✔  gemini ✔  codex ✔  her
 Wasla keeps its own state separately from all orchestrators. You choose the active scope explicitly before the first sync:
 
 **User-level** (available across all your projects):
+
 ```
 ~/.wasla/
 ├── registry.json     ← user-scope assets and stub locations
@@ -253,12 +253,14 @@ Wasla keeps its own state separately from all orchestrators. You choose the acti
 ```
 
 **Workspace-level** (scoped to current project only):
+
 ```
 .wasla/
 └── registry.json     ← workspace-scope assets and stub locations
 ```
 
 Switch anytime:
+
 ```bash
 wasla config --scope workspace
 wasla config --scope user
@@ -294,7 +296,7 @@ wasla/
 
 ## 🌍 Why "Wasla"?
 
-**Wasla (وصلة)** is Arabic for *connection* — the act of joining what was always separate.
+**Wasla (وصلة)** is Arabic for _connection_ — the act of joining what was always separate.
 
 Your agents live where they were born.  
 Your tools see everything.  
