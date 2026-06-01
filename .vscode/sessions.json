@@ -21,7 +21,12 @@
         "autoExecuteCommands": true,
         "icon": "package",
         "color": "terminal.ansiMagenta",
-        "commands": ["npm ci", "npm --prefix apps/visualizer ci", "npm --prefix docs ci"],
+        "commands": [
+          "npm ci",
+          "npm --prefix apps/visualizer ci",
+          "npm --prefix apps/docs ci",
+          "npm --prefix apps/landing ci"
+        ],
         "joinOperator": ";"
       },
       {
@@ -41,8 +46,11 @@
           "npm run format",
           "npm run visualizer:install",
           "npm run docs:install",
+          "npm run landing:install",
+          "npm run check",
           "npm run build",
           "npm run docs:build",
+          "npm run landing:build",
           "npm run test:run"
         ],
         "joinOperator": ";"
@@ -72,6 +80,14 @@
         "color": "terminal.ansiCyan",
         "commands": ["npm run visualizer:dev"],
         "joinOperator": ";"
+      },
+      {
+        "name": "landing:watch",
+        "autoExecuteCommands": true,
+        "icon": "globe",
+        "color": "terminal.ansiCyan",
+        "commands": ["npm run landing"],
+        "joinOperator": ";"
       }
     ],
     "build": [
@@ -97,6 +113,14 @@
         "icon": "browser",
         "color": "terminal.ansiBlue",
         "commands": ["npm run visualizer:build"],
+        "joinOperator": ";"
+      },
+      {
+        "name": "landing:build",
+        "autoExecuteCommands": true,
+        "icon": "globe",
+        "color": "terminal.ansiBlue",
+        "commands": ["npm run landing:build"],
         "joinOperator": ";"
       }
     ],

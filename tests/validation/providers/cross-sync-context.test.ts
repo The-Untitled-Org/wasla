@@ -137,6 +137,11 @@ describe('Cross-Provider Sync: Context', () => {
     await writeText(join(tmpBase, 'AGENTS.md'), '# Agents\n');
     await writeText(join(tmpBase, 'CONTEXT.md'), '# Context\n');
 
+    // Explicitly make CONTEXT.md newer to guarantee latest-is-greatest wins,
+    // avoiding flaky failures on CI filesystems with lower time resolution.
+    const newer = new Date(Date.now() + 2_000);
+    await utimes(join(tmpBase, 'CONTEXT.md'), newer, newer);
+
     const syncer = new Syncer(
       new RegistryManager('workspace'),
       new Scanner('workspace'),

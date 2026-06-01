@@ -6,6 +6,7 @@ import Magnetic from './components/Magnetic';
 import WaslaNetwork from './components/WaslaNetwork';
 import DotField from './components/DotField';
 import LogoLoop from './components/LogoLoop';
+import AnimatedContent from './components/AnimatedContent';
 
 const asset = (path: string) => `${import.meta.env.BASE_URL}${path}`;
 
@@ -393,94 +394,335 @@ export default function App() {
       </section>
 
       {/* Problem Statement Section */}
-      <section className="max-w-4xl mx-auto px-6 py-16 z-10 relative">
-        <h2 className="text-3xl sm:text-4xl font-bold text-center tracking-tight mb-12 text-slate-900 dark:text-white">
-          The Problem
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[
-            {
-              step: 'You build an agent in Gemini CLI.',
-              result: 'You open Claude Code.',
-              pain: 'It knows nothing about it.',
-              icon: (
-                <svg
-                  className="w-6 h-6 text-slate-500 dark:text-slate-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="1.5"
-                    d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                  />
-                </svg>
-              ),
-            },
-            {
-              step: 'You configure an MCP in Claude Code.',
-              result: 'You switch to Cursor.',
-              pain: 'Gone.',
-              icon: (
-                <svg
-                  className="w-6 h-6 text-slate-500 dark:text-slate-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="1.5"
-                    d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"
-                  />
-                </svg>
-              ),
-            },
-            {
-              step: 'You write a skill in one tool.',
-              result: 'Every other tool:',
-              pain: 'Blank slate.',
-              icon: (
-                <svg
-                  className="w-6 h-6 text-slate-500 dark:text-slate-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="1.5"
-                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                  />
-                </svg>
-              ),
-            },
-          ].map((item, idx) => (
-            <SpotlightCard
-              key={idx}
-              className="p-8 text-center"
-              spotlightColor="rgba(148, 163, 184, 0.12)"
-            >
-              <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 flex items-center justify-center mx-auto mb-6">
-                {item.icon}
+      <section className="max-w-5xl mx-auto px-6 py-16 z-10 relative">
+        <AnimatedContent distance={50} direction="vertical" duration={0.8}>
+          <div className="flex flex-col items-center justify-center text-center mb-10">
+            <div className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full border border-sky-500/30 bg-sky-500/5 text-sky-600 dark:text-sky-400 text-xs font-semibold mb-6">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+              <span>The Disconnected Ecosystem</span>
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4 text-slate-900 dark:text-white max-w-3xl">
+              Your AI Tools Are <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-500 to-sky-700 dark:from-sky-400 dark:to-blue-500">Trapped In Silos</span>
+            </h2>
+          </div>
+        </AnimatedContent>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* Card 1 */}
+          <div className="lg:col-span-7 group">
+            <AnimatedContent distance={50} direction="vertical" delay={0.1}>
+              <div className="relative h-full flex flex-col p-6 md:p-8 rounded-[2rem] bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 shadow-xl dark:shadow-2xl overflow-hidden transition-all duration-500 hover:shadow-slate-500/10 hover:border-slate-500/30 hover:-translate-y-1">
+                <div className="absolute top-0 right-0 w-[300px] h-[200px] bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-slate-500/10 dark:from-slate-500/20 via-transparent to-transparent opacity-50 transition-opacity duration-500 group-hover:opacity-100"></div>
+                
+                <div className="relative z-10 flex flex-col md:flex-row gap-6 items-center h-full">
+                  <div className="flex-1 space-y-4 text-center md:text-left">
+                    <p className="text-base text-slate-500 dark:text-slate-400 font-medium">You build an agent in Gemini CLI.</p>
+                    <p className="text-lg text-slate-700 dark:text-slate-300 font-medium">You open Claude Code.</p>
+                    <h3 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white leading-tight mt-2">It knows <br className="hidden md:block"/><span className="text-sky-500">nothing about it.</span></h3>
+                  </div>
+                  <div className="w-full md:w-32 aspect-square relative flex items-center justify-center">
+                    <div className="absolute inset-0 border-2 border-dashed border-sky-200 dark:border-sky-900/50 rounded-full animate-[spin_10s_linear_infinite]"></div>
+                    <div className="absolute inset-4 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-full animate-[spin_15s_linear_infinite_reverse]"></div>
+                    <div className="w-14 h-14 bg-sky-50 dark:bg-sky-950 border border-sky-200 dark:border-sky-900 rounded-full flex items-center justify-center z-10 shadow-lg text-sky-500">
+                      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">{item.step}</p>
-              <p className="text-sm text-slate-500 dark:text-slate-500 mb-1">{item.result}</p>
-              <p className="text-lg font-bold text-slate-900 dark:text-white">{item.pain}</p>
-            </SpotlightCard>
-          ))}
+            </AnimatedContent>
+          </div>
+
+          {/* Card 2 */}
+          <div className="lg:col-span-5 group">
+            <AnimatedContent distance={50} direction="vertical" delay={0.2}>
+              <div className="relative h-full flex flex-col p-6 md:p-8 rounded-[2rem] bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 shadow-xl dark:shadow-2xl overflow-hidden transition-all duration-500 hover:shadow-slate-500/10 hover:border-slate-500/30 hover:-translate-y-1">
+                <div className="absolute bottom-0 left-0 w-full h-[200px] bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-slate-500/10 dark:from-slate-500/20 via-transparent to-transparent opacity-50 transition-opacity duration-500 group-hover:opacity-100"></div>
+                
+                <div className="relative z-10 flex flex-col h-full justify-between gap-8">
+                  <div className="w-12 h-12 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl flex items-center justify-center shadow-lg text-slate-500 dark:text-slate-400">
+                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"/></svg>
+                  </div>
+                  <div className="space-y-3">
+                    <p className="text-base text-slate-500 dark:text-slate-400 font-medium">You configure an MCP in Claude Code.</p>
+                    <p className="text-lg text-slate-700 dark:text-slate-300 font-medium">You switch to Cursor.</p>
+                    <h3 className="text-2xl font-black text-sky-500 leading-tight">Gone.</h3>
+                  </div>
+                </div>
+              </div>
+            </AnimatedContent>
+          </div>
+
+          {/* Card 3 */}
+          <div className="lg:col-span-12 group">
+            <AnimatedContent distance={50} direction="vertical" delay={0.3}>
+              <div className="relative p-6 md:p-8 rounded-[2rem] bg-slate-900 dark:bg-slate-900 border border-slate-800 shadow-2xl overflow-hidden transition-all duration-500 hover:border-slate-700 hover:-translate-y-1">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl h-full bg-slate-400/10 blur-[120px] rounded-full"></div>
+                
+                <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+                  <div className="flex-1 space-y-4 text-center md:text-left">
+                    <p className="text-xl text-slate-400 font-medium">You write a skill in one tool.</p>
+                    <p className="text-xl text-slate-300 font-medium">Every other tool:</p>
+                    <h3 className="text-3xl md:text-4xl font-black text-white leading-tight">Blank slate.</h3>
+                  </div>
+                  
+                  <div className="w-full md:w-[320px] bg-slate-950 rounded-2xl border border-slate-800 p-6 font-mono text-sm shadow-2xl">
+                    <div className="flex gap-2 mb-4 pb-4 border-b border-slate-800">
+                      <div className="w-3 h-3 rounded-full bg-slate-800"></div>
+                      <div className="w-3 h-3 rounded-full bg-slate-800"></div>
+                      <div className="w-3 h-3 rounded-full bg-slate-800"></div>
+                    </div>
+                    <div className="space-y-3 opacity-30">
+                       <div className="h-2 w-3/4 bg-slate-700 rounded"></div>
+                       <div className="h-2 w-1/2 bg-slate-700 rounded"></div>
+                       <div className="h-2 w-full bg-slate-700 rounded"></div>
+                       <div className="h-2 w-2/3 bg-slate-700 rounded"></div>
+                    </div>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                       <div className="px-4 py-2 bg-slate-900/80 border border-slate-700 text-slate-400 rounded-lg shadow-xl uppercase tracking-widest text-xs font-bold backdrop-blur-md">
+                         Not Found
+                       </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </AnimatedContent>
+          </div>
         </div>
-        <p className="text-center text-slate-500 dark:text-slate-400 mt-8 max-w-lg mx-auto text-sm leading-relaxed">
-          There is no shared layer. Every orchestrator hoards what lives inside it. You end up{' '}
-          <span className="text-slate-700 dark:text-slate-300 font-medium">
-            copy-pasting configs and maintaining the same thing in five places
-          </span>
-          .
-        </p>
+
+        <AnimatedContent distance={30} direction="vertical" delay={0.4}>
+          <div className="mt-10 text-center max-w-2xl mx-auto px-4">
+            <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed font-light">
+              There is no shared layer. Every orchestrator hoards what lives inside it. You end up{' '}
+              <span className="font-semibold text-slate-900 dark:text-white">copy-pasting configs and maintaining the same thing in five places</span>.
+            </p>
+          </div>
+        </AnimatedContent>
+      </section>
+
+      {/* Premium Alternating Use Cases Section */}
+      <section id="usecases" className="max-w-7xl mx-auto px-6 py-24 z-10 relative border-t border-slate-200 dark:border-white/5">
+        <AnimatedContent distance={50} direction="vertical" reverse={false} duration={0.8}>
+          <div className="text-center mb-20">
+            <div className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full border border-sky-500/30 bg-sky-500/5 text-sky-600 dark:text-sky-300 text-xs font-semibold mb-6">
+              <span className="w-2 h-2 rounded-full bg-sky-500 animate-pulse"></span>
+              <span>Real World Scenarios</span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6 text-slate-900 dark:text-white">
+              How Wasla Changes Your Workflow
+            </h2>
+            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
+              It's not just about syncing files. It's about preserving your AI's context and skills everywhere you go.
+            </p>
+          </div>
+        </AnimatedContent>
+
+        <div className="space-y-24 overflow-hidden px-4">
+          {/* Case 1: Switching Providers */}
+          <AnimatedContent distance={100} direction="horizontal" reverse={false} duration={0.8}>
+            <div className="flex flex-col md:flex-row items-center gap-12 lg:gap-20">
+              <div className="flex-1 md:order-1 order-2">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-sky-600 dark:text-sky-400 font-bold text-xl border shadow-sm">01</div>
+                  <h3 className="text-3xl font-bold text-slate-900 dark:text-white">Switching Providers</h3>
+                </div>
+                <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-6 font-light">
+                  You have a workspace with agents, skills, and MCPs configured in Claude Code. You decide to try Gemini CLI. Instead of recreating everything from scratch and wasting tokens to test how Gemini handles it, simply run Wasla. All your Claude assets instantly become available in Gemini.
+                </p>
+              </div>
+              <div className="flex-1 w-full md:order-2 order-1">
+                <div className="relative aspect-video md:aspect-[4/3] lg:aspect-video rounded-3xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-8 overflow-hidden shadow-xl dark:shadow-2xl flex flex-col justify-center transition-transform hover:-translate-y-1 duration-500">
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-sky-500/20 rounded-full blur-[80px]"></div>
+                  <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-500/20 rounded-full blur-[80px]"></div>
+                  
+                  {/* Visual content: Migration flow */}
+                  <div className="relative z-10 flex items-center justify-between w-full max-w-sm mx-auto">
+                    <div className="flex flex-col items-center gap-3">
+                      <div className="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center p-3 shadow-inner bg-white dark:bg-transparent">
+                        <img src={asset('img/claude.png')} alt="Claude" className="w-full h-full object-contain" />
+                      </div>
+                      <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Claude Code</span>
+                    </div>
+                    
+                    <div className="flex flex-col items-center gap-2">
+                      <div className="px-3 py-1 rounded-full bg-slate-50/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs font-mono text-sky-600 dark:text-sky-400 flex items-center gap-2 shadow-sm backdrop-blur">
+                        <span>wasla sync</span>
+                        <svg className="w-4 h-4 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{ animationDirection: 'alternate-reverse', animationDuration: '1s' }}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                      </div>
+                      <div className="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-widest">Zero copy</div>
+                    </div>
+
+                    <div className="flex flex-col items-center gap-3">
+                      <div className="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center p-3 shadow-inner bg-white dark:bg-transparent">
+                        <img src={asset('img/gemini.png')} alt="Gemini" className="w-full h-full object-contain" />
+                      </div>
+                      <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Gemini CLI</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </AnimatedContent>
+
+          {/* Case 2: Portable Walking AI Setup */}
+          <AnimatedContent distance={100} direction="horizontal" reverse={true} duration={0.8}>
+            <div className="flex flex-col md:flex-row items-center gap-12 lg:gap-20">
+              <div className="flex-1 w-full order-1">
+                <div className="relative aspect-video md:aspect-[4/3] lg:aspect-video rounded-3xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 overflow-hidden shadow-xl dark:shadow-2xl flex flex-col transition-transform hover:-translate-y-1 duration-500">
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-sky-500/10 blur-[100px]"></div>
+                  
+                  {/* Visual content: Watcher / Terminal */}
+                  <div className="relative z-10 w-full h-full rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800/80 overflow-hidden flex flex-col font-mono text-xs shadow-inner">
+                    <div className="flex items-center gap-2 px-4 py-3 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
+                      <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
+                      <div className="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+                      <div className="w-3 h-3 rounded-full bg-green-500/80"></div>
+                      <span className="ml-2 text-slate-500 font-mono">wasla</span>
+                    </div>
+                    <div className="p-4 space-y-3 text-slate-700 dark:text-slate-300 flex-1 overflow-hidden">
+                      <div><span className="text-sky-600 dark:text-sky-400">$</span> wasla sync</div>
+                      <div className="text-slate-500">↻ Scanning configuration roots...</div>
+                      <div className="mt-4"><span className="text-sky-600 dark:text-sky-400">[Discovered]</span> .gemini/agents/planner.md</div>
+                      <div className="flex gap-4 opacity-80">
+                         <span className="text-emerald-600 dark:text-emerald-400">→ Syncing stubs</span>
+                         <span>.claude/agents/planner.md</span>
+                      </div>
+                      <div className="flex gap-4 opacity-80">
+                         <span className="text-emerald-600 dark:text-emerald-400">→ Syncing stubs</span>
+                         <span>.cursor/rules/planner.md</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="flex-1 order-2">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-sky-600 dark:text-sky-400 font-bold text-xl border shadow-sm">02</div>
+                  <h3 className="text-3xl font-bold text-slate-900 dark:text-white">The Portable AI Setup</h3>
+                </div>
+                <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-6 font-light">
+                  Continue working in your new provider, add new agents, and delete old ones. Run <code className="bg-slate-100 dark:bg-slate-800 text-sky-600 dark:text-sky-400 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700">wasla sync</code> and everything mirrors back to your other tools automatically. Your AI environment is fully portable and follows you wherever you go.
+                </p>
+              </div>
+            </div>
+          </AnimatedContent>
+
+          {/* Case 3: Cherry Picking */}
+          <AnimatedContent distance={100} direction="horizontal" reverse={false} duration={0.8}>
+            <div className="flex flex-col md:flex-row items-center gap-12 lg:gap-20">
+              <div className="flex-1 md:order-1 order-2">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-sky-600 dark:text-sky-400 font-bold text-xl border shadow-sm">03</div>
+                  <h3 className="text-3xl font-bold text-slate-900 dark:text-white">Cherry-Picking with UI</h3>
+                </div>
+                <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-6 font-light">
+                  Need a skill from one tool and an MCP from another? You don't want to sync everything blindly. Open up the Wasla Visualizer UI and perform your magic visually, selecting exactly what you need to build your perfect custom setup.
+                </p>
+              </div>
+              <div className="flex-1 w-full md:order-2 order-1">
+                <div className="relative aspect-video md:aspect-[4/3] lg:aspect-video rounded-3xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-6 overflow-hidden shadow-xl dark:shadow-2xl flex flex-col justify-center transition-transform hover:-translate-y-1 duration-500">
+                  <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-sky-500/10 dark:from-sky-500/20 via-transparent to-transparent opacity-60"></div>
+                  
+                  {/* Visual content: UI abstraction */}
+                  <div className="relative z-10 w-full max-w-sm mx-auto h-full max-h-48 border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50/50 dark:bg-slate-900/50 backdrop-blur-md p-4 flex gap-4 shadow-xl dark:shadow-2xl">
+                    <div className="w-1/3 flex flex-col gap-3">
+                      <div className="h-4 w-full rounded bg-slate-200 dark:bg-slate-800/80"></div>
+                      <div className="h-10 w-full rounded-lg bg-sky-500/10 dark:bg-sky-500/20 border border-sky-500/20 dark:border-sky-500/30 flex items-center px-2"><div className="w-4 h-4 rounded-full bg-sky-400/50"></div></div>
+                      <div className="h-10 w-full rounded-lg bg-slate-200 dark:bg-slate-800 flex items-center px-2"><div className="w-4 h-4 rounded-full bg-slate-300 dark:bg-slate-600"></div></div>
+                    </div>
+                    <div className="w-2/3 flex flex-col gap-3">
+                       <div className="h-16 w-full rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/50 flex p-3 gap-3 items-center shadow-sm">
+                          <div className="w-8 h-8 rounded bg-sky-500/10 dark:bg-sky-500/20 border border-sky-500/20 dark:border-sky-500/30 flex-shrink-0"></div>
+                          <div className="flex-1 space-y-2">
+                            <div className="h-2 w-1/2 bg-slate-200 dark:bg-slate-600 rounded"></div>
+                            <div className="h-1.5 w-3/4 bg-slate-100 dark:bg-slate-600/50 rounded"></div>
+                          </div>
+                       </div>
+                       <div className="flex-1 w-full rounded-xl bg-slate-50/40 dark:bg-slate-800/40 border border-slate-300 dark:border-slate-700 border-dashed flex items-center justify-center text-slate-400 dark:text-slate-500 text-xs font-semibold uppercase tracking-widest bg-stripes">
+                          Drop to link MCP
+                       </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </AnimatedContent>
+
+          {/* Case 4: Team Onboarding */}
+          <AnimatedContent distance={100} direction="horizontal" reverse={true} duration={0.8}>
+            <div className="flex flex-col md:flex-row items-center gap-12 lg:gap-20">
+              <div className="flex-1 w-full order-1">
+                <div className="relative aspect-video md:aspect-[4/3] lg:aspect-video rounded-3xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 overflow-hidden shadow-xl dark:shadow-2xl flex flex-col justify-center items-center text-center transition-transform hover:-translate-y-1 duration-500">
+                  <div className="absolute top-0 right-0 w-full h-full bg-sky-500/10 blur-[100px]"></div>
+                  <div className="relative z-10 space-y-5 w-full max-w-sm mx-auto">
+                    <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 shadow-lg">
+                      <svg className="w-4 h-4 text-slate-400 dark:text-slate-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+                      <span className="text-sm font-mono text-slate-600 dark:text-slate-300">git clone origin/team-repo</span>
+                    </div>
+                    <div className="h-6 border-l-2 border-dashed border-sky-500/30 mx-auto"></div>
+                    <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-500/10 dark:bg-emerald-500/20 border border-sky-500/30 shadow-lg backdrop-blur">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse"></span>
+                      <span className="text-sm font-mono text-emerald-600 dark:text-emerald-400">wasla sync</span>
+                    </div>
+                    <div className="h-6 border-l-2 border-dashed border-sky-500/30 mx-auto"></div>
+                    <div className="flex justify-center gap-3">
+                      <div className="px-3 py-2 rounded-lg bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-600 dark:text-slate-400 flex items-center gap-2 shadow-lg"><img src={asset('img/vscode.png')} className="w-3 h-3" alt="VS Code"/> Ready</div>
+                      <div className="px-3 py-2 rounded-lg bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-600 dark:text-slate-400 flex items-center gap-2 shadow-lg"><img src={asset('img/cursor.png')} className="w-3 h-3" alt="Cursor"/> Ready</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="flex-1 order-2">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-sky-600 dark:text-sky-400 font-bold text-xl border shadow-sm">04</div>
+                  <h3 className="text-3xl font-bold text-slate-900 dark:text-white">Team Standardization</h3>
+                </div>
+                <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-6 font-light">
+                  Your team lead sets up a canonical set of agents and MCPs in a shared repository. A new developer joins, clones the repo, and runs <code className="bg-slate-100 dark:bg-slate-800 text-sky-600 dark:text-sky-400 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700">wasla sync</code>. Instantly, their preferred local AI tool is provisioned with the exact team standards.
+                </p>
+              </div>
+            </div>
+          </AnimatedContent>
+
+          {/* Case 5: AI Skill */}
+          <AnimatedContent distance={100} direction="horizontal" reverse={false} duration={0.8}>
+            <div className="flex flex-col md:flex-row items-center gap-12 lg:gap-20">
+              <div className="flex-1 md:order-1 order-2">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-sky-600 dark:text-sky-400 font-bold text-xl border shadow-sm">05</div>
+                  <h3 className="text-3xl font-bold text-slate-900 dark:text-white">Wasla as an AI Skill</h3>
+                </div>
+                <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-6 font-light">
+                  Want your AI to handle everything? Wasla includes a native skill. Your orchestrator is aware of the solution and can run <code className="bg-slate-100 dark:bg-slate-800 text-sky-600 dark:text-sky-400 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700">sync</code> or <code className="bg-slate-100 dark:bg-slate-800 text-sky-600 dark:text-sky-400 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700">status</code> commands for you without you ever opening a terminal!
+                </p>
+              </div>
+              <div className="flex-1 w-full md:order-2 order-1">
+                <div className="relative aspect-video md:aspect-[4/3] lg:aspect-video rounded-3xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-6 overflow-hidden shadow-xl dark:shadow-2xl flex flex-col justify-end transition-transform hover:-translate-y-1 duration-500">
+                  <div className="absolute inset-0 bg-gradient-to-t from-sky-500/5 dark:from-sky-500/10 via-transparent to-transparent"></div>
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-sky-500/10 rounded-full blur-[80px]"></div>
+                  
+                  {/* Visual content: Chat bubble */}
+                  <div className="relative z-10 w-full max-w-sm mx-auto space-y-4 mb-4">
+                    <div className="w-10/12 ml-auto p-4 rounded-2xl rounded-tr-sm bg-slate-50/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-sm shadow-md backdrop-blur">
+                      Can you sync the new github MCP the team added?
+                    </div>
+                    <div className="flex items-end gap-3">
+                      <div className="w-8 h-8 rounded-full bg-sky-600 flex items-center justify-center flex-shrink-0 shadow-md">
+                        <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                      </div>
+                      <div className="flex-1 p-4 rounded-2xl rounded-bl-sm bg-gradient-to-br from-sky-50 dark:from-sky-600/20 to-sky-100/50 dark:to-sky-900/20 border border-sky-200 dark:border-sky-500/30 text-slate-700 dark:text-slate-300 text-sm shadow-lg backdrop-blur">
+                        <p className="mb-3">I've run the <code className="text-sky-600 dark:text-sky-400 font-mono bg-sky-500/10 px-1 rounded">wasla sync</code> command for you.</p>
+                        <div className="p-3 rounded-xl bg-white/80 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 font-mono text-[11px] text-emerald-600 dark:text-emerald-400 flex items-center gap-2">
+                          <svg className="w-3 h-3 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/></svg>
+                          Stubs written to .gemini/mcp.json
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </AnimatedContent>
+        </div>
       </section>
 
       {/* Interactive CLI Terminal Section */}

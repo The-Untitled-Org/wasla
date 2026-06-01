@@ -105,6 +105,25 @@ The same pattern applies across every asset type:
 
 ---
 
+## 🎯 Use Cases
+
+**1. Switching Providers Without Losing Context**  
+You have a workspace with agents, skills, and MCPs configured in Claude Code. You decide to try Gemini CLI. Instead of recreating everything from scratch and wasting tokens to test how Gemini handles it, you simply run Wasla. All your Claude assets instantly become available in Gemini. 
+
+**2. The Portable Walking AI Setup (Two-Way Sync)**  
+You continue working in Gemini, adding new agents and MCPs, or deleting an old agent you originally imported from Claude. You run `wasla sync` (or have `wasla watch` running). **Latest is Greatest** kicks in: the changes you made via Gemini are instantly synced back to Claude. Your entire AI environment is fully portable and follows you wherever you go.
+
+**3. Cherry-Picking with Wasla Visualizer**  
+You want to pick a skill from here, a context from there, and an MCP from another tool. You don't want to sync everything blindly. You open up the **Wasla Visualizer** UI and perform your magic visually, selecting exactly what you need to build your perfect custom setup.
+
+**4. Team Onboarding & Standardization**  
+Your team lead sets up a canonical set of agents and MCPs in a shared repository. A new developer joins, clones the repo, and runs `wasla sync`. Instantly, their preferred local AI tool (Cursor, VS Code, Gemini, or Claude) is provisioned with the exact team standards. No manual config required.
+
+**5. Wasla as an AI Skill**  
+You want your AI to handle everything for you. Wasla includes a native skill that allows your orchestrator to run `wasla sync`, `wasla status`, or `wasla watch` autonomously. Your AI is aware of its own configuration tools and can run the commands on your behalf without you ever opening a terminal.
+
+---
+
 ## 🗂️ What Gets Synced
 
 | Asset                   | Scanned From          | Synced To                     |
@@ -285,7 +304,7 @@ wasla/
 │       ├── openclaw.js
 │       └── hermes.js
 ├── docs/
-│   ├── /architecture/how-stubs-work
+│   ├── /architecture/how-mirroring-works
 │   ├── /architecture/adapters
 │   └── /roadmap
 ├── package.json
@@ -314,7 +333,7 @@ npm run dev
 ```
 
 - [Contributing Guide](/contributing)
-- [How Stubs Work](/architecture/how-stubs-work)
+- [How Mirroring Works](/architecture/how-mirroring-works)
 - [Writing an Adapter](/architecture/adapters)
 - [Roadmap](/roadmap)
 
