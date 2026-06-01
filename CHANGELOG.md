@@ -9,6 +9,20 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 
 
+## [2.0.0] - 2026-06-01
+
+### Added
+
+- `a1434fc` feat: replace sync and config commands with a new setup command and transition to explicit command-level scope requirements.
+- `c5af61d` feat: rename register command to install-skill and add provider setup API with UI integration
+- `e844d1a` feat: implement modular adapter architecture for agents, skills, and context providers with enhanced CLI sync output
+- `4d95b5d` feat: document MCP architecture and add integration tests for MCP server merging and setup command flows
+- `df12c19` feat: add AnimatedContent component and update landing page with improved design and documentation use cases
+
+### Documentation
+
+- `b6a4a4e` docs: update terminology from stubs to mirroring and document new adapter location patterns
+
 ## [1.1.0] - 2026-06-01
 
 ### Added
@@ -21,6 +35,10 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ### Fixed
 
 - `bd8fc5c` fix: update documentation links in App component to point to the correct path
+
+### Chores
+
+- `7069f54` chore(release): v1.1.0
 
 ### Other
 
