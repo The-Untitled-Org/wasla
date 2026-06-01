@@ -37,7 +37,7 @@ wasla install-skill --scope workspace # Optional: add helper skills to detected 
 ## Key Features
 
 - ✅ **Multi-tool support** — Provider adapters for Claude Code, Gemini CLI, GitHub Copilot, GitHub Copilot CLI, Cursor, OpenCode, and experimental OpenClaw support
-- ✅ **Content Mirroring** — Stubs contain full content for maximum tool compatibility
+- ✅ **Content Mirroring** — Mirrored files contain full content for maximum tool compatibility
 - ✅ **Dynamic Source Discovery** — Latest modification wins
 - ✅ **Zero friction** — Edit anywhere, sync everywhere
 - ✅ **Scoped to your needs** — User or workspace scope

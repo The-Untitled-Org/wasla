@@ -12,6 +12,7 @@ Adapters isolate provider-specific paths and formats from the synchronization en
 flowchart LR
     Core["Scanner and Syncer"]
     Adapter["WaslaAdapter"]
+    Locations["locations<br/>AssetLocation patterns"]
     Paths["paths<br/>Native asset locations"]
     Formats["formats<br/>Native file formats"]
     Detect["isInstalled()<br/>Scoped provider detection"]
@@ -21,6 +22,7 @@ flowchart LR
     Install["installSkill()<br/>Optional helper registration"]
 
     Core --> Adapter
+    Adapter --> Locations
     Adapter --> Paths
     Adapter --> Formats
     Adapter --> Detect
@@ -51,7 +53,9 @@ export interface WaslaAdapter {
   mcpKey: string;
   contextFile: string;
   skillDirs: string[];
+  locations: AssetLocation[];
   isInstalled(): Promise<boolean>;
+  provision(): Promise<void>;
   mcpFromNative(server: Record<string, unknown>): Record<string, unknown>;
   mcpToNative(server: Record<string, unknown>): Record<string, unknown>;
   writeStub(asset: Asset, content: string, targetPath: string): Promise<void>;

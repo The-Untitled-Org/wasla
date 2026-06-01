@@ -55,14 +55,16 @@ classDiagram
     }
     class Stub {
       +string tool
+      +string patternId
       +string path
+      +string targetKey
       +string written_at
       +string hash
     }
     Asset "1" *-- "0..*" Stub
 ```
 
-The registry calls mirrored targets `stubs`, but the target files contain usable content. They are not pointers. MCP assets are stored as individual registry entries even when the provider stores multiple MCP servers in one JSON file.
+The registry calls mirrored targets `stubs`, but the target files contain usable content. They are not pointers. MCP assets and context patterns are mapped using locations and storage primitives. MCP assets are stored as individual registry entries even when the provider stores multiple MCP servers in one JSON file.
 
 ## Design Rules
 
@@ -76,6 +78,6 @@ The registry calls mirrored targets `stubs`, but the target files contain usable
 
 - [Synchronization Flow](./synchronization-flow.md)
 - [Scopes and Registry](./scopes-and-registry.md)
-- [How Mirroring Works](./how-stubs-work.md)
+- [How Mirroring Works](./how-mirroring-works.md)
 - [Writing an Adapter](./adapters.md)
 - [Provider Mapping](./orchestrator-comparison.mdx)

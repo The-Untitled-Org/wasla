@@ -9,7 +9,7 @@ Wasla is currently in **alpha**. Here's what's planned:
 ## MVP (Current)
 
 - [x] Asset discovery across Claude Code, Gemini CLI, OpenCode
-- [x] Stub-based synchronization
+- [x] Mirror-based synchronization
 - [x] Conflict resolution (latest is greatest)
 - [x] Manual sync command
 - [x] Daemon mode with file watching

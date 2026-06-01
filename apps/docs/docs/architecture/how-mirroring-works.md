@@ -4,7 +4,7 @@ sidebar_position: 4
 
 # How Mirroring Works
 
-Wasla mirrors full asset content into each active provider's native location. The registry calls these managed targets `stubs`, but they are usable native files or JSON entries, not references.
+Wasla mirrors full asset content into each active provider's native location. These managed targets are conceptually **mirrors** (or **managed copies**). In the registry database, they are represented as `stubs`, but they are usable native files or JSON entries, not references.
 
 ## Why Mirror Content?
 
@@ -57,7 +57,9 @@ Tracking metadata is stored in the scoped registry rather than inserted into use
   "stubs": [
     {
       "tool": "claude",
+      "patternId": "project-root-skill",
       "path": "/project/.claude/skills/reviewer/SKILL.md",
+      "targetKey": "reviewer",
       "written_at": "2026-05-31T00:00:00.000Z",
       "hash": "..."
     }
