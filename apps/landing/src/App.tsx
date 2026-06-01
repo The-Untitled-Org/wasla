@@ -215,7 +215,7 @@ export default function App() {
               Visualizer
             </a>
             <a
-              href="https://the-untitled-org.github.io/wasla/"
+              href="https://the-untitled-org.github.io/wasla/docs/"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-sky-500 dark:hover:text-sky-400 transition-colors"
@@ -343,7 +343,7 @@ export default function App() {
             </Magnetic>
             <Magnetic>
               <a
-                href="https://the-untitled-org.github.io/wasla/"
+                href="https://the-untitled-org.github.io/wasla/docs/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-slate-700 dark:text-slate-300 font-semibold transition-all hover:bg-slate-50 dark:hover:bg-slate-800/80 backdrop-blur-sm text-sm text-center"
@@ -1061,7 +1061,7 @@ export default function App() {
           </div>
           <div className="flex space-x-6">
             <a
-              href="https://the-untitled-org.github.io/wasla/"
+              href="https://the-untitled-org.github.io/wasla/docs/"
               className="hover:text-slate-700 dark:hover:text-slate-400 transition-colors"
             >
               Documentation
