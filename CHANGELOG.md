@@ -9,7 +9,13 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 
 
-## [2.0.0] - 2026-06-01
+## [2.0.1] - 2026-06-06
+
+### Other
+
+- `6278f57` Fix Claude workspace context detection
+
+## [2.0.0] - 2026-06-02
 
 ### Added
 
@@ -22,6 +28,10 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ### Documentation
 
 - `b6a4a4e` docs: update terminology from stubs to mirroring and document new adapter location patterns
+
+### Chores
+
+- `07cd9ca` chore(release): v2.0.0
 
 ## [1.1.0] - 2026-06-01
 
