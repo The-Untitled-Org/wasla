@@ -243,6 +243,31 @@ describe('Scanner.scanTool & scanAllTools', () => {
     );
   });
 
+  it('discovers Claude workspace context when only root CLAUDE.md exists', async () => {
+    const tmpBase = await mkdtemp(join(tmpdir(), 'wasla-scanner-'));
+    const claude = join(tmpBase, '.claude');
+    const claudeContext = join(tmpBase, 'CLAUDE.md');
+    await writeText(claudeContext, '# Project instructions\n');
+    vi.spyOn(pathUtils, 'getToolMarkers').mockReturnValue({
+      claude,
+    });
+
+    const res = await new Scanner('workspace').scanAllTools(['context']);
+
+    expect(res).toHaveLength(1);
+    expect(res[0]).toMatchObject({
+      path: claudeContext,
+      relativePath: 'CLAUDE.md',
+      isStub: false,
+      tool: 'claude',
+      type: 'context',
+      name: 'context',
+    });
+
+    vi.restoreAllMocks();
+    await rm(tmpBase, { recursive: true, force: true });
+  });
+
   it('delegates discovery to provider patterns and classifies registered stubs', async () => {
     const tmpBase = await mkdtemp(join(tmpdir(), 'wasla-scanner-'));
     const claude = join(tmpBase, '.claude');

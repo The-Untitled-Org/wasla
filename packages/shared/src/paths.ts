@@ -1,5 +1,6 @@
 import { homedir } from 'os';
-import { resolve, join } from 'path';
+import { dirname, resolve, join } from 'path';
+import { fileExists } from './fs.js';
 
 export function expandTilde(path: string): string {
   if (path.startsWith('~')) {
@@ -61,6 +62,34 @@ export function getToolMarkers(scope: 'user' | 'workspace' = 'user'): Record<str
   }
 
   return markers;
+}
+
+export function getToolDetectionMarkers(
+  scope: 'user' | 'workspace' = 'user',
+  markers: Record<string, string> = getToolMarkers(scope)
+): Record<string, string[]> {
+  if (scope === 'workspace') {
+    const detectionMarkers = Object.fromEntries(
+      Object.entries(markers).map(([tool, marker]) => [tool, [marker]])
+    );
+    if (markers.claude) {
+      detectionMarkers.claude = [markers.claude, resolve(dirname(markers.claude), 'CLAUDE.md')];
+    }
+    return detectionMarkers;
+  }
+  return Object.fromEntries(Object.entries(markers).map(([tool, marker]) => [tool, [marker]]));
+}
+
+export async function isToolDetected(
+  toolName: string,
+  scope: 'user' | 'workspace' = 'user',
+  markers: Record<string, string> = getToolMarkers(scope)
+): Promise<boolean> {
+  const detectionMarkers = getToolDetectionMarkers(scope, markers)[toolName] ?? [];
+  for (const marker of detectionMarkers) {
+    if (await fileExists(marker)) return true;
+  }
+  return false;
 }
 
 export function getToolName(toolPath: string): string | null {

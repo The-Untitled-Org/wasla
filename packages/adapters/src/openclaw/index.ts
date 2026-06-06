@@ -1,8 +1,8 @@
 import { BaseAdapter } from '../base.js';
 import { Asset } from '#core/types.js';
-import { fileExists, writeText, ensureDir } from '#shared/fs.js';
+import { writeText, ensureDir } from '#shared/fs.js';
 import { dirname, join } from 'path';
-import { getToolMarkers } from '#shared/paths.js';
+import { getToolMarkers, isToolDetected } from '#shared/paths.js';
 import { openclawContextLocations } from './context.js';
 import { openclawMcpLocations } from './mcp.js';
 import { openclawSkillLocations } from './skills.js';
@@ -53,7 +53,7 @@ export class OpenclawAdapter extends BaseAdapter {
   }
 
   async isInstalled(): Promise<boolean> {
-    return fileExists(getToolMarkers(this.scope).openclaw);
+    return isToolDetected(this.name, this.scope, getToolMarkers(this.scope));
   }
 
   async writeStub(asset: Asset, content: string, targetPath: string): Promise<void> {
