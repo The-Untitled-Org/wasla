@@ -10,6 +10,7 @@ import {
   getRegistryPath,
   getRegistryDir,
   getToolMarkers,
+  getToolDetectionMarkers,
   getToolName,
   getToolDisplayName,
 } from '@utils/paths';
@@ -125,6 +126,23 @@ describe('getToolMarkers', () => {
     const defaultMarkers = getToolMarkers();
     const userMarkers = getToolMarkers('user');
     expect(defaultMarkers).toEqual(userMarkers);
+  });
+});
+
+describe('getToolDetectionMarkers', () => {
+  it('keeps the canonical workspace Claude marker and adds root CLAUDE.md for detection', () => {
+    const markers = getToolMarkers('workspace');
+    const detectionMarkers = getToolDetectionMarkers('workspace');
+
+    expect(markers.claude).toBe(resolve('.claude'));
+    expect(detectionMarkers.claude).toEqual([resolve('.claude'), resolve('CLAUDE.md')]);
+  });
+
+  it('uses canonical markers for user-scope detection', () => {
+    const markers = getToolMarkers('user');
+    const detectionMarkers = getToolDetectionMarkers('user');
+
+    expect(detectionMarkers.claude).toEqual([markers.claude]);
   });
 });
 

@@ -1,8 +1,8 @@
 import { BaseAdapter } from '../base.js';
 import { Asset } from '#core/types.js';
-import { fileExists, writeText, ensureDir } from '#shared/fs.js';
+import { writeText, ensureDir } from '#shared/fs.js';
 import { dirname, join } from 'path';
-import { getToolMarkers } from '#shared/paths.js';
+import { getToolMarkers, isToolDetected } from '#shared/paths.js';
 import { geminiAgentLocations } from './agents.js';
 import { geminiContextLocations } from './context.js';
 import { geminiMcpLocations } from './mcp.js';
@@ -56,8 +56,7 @@ export class GeminiAdapter extends BaseAdapter {
   }
 
   async isInstalled(): Promise<boolean> {
-    const markers = getToolMarkers(this.scope);
-    return fileExists(markers.gemini);
+    return isToolDetected(this.name, this.scope, getToolMarkers(this.scope));
   }
 
   mcpFromNative(server: Record<string, unknown>): Record<string, unknown> {
