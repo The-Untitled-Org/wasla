@@ -40,7 +40,10 @@ export default defineConfig({
         '**/*.d.ts',
         'apps/cli/src/index.ts',
         'apps/cli/src/commands/**',
+        'apps/cli/src/server/**',
         'apps/visualizer/**',
+        'packages/core/src/types.ts',
+        'packages/core/src/visualizer-types.ts',
       ],
       thresholds: {
         statements: 80,
