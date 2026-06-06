@@ -12,7 +12,9 @@ const { loadMock, resolveScopeMock, syncMock } = vi.hoisted(() => ({
 }));
 
 vi.mock('#core/registry.js', () => ({
-  RegistryManager: vi.fn(() => ({ load: loadMock })),
+  RegistryManager: vi.fn(function () {
+    return { load: loadMock };
+  }),
 }));
 
 vi.mock('#shared/config.js', () => ({
@@ -20,11 +22,13 @@ vi.mock('#shared/config.js', () => ({
 }));
 
 vi.mock('#sync/index.js', () => ({
-  Syncer: vi.fn(() => ({ sync: syncMock })),
+  Syncer: vi.fn(function () {
+    return { sync: syncMock };
+  }),
 }));
 
 vi.mock('#sync/scanner.js', () => ({
-  Scanner: vi.fn(),
+  Scanner: vi.fn(function () {}),
 }));
 
 vi.mock('@cli/cli-output', () => ({

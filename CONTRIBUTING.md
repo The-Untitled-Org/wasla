@@ -14,7 +14,7 @@ Wasla is developed by The Untitled Org:
 
 ### Prerequisites
 
-- Node.js >= 18.0.0
+- Node.js >= 24.0.0
 - npm or yarn
 
 ### Setup
