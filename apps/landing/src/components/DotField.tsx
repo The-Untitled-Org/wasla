@@ -65,6 +65,9 @@ const DotField = memo(({
     const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const prefersStaticMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce), (pointer: coarse)'
+    ).matches;
     let resizeTimer: ReturnType<typeof setTimeout>;
 
     function resize() {
@@ -91,6 +94,7 @@ const DotField = memo(({
       };
 
       buildDots(w, h);
+      if (prefersStaticMotion) tick();
     }
 
     function buildDots(w: number, h: number) {
@@ -130,7 +134,7 @@ const DotField = memo(({
       m.prevY = m.y;
     }
 
-    const speedInterval = setInterval(updateMouseSpeed, 20);
+    let speedInterval: ReturnType<typeof setInterval> | null = null;
 
     let frameCount = 0;
 
@@ -228,13 +232,18 @@ const DotField = memo(({
 
       ctx!.fill();
 
-      rafRef.current = requestAnimationFrame(tick);
+      if (!prefersStaticMotion) {
+        rafRef.current = requestAnimationFrame(tick);
+      }
     }
 
     doResize();
     window.addEventListener('resize', resize);
-    window.addEventListener('mousemove', onMouseMove, { passive: true });
-    rafRef.current = requestAnimationFrame(tick);
+    if (!prefersStaticMotion) {
+      speedInterval = setInterval(updateMouseSpeed, 20);
+      window.addEventListener('mousemove', onMouseMove, { passive: true });
+      rafRef.current = requestAnimationFrame(tick);
+    }
 
     rebuildRef.current = () => {
       const { w, h } = sizeRef.current;
@@ -243,12 +252,13 @@ const DotField = memo(({
 
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      clearInterval(speedInterval);
+      if (speedInterval) clearInterval(speedInterval);
       clearTimeout(resizeTimer);
       window.removeEventListener('resize', resize);
-      window.removeEventListener('mousemove', onMouseMove);
+      if (!prefersStaticMotion) {
+        window.removeEventListener('mousemove', onMouseMove);
+      }
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

@@ -173,7 +173,7 @@ export default function App() {
   return (
     <div className="relative min-h-screen bg-[#f8fafc] dark:bg-[#02040a] text-slate-800 dark:text-slate-100 overflow-hidden transition-colors duration-300">
       <DotField
-        className="absolute inset-0 z-0 pointer-events-auto"
+        className="fixed inset-0 z-0 pointer-events-none"
         glowColor={theme === 'dark' ? '#0ea5e9' : '#ffffff'}
         gradientFrom={theme === 'dark' ? 'rgba(14, 165, 233, 0.25)' : 'rgba(2, 132, 199, 0.25)'}
         gradientTo={theme === 'dark' ? 'rgba(56, 189, 248, 0.15)' : 'rgba(14, 165, 233, 0.15)'}
